@@ -1,6 +1,4 @@
-/* ============================================================
-   Design tokens — derived from Stitch "Syntactic Portfolio" DS
-   ============================================================ */
+
 :root {
   /* Surfaces */
   --surface: #0b1326;
@@ -49,9 +47,7 @@
   --font-body: "Geist", ui-sans-serif, system-ui, sans-serif;
 }
 
-/* ============================================================
-   Reset
-   ============================================================ */
+
 *, *::before, *::after { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 body {
@@ -71,9 +67,9 @@ img { max-width: 100%; display: block; }
 a { color: inherit; text-decoration: none; }
 button { font: inherit; cursor: pointer; border: 0; background: none; color: inherit; }
 
-/* ============================================================
+/* 
    Typography
-   ============================================================ */
+ */
 .headline-xl {
   font-family: var(--font-mono);
   font-size: clamp(40px, 6vw, 64px);
@@ -130,9 +126,9 @@ button { font: inherit; cursor: pointer; border: 0; background: none; color: inh
   color: transparent;
 }
 
-/* ============================================================
+/* 
    Layout primitives
-   ============================================================ */
+    */
 main { padding-top: 96px; }
 
 .section {
@@ -159,9 +155,9 @@ main { padding-top: 96px; }
 }
 .section-intro { max-width: 640px; margin-bottom: 48px; }
 
-/* ============================================================
-   Background atmosphere
-   ============================================================ */
+/* 
+   Background 
+    */
 .mesh-bg {
   position: fixed;
   inset: 0;
@@ -184,9 +180,9 @@ main { padding-top: 96px; }
 .glow--top-left { width: 380px; height: 380px; top: -100px; left: -100px; }
 .glow--bottom-right { width: 320px; height: 320px; bottom: 0; right: -80px; }
 
-/* ============================================================
+/* 
    Glassmorphism panel
-   ============================================================ */
+    */
 .glass-panel {
   background: rgba(23, 31, 51, 0.55);
   backdrop-filter: blur(20px);
@@ -196,9 +192,9 @@ main { padding-top: 96px; }
 }
 .panel { padding: 32px; }
 
-/* ============================================================
+/* 
    Nav
-   ============================================================ */
+    */
 .nav {
   position: fixed;
   top: 16px;
@@ -268,9 +264,9 @@ main { padding-top: 96px; }
   }
 }
 
-/* ============================================================
+/* 
    Buttons
-   ============================================================ */
+    */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -305,9 +301,7 @@ main { padding-top: 96px; }
   background: rgba(0, 209, 255, 0.05);
 }
 
-/* ============================================================
-   Hero
-   ============================================================ */
+
 .hero-grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -436,9 +430,9 @@ main { padding-top: 96px; }
 }
 .hero-card-footer a:hover { color: var(--primary); }
 
-/* ============================================================
+/* 
    About + Skills
-   ============================================================ */
+    */
 .about-grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -532,9 +526,9 @@ main { padding-top: 96px; }
 .tech-tag--secondary { color: var(--secondary); background: rgba(78, 222, 163, 0.1); }
 .tech-tag--tertiary { color: var(--tertiary); background: rgba(254, 177, 39, 0.1); }
 
-/* ============================================================
+/* 
    Projects grid
-   ============================================================ */
+    */
 .projects-grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -615,9 +609,9 @@ main { padding-top: 96px; }
   justify-content: center;
 }
 
-/* ============================================================
+/* 
    Contact
-   ============================================================ */
+    */
 .contact-grid {
   display: grid;
   grid-template-columns: 1fr;
@@ -708,9 +702,9 @@ main { padding-top: 96px; }
 .form-status[data-state="success"] { color: var(--secondary); }
 .form-status[data-state="error"] { color: var(--error); }
 
-/* ============================================================
+/* 
    Footer
-   ============================================================ */
+    */
 .site-footer {
   margin-top: 80px;
   padding: 32px 0;
@@ -744,9 +738,9 @@ main { padding-top: 96px; }
   text-underline-offset: 4px;
 }
 
-/* ============================================================
+/* 
    Reveal animations (used by script.js)
-   ============================================================ */
+    */
 .reveal {
   opacity: 0;
   transform: translateY(24px);
