@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Armaan Sandhu | Computer Science Portfolio</title>
+  <meta name="description" content="Computer Science undergraduate at WPI building systems software, web applications, and developer tools." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="mesh-bg" aria-hidden="true"></div>
+
+  <!-- ============= NAV ============= -->
+  <nav class="nav" aria-label="Primary">
+    <a href="#home" class="nav-brand">
+      <span class="nav-brand-bracket">[</span>ARMAAN_SANDHU<span class="nav-brand-bracket">]</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#home" class="nav-link nav-link--active" data-nav="home">_Home</a></li>
+      <li><a href="#about" class="nav-link" data-nav="about">_About</a></li>
+      <li><a href="#projects" class="nav-link" data-nav="projects">_Projects</a></li>
+      <li><a href="#contact" class="nav-link" data-nav="contact">_Contact</a></li>
+    </ul>
+    <button class="nav-icon-btn" id="menuToggle" aria-label="Toggle menu" aria-expanded="false">
+      <span class="material-symbols-outlined">menu</span>
+    </button>
+  </nav>
+
+  <main>
+    <!-- ============= HERO ============= -->
+    <section id="home" class="section section--hero">
+      <div class="glow glow--primary glow--top-left" aria-hidden="true"></div>
+      <div class="glow glow--secondary glow--bottom-right" aria-hidden="true"></div>
+
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <p class="label-mono terminal-line">
+            <span class="terminal-prompt">$</span> whoami
+          </p>
+          <h1 class="headline-xl">
+            Hi, I'm <span class="text-gradient">Armaan Sandhu</span>.<br />
+            I build <span class="text-gradient">systems software</span>,
+            <span class="text-gradient">web applications</span>, and
+            <span class="text-gradient">open source projects</span>.
+          </h1>
+          <p class="body-lg muted">
+            Computer Science undergraduate at Worcester Polytechnic Institute on the 4-year
+            accelerated BS/MS track in Artificial Intelligence. I like building software
+            across the stack, from low-level C and assembly up to web apps, and I teach
+            and mentor on the side.
+          </p>
+          <div class="cta-row">
+            <a href="#projects" class="btn btn--primary">
+              View Projects
+              <span class="material-symbols-outlined">arrow_forward</span>
+            </a>
+            <a href="#contact" class="btn btn--ghost">
+              Get in Touch
+              <span class="material-symbols-outlined">arrow_outward</span>
+            </a>
+          </div>
+
+          <div class="quick-stats">
+            <div class="stat">
+              <span class="stat-value">4.0</span>
+              <span class="stat-label label-mono">GPA</span>
+            </div>
+            <div class="stat">
+              <span class="stat-value">BS/MS</span>
+              <span class="stat-label label-mono">4_YR_ACCELERATED</span>
+            </div>
+          </div>
+        </div>
+
+        <aside class="hero-card glass-panel">
+          <div class="hero-card-decor" aria-hidden="true"></div>
+          <header class="hero-card-header">
+            <div class="avatar avatar--placeholder">
+              <span class="avatar-fallback">AS</span>
+            </div>
+            <div class="hero-card-links">
+              <a href="https://github.com/Ar-maan05" aria-label="GitHub"><span class="material-symbols-outlined">code</span></a>
+              <a href="mailto:asandhu@wpi.edu" aria-label="Email"><span class="material-symbols-outlined">mail</span></a>
+            </div>
+          </header>
+
+          <div class="status-row">
+            <span class="status-dot" aria-hidden="true"></span>
+            <h2 class="hero-card-name">Armaan Sandhu</h2>
+          </div>
+          <p class="label-mono muted hero-card-role">Computer Science Student @ WPI</p>
+
+          <div class="terminal-block">
+            <span class="material-symbols-outlined">terminal</span>
+            <div>
+              <p class="label-mono">Status: <span class="text-primary">Contributing to CPython · Open for opportunities</span></p>
+              <p class="label-mono muted">Worcester, MA · EST</p>
+            </div>
+          </div>
+
+          <p class="body-sm muted hero-card-bio">
+            Sophomore on WPI's 4-year accelerated BS/MS in CS + AI.
+            PLA in the CS department, Community Advisor for the Office of Academic Advising, and an open source contributor.
+          </p>
+
+          <footer class="hero-card-footer">
+            <a href="https://github.com/Ar-maan05" aria-label="GitHub"><span class="material-symbols-outlined">code</span></a>
+            <a href="mailto:asandhu@wpi.edu" aria-label="Email"><span class="material-symbols-outlined">mail</span></a>
+          </footer>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ============= ABOUT + SKILLS ============= -->
+    <section id="about" class="section">
+      <p class="label-mono section-eyebrow">// 01 · ABOUT</p>
+      <h2 class="headline-lg">
+        <span class="text-gradient">System.out.println</span>("Hello, World");
+      </h2>
+
+      <div class="about-grid">
+        <div class="about-main">
+          <div class="glass-panel panel">
+            <p class="body-lg">
+              I'm a sophomore at Worcester Polytechnic Institute on the 4-year accelerated
+              BS/MS track in Computer Science and Artificial Intelligence. I'm running
+              multiple courses ahead of pace with a 4.0 GPA across math, theory, and
+              systems coursework.
+            </p>
+            <p class="body-md muted">
+              I started coding young, building browser games as a kid before
+              pivoting toward lower-level work: C, C++, assembly, and systems
+              programming. These days I contribute upstream to CPython and
+              teach on the side, both as a Peer Learning Assistant for the CS
+              department and as a Community Advisor for WPI's Office of
+              Academic Advising. Outside CS, I'm a 2nd degree black belt in
+              Shotokan Karate with over a decade of instructing experience and
+              a few medals to show for it.
+            </p>
+          </div>
+
+          <div class="subsection">
+            <header class="subsection-header">
+              <span class="material-symbols-outlined text-primary">school</span>
+              <h3 class="headline-md">Education</h3>
+            </header>
+            <div class="glass-panel panel education-row">
+              <div>
+                <h4 class="headline-sm">Worcester Polytechnic Institute</h4>
+                <p class="text-primary body-md">Combined BS/MS, Computer Science + Artificial Intelligence</p>
+                <p class="body-sm muted">GPA 4.0 · Dean's List · 4-year accelerated track</p>
+              </div>
+              <div class="date-pill">
+                <span class="material-symbols-outlined">calendar_today</span>
+                <span class="label-mono">Expected May 2029</span>
+              </div>
+            </div>
+            <div class="glass-panel panel education-row">
+              <div>
+                <h4 class="headline-sm">Carmel Junior College · Jamshedpur, India</h4>
+                <p class="text-primary body-md">High School Diploma</p>
+                <p class="body-sm muted">97% (Unweighted) · Valedictorian, Class of 2025</p>
+              </div>
+              <div class="date-pill">
+                <span class="material-symbols-outlined">calendar_today</span>
+                <span class="label-mono">2010 to 2025</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="subsection">
+            <header class="subsection-header">
+              <span class="material-symbols-outlined text-secondary">work</span>
+              <h3 class="headline-md">Experience</h3>
+            </header>
+            <div class="glass-panel panel education-row">
+              <div>
+                <h4 class="headline-sm">Peer Learning Assistant</h4>
+                <p class="text-primary body-md">Computer Science Department, WPI</p>
+                <p class="body-sm muted">Support students across intro CS courses: Intro to Program Design, OO Program Design, Systems Programming, and Machine Organization &amp; Assembly.</p>
+              </div>
+              <div class="date-pill">
+                <span class="material-symbols-outlined">calendar_today</span>
+                <span class="label-mono">2026 to Present</span>
+              </div>
+            </div>
+            <div class="glass-panel panel education-row">
+              <div>
+                <h4 class="headline-sm">Community Advisor</h4>
+                <p class="text-primary body-md">Office of Academic Advising, WPI</p>
+                <p class="body-sm muted">Mentor students, host community programming, and serve as a frontline academic and personal resource within campus residences.</p>
+              </div>
+              <div class="date-pill">
+                <span class="material-symbols-outlined">calendar_today</span>
+                <span class="label-mono">2026 to Present</span>
+              </div>
+            </div>
+            <div class="glass-panel panel education-row">
+              <div>
+                <h4 class="headline-sm">Karate Instructor / Senior Student</h4>
+                <p class="text-primary body-md">Shotokan Academy India</p>
+                <p class="body-sm muted">2nd Degree Black Belt (Ni Dan). 2× gold medalist at Nationals; silver and bronze medalist at Internationals. Over a decade instructing students of varying ages and skill levels through structured, incremental modules.</p>
+              </div>
+              <div class="date-pill">
+                <span class="material-symbols-outlined">calendar_today</span>
+                <span class="label-mono">2014 to 2025</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="subsection">
+            <header class="subsection-header">
+              <span class="material-symbols-outlined text-primary">emoji_events</span>
+              <h3 class="headline-md">Awards &amp; Honors</h3>
+            </header>
+            <div class="interests-grid">
+              <div class="glass-panel panel interest-card">
+                <span class="material-symbols-outlined text-tertiary">sports_martial_arts</span>
+                <div>
+                  <h4 class="label-mono interest-tag">BLACK_BELT_NI_DAN</h4>
+                  <p class="body-sm muted">Ni Dan (2nd Degree Black Belt), Shotokan Karate India. Federation recognized by the International Olympic Committee.</p>
+                </div>
+              </div>
+              <div class="glass-panel panel interest-card">
+                <span class="material-symbols-outlined text-primary">military_tech</span>
+                <div>
+                  <h4 class="label-mono interest-tag">KARATE_NATIONALS</h4>
+                  <p class="body-sm muted">2× Gold medalist, Shotokan Karate (Nationals).</p>
+                </div>
+              </div>
+              <div class="glass-panel panel interest-card">
+                <span class="material-symbols-outlined text-secondary">public</span>
+                <div>
+                  <h4 class="label-mono interest-tag">KARATE_INTERNATIONALS</h4>
+                  <p class="body-sm muted">Silver and bronze medalist, Shotokan Karate (Internationals).</p>
+                </div>
+              </div>
+              <div class="glass-panel panel interest-card">
+                <span class="material-symbols-outlined text-primary">workspace_premium</span>
+                <div>
+                  <h4 class="label-mono interest-tag">DEAN'S_LIST</h4>
+                  <p class="body-sm muted">Worcester Polytechnic Institute (Fall 2025).</p>
+                </div>
+              </div>
+              <div class="glass-panel panel interest-card">
+                <span class="material-symbols-outlined text-secondary">school</span>
+                <div>
+                  <h4 class="label-mono interest-tag">VALEDICTORIAN</h4>
+                  <p class="body-sm muted">Carmel Junior College, Class of 2025.</p>
+                </div>
+              </div>
+              <div class="glass-panel panel interest-card">
+                <span class="material-symbols-outlined text-primary">star</span>
+                <div>
+                  <h4 class="label-mono interest-tag">MOST_OUTSTANDING_STUDENT</h4>
+                  <p class="body-sm muted">Awarded for excellence in academics, leadership, and extracurriculars.</p>
+                </div>
+              </div>
+              <div class="glass-panel panel interest-card">
+                <span class="material-symbols-outlined text-secondary">computer</span>
+                <div>
+                  <h4 class="label-mono interest-tag">COMPUTER_CHAMP</h4>
+                  <p class="body-sm muted">Awarded for academic excellence in computing.</p>
+                </div>
+              </div>
+              <div class="glass-panel panel interest-card">
+                <span class="material-symbols-outlined text-primary">code</span>
+                <div>
+                  <h4 class="label-mono interest-tag">JAVA_COMPETITION</h4>
+                  <p class="body-sm muted">2nd Place, Interschool Java Coding Competition (2023, 2024).</p>
+                </div>
+              </div>
+              <div class="glass-panel panel interest-card">
+                <span class="material-symbols-outlined text-secondary">edit_note</span>
+                <div>
+                  <h4 class="label-mono interest-tag">EDITOR_OF_BATCH</h4>
+                  <p class="body-sm muted">Recognized for excellence in academic writing and editorial leadership.</p>
+                </div>
+              </div>
+              <div class="glass-panel panel interest-card">
+                <span class="material-symbols-outlined text-primary">verified_user</span>
+                <div>
+                  <h4 class="label-mono interest-tag">STUDENT_CONDUCT</h4>
+                  <p class="body-sm muted">Recognized as Most Responsible and Most Disciplined Student.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="subsection">
+            <header class="subsection-header">
+              <span class="material-symbols-outlined text-secondary">groups</span>
+              <h3 class="headline-md">Leadership &amp; Service</h3>
+            </header>
+            <div class="glass-panel panel education-row">
+              <div>
+                <h4 class="headline-sm">Student Council Secretary</h4>
+                <p class="text-primary body-md">Carmel Junior College</p>
+                <p class="body-sm muted">Represented the student body to administration and managed large-scale logistics for interschool fests and multi-departmental events.</p>
+              </div>
+              <div class="date-pill">
+                <span class="material-symbols-outlined">calendar_today</span>
+                <span class="label-mono">2023 to 2025</span>
+              </div>
+            </div>
+            <div class="glass-panel panel education-row">
+              <div>
+                <h4 class="headline-sm">Secretary, Legal Literacy &amp; Literary Clubs</h4>
+                <p class="text-primary body-md">Carmel Junior College</p>
+                <p class="body-sm muted">Facilitated discussions on civic awareness and organized academic writing-focused events; handled administrative tasks demanding discretion and reliability.</p>
+              </div>
+              <div class="date-pill">
+                <span class="material-symbols-outlined">calendar_today</span>
+                <span class="label-mono">2023 to 2025</span>
+              </div>
+            </div>
+            <div class="glass-panel panel education-row">
+              <div>
+                <h4 class="headline-sm">Organizer, Carmel Summit</h4>
+                <p class="text-primary body-md">Carmel Junior College</p>
+                <p class="body-sm muted">Coordinated logistics and scheduling for a large-scale academic event with diverse student groups.</p>
+              </div>
+              <div class="date-pill">
+                <span class="material-symbols-outlined">calendar_today</span>
+                <span class="label-mono">2023 to 2025</span>
+              </div>
+            </div>
+            <div class="glass-panel panel education-row">
+              <div>
+                <h4 class="headline-sm">Financial Literacy Mentor</h4>
+                <p class="text-primary body-md">Community Service Initiative</p>
+                <p class="body-sm muted">Five-year service initiative educating underprivileged community members on banking access and financial tools.</p>
+              </div>
+              <div class="date-pill">
+                <span class="material-symbols-outlined">calendar_today</span>
+                <span class="label-mono">5-year commitment</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <aside class="about-sidebar">
+          <header class="subsection-header">
+            <span class="material-symbols-outlined text-primary">code_blocks</span>
+            <h3 class="headline-md">Technical Toolkit</h3>
+          </header>
+
+          <div class="glass-panel panel toolkit-card">
+            <h4 class="toolkit-title label-mono">
+              <span class="material-symbols-outlined">terminal</span>
+              LANGUAGES
+            </h4>
+            <div class="tag-cloud">
+              <span class="tech-tag">Java</span>
+              <span class="tech-tag">Python</span>
+              <span class="tech-tag">C / C++</span>
+              <span class="tech-tag">JavaScript</span>
+              <span class="tech-tag">Racket</span>
+              <span class="tech-tag">HTML / CSS</span>
+            </div>
+          </div>
+
+          <div class="glass-panel panel toolkit-card">
+            <h4 class="toolkit-title label-mono toolkit-title--secondary">
+              <span class="material-symbols-outlined">hub</span>
+              CONCEPTS_&_DOMAINS
+            </h4>
+            <div class="tag-cloud">
+              <span class="tech-tag">Systems Programming</span>
+              <span class="tech-tag">Machine Organization &amp; Assembly</span>
+              <span class="tech-tag">Object-Oriented Design</span>
+              <span class="tech-tag">Linear Algebra</span>
+              <span class="tech-tag">Applied Probability</span>
+              <span class="tech-tag">Open Source</span>
+            </div>
+          </div>
+
+          <div class="glass-panel panel toolkit-card">
+            <h4 class="toolkit-title label-mono toolkit-title--tertiary">
+              <span class="material-symbols-outlined">build</span>
+              TOOLS_&_DEVOPS
+            </h4>
+            <div class="tag-cloud">
+              <span class="tech-tag">Git</span>
+              <span class="tech-tag">GDB</span>
+              <span class="tech-tag">Linux</span>
+              <span class="tech-tag">Bash</span>
+              <span class="tech-tag">Valgrind</span>
+              <span class="tech-tag">IntelliJ IDEA</span>
+              <span class="tech-tag">VS Code</span>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ============= PROJECTS ============= -->
+    <section id="projects" class="section">
+      <p class="label-mono section-eyebrow">// 02 · PROJECTS</p>
+      <h2 class="headline-lg">Featured <span class="text-gradient">Projects</span></h2>
+      <p class="body-lg muted section-intro">
+        A small selection of personal builds. More on GitHub as I open-source them.
+      </p>
+
+      <div class="projects-grid">
+        <article class="glass-panel project-card project-card--primary">
+          <div class="project-card-glow" aria-hidden="true"></div>
+          <header class="project-card-header">
+            <div class="project-icon">
+              <span class="material-symbols-outlined">security</span>
+            </div>
+          </header>
+          <h3 class="project-title">Cybersecurity Experience through Reverse Engineering</h3>
+          <p class="body-md muted project-description">
+            Solved the canonical low-level security labs: Binary Bomb (all six
+            phases plus the hidden secret phase) and AttackLab (full code
+            injection and ROP exploit chains). Went well beyond the assignments
+            by reverse-engineering the lab harnesses themselves with objdump and
+            GDB, uncovering how the binaries derive cookies, defeat ASLR, and
+            validate solutions internally.
+          </p>
+          <div class="tag-cloud">
+            <span class="tech-tag tech-tag--primary">x86-64 ASM</span>
+            <span class="tech-tag tech-tag--primary">GDB</span>
+            <span class="tech-tag tech-tag--primary">Exploitation</span>
+            <span class="tech-tag tech-tag--primary">Reverse Engineering</span>
+          </div>
+        </article>
+
+        <article class="glass-panel project-card project-card--secondary">
+          <div class="project-card-glow" aria-hidden="true"></div>
+          <header class="project-card-header">
+            <div class="project-icon">
+              <span class="material-symbols-outlined">memory</span>
+            </div>
+          </header>
+          <h3 class="project-title">Cache Simulation &amp; Memory Optimization</h3>
+          <p class="body-md muted project-description">
+            Built a cache simulator in C, modeling an N-way set-associative
+            cache with LRU eviction, then used it to drive a cache-conscious
+            matrix transpose optimization across multiple matrix sizes. Where I
+            learned to treat memory hierarchies as a real performance
+            constraint, with Valgrind in hand for tracing access patterns.
+          </p>
+          <div class="tag-cloud">
+            <span class="tech-tag tech-tag--secondary">C</span>
+            <span class="tech-tag tech-tag--secondary">Valgrind</span>
+            <span class="tech-tag tech-tag--secondary">Performance</span>
+            <span class="tech-tag tech-tag--secondary">Memory Hierarchies</span>
+          </div>
+        </article>
+
+        <article class="glass-panel project-card project-card--tertiary">
+          <div class="project-card-glow" aria-hidden="true"></div>
+          <header class="project-card-header">
+            <div class="project-icon">
+              <span class="material-symbols-outlined">forest</span>
+            </div>
+          </header>
+          <h3 class="project-title">CPython: Open Source Contributions</h3>
+          <p class="body-md muted project-description">
+            Contributing upstream to CPython, the reference implementation of
+            one of the most widely used programming languages on Earth.
+            Navigating one of the largest production codebases in the world,
+            learning real-world issue triage, and submitting fixes against open
+            tickets.
+          </p>
+          <div class="tag-cloud">
+            <span class="tech-tag tech-tag--tertiary">C</span>
+            <span class="tech-tag tech-tag--tertiary">Python</span>
+            <span class="tech-tag tech-tag--tertiary">Git</span>
+            <span class="tech-tag tech-tag--tertiary">Open Source</span>
+          </div>
+        </article>
+
+        <article class="glass-panel project-card project-card--secondary">
+          <div class="project-card-glow" aria-hidden="true"></div>
+          <header class="project-card-header">
+            <div class="project-icon">
+              <span class="material-symbols-outlined">sports_esports</span>
+            </div>
+          </header>
+          <h3 class="project-title">Web Game Sketches</h3>
+          <p class="body-md muted project-description">
+            Browser games from earlier in my coding journey: a Chrome-dinosaur
+            clone, a side-scrolling jumper, supply missions, and a handful of
+            other small games built from scratch with the p5.js sketch library.
+            Where I first learned to think in code.
+          </p>
+          <div class="tag-cloud">
+            <span class="tech-tag tech-tag--secondary">JavaScript</span>
+            <span class="tech-tag tech-tag--secondary">p5.js</span>
+            <span class="tech-tag tech-tag--secondary">HTML5</span>
+          </div>
+        </article>
+
+        <article class="glass-panel project-card project-card--tertiary">
+          <div class="project-card-glow" aria-hidden="true"></div>
+          <header class="project-card-header">
+            <div class="project-icon">
+              <span class="material-symbols-outlined">terminal</span>
+            </div>
+          </header>
+          <h3 class="project-title">Linux &amp; VM Workstation</h3>
+          <p class="body-md muted project-description">
+            Daily-driver Linux workstation with years of OS tinkering: dual-boot
+            setups, custom GRUB configs, persistent recovery USBs, and VMs
+            spanning retro Windows versions to modern Linux distros (Fedora,
+            Kali, Debian) and macOS. Where I learned to break and fix systems
+            without panicking.
+          </p>
+          <div class="tag-cloud">
+            <span class="tech-tag tech-tag--tertiary">Linux</span>
+            <span class="tech-tag tech-tag--tertiary">Virtualization</span>
+            <span class="tech-tag tech-tag--tertiary">Bash</span>
+            <span class="tech-tag tech-tag--tertiary">Systems Admin</span>
+          </div>
+        </article>
+
+        <article class="glass-panel project-card project-card--primary">
+          <div class="project-card-glow" aria-hidden="true"></div>
+          <header class="project-card-header">
+            <div class="project-icon">
+              <span class="material-symbols-outlined">smart_toy</span>
+            </div>
+          </header>
+          <h3 class="project-title">Python: Bots, Tools &amp; Games</h3>
+          <p class="body-md muted project-description">
+            A modular py-cord Discord bot at the center: cogs for giveaways
+            (with reroll, role gating, blacklists, per-server configs), games,
+            and utilities, glued together by interactive button UIs and
+            Firebase-backed state. Around it, years of smaller Python work
+            picked up during the COVID lockdown: desktop tools, scripts, and
+            games.
+          </p>
+          <div class="tag-cloud">
+            <span class="tech-tag tech-tag--primary">Python</span>
+            <span class="tech-tag tech-tag--primary">py-cord</span>
+            <span class="tech-tag tech-tag--primary">asyncio</span>
+            <span class="tech-tag tech-tag--primary">Firebase</span>
+            <span class="tech-tag tech-tag--primary">Tkinter</span>
+          </div>
+        </article>
+
+        <!-- Add more <article class="glass-panel project-card"> blocks as projects ship. -->
+      </div>
+
+      <div class="see-more-row">
+        <a href="https://github.com/Ar-maan05" class="btn btn--ghost">
+          See more on GitHub
+          <span class="material-symbols-outlined">arrow_outward</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- ============= CONTACT ============= -->
+    <section id="contact" class="section">
+      <div class="contact-grid">
+        <div class="contact-intro">
+          <p class="label-mono section-eyebrow">// 03 · CONTACT</p>
+          <h2 class="headline-xl">
+            <span class="text-gradient">initiate</span><br />_connection
+          </h2>
+          <p class="body-lg muted">
+            Open for internships, research opportunities, and collaborations,
+            especially anything in software development, systems, or open source. Always happy to talk shop.
+          </p>
+
+          <div class="contact-channels">
+            <a class="contact-channel" href="mailto:asandhu@wpi.edu">
+              <span class="material-symbols-outlined">mail</span>
+              <div>
+                <p class="label-mono channel-label">EMAIL</p>
+                <p class="body-md">asandhu@wpi.edu</p>
+              </div>
+            </a>
+            <a class="contact-channel" href="https://github.com/Ar-maan05">
+              <span class="material-symbols-outlined">code</span>
+              <div>
+                <p class="label-mono channel-label">GITHUB</p>
+                <p class="body-md">@Ar-maan05</p>
+              </div>
+            </a>
+            <a class="contact-channel" href="tel:+15083408195">
+              <span class="material-symbols-outlined">call</span>
+              <div>
+                <p class="label-mono channel-label">PHONE</p>
+                <p class="body-md">+1 (508) 340-8195</p>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        
+      </div>
+    </section>
+  </main>
+
+  <!-- ============= FOOTER ============= -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <p class="label-mono text-primary">
+        © <span id="footerYear"></span> Armaan Sandhu. Built with technical elegance.
+      </p>
+      <div class="footer-links">
+        <a href="https://github.com/Ar-maan05" class="label-mono">GitHub</a>
+        <a href="mailto:asandhu@wpi.edu" class="label-mono">Email</a>
+        <a href="https://github.com/Ar-maan05/Ar-maan05.github.io" class="label-mono">Source</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
