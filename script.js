@@ -23,20 +23,22 @@ document.querySelectorAll(".nav-link").forEach((link) => {
 const sections = document.querySelectorAll("section[id]");
 const navLinks = document.querySelectorAll(".nav-link[data-nav]");
 
-const spy = new IntersectionObserver(
-  (entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        const id = entry.target.id;
-        navLinks.forEach((link) => {
-          link.classList.toggle("nav-link--active", link.dataset.nav === id);
-        });
-      }
-    });
-  },
-  { rootMargin: "-40% 0px -55% 0px", threshold: 0 }
-);
-sections.forEach((s) => spy.observe(s));
+if (typeof IntersectionObserver !== "undefined") {
+  const spy = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const id = entry.target.id;
+          navLinks.forEach((link) => {
+            link.classList.toggle("nav-link--active", link.dataset.nav === id);
+          });
+        }
+      });
+    },
+    { rootMargin: "-40% 0px -55% 0px", threshold: 0 }
+  );
+  sections.forEach((s) => spy.observe(s));
+}
 
 // Reveal-on-scroll: add .reveal to anything that should animate in
 const revealTargets = document.querySelectorAll(
@@ -44,18 +46,24 @@ const revealTargets = document.querySelectorAll(
 );
 revealTargets.forEach((el) => el.classList.add("reveal"));
 
-const revealObserver = new IntersectionObserver(
-  (entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add("is-visible");
-        revealObserver.unobserve(entry.target);
-      }
-    });
-  },
-  { threshold: 0.1 }
-);
-revealTargets.forEach((el) => revealObserver.observe(el));
+let revealObserver = null;
+if (typeof IntersectionObserver !== "undefined") {
+  revealObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-visible");
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.1 }
+  );
+  revealTargets.forEach((el) => revealObserver.observe(el));
+} else {
+  // If IntersectionObserver is not supported, reveal immediately
+  revealTargets.forEach((el) => el.classList.add("is-visible"));
+}
 
 // Contact form — client-side placeholder.
 // TODO: Wire to a real backend (Formspree, Resend, your own API) before launch.
@@ -65,28 +73,61 @@ form?.addEventListener("submit", (e) => {
   e.preventDefault();
   const data = Object.fromEntries(new FormData(form).entries());
   if (!data.name || !data.email || !data.message) {
-    status.textContent = "Please fill in all fields.";
-    status.dataset.state = "error";
+    if (status) {
+      status.textContent = "Please fill in all fields.";
+      status.dataset.state = "error";
+    }
     return;
   }
-  status.textContent = "[Stub] Message captured locally. Wire up a real handler.";
-  status.dataset.state = "success";
+  if (status) {
+    status.textContent = "[Stub] Message captured locally. Wire up a real handler.";
+    status.dataset.state = "success";
+  }
   form.reset();
 });
 
 // GitHub PR feed — fetch authored PRs and render a status-badged card per PR.
-// Results are cached for the tab session so refreshes don't burn the
-// unauthenticated Search API rate limit (10 req/min per IP).
 const GITHUB_USER = "Ar-maan05";
-const GITHUB_QUERY = `author:${GITHUB_USER}+type:pr`;
+const GITHUB_QUERY = `author:${GITHUB_USER} type:pr`;
 const GITHUB_CACHE_KEY = "gh-prs:" + GITHUB_QUERY;
 const GITHUB_MAX = 9;
 // Shown as a dedicated featured card already, so skip it in the live feed.
 const GITHUB_SKIP_REPOS = new Set([`${GITHUB_USER}/mcp-persist`]);
 
+// Safe sessionStorage helper functions
+function safeGetSessionStorage(key) {
+  try {
+    return typeof window !== "undefined" && window.sessionStorage ? sessionStorage.getItem(key) : null;
+  } catch (e) {
+    console.warn("sessionStorage is not accessible:", e);
+    return null;
+  }
+}
+
+function safeSetSessionStorage(key, value) {
+  try {
+    if (typeof window !== "undefined" && window.sessionStorage) {
+      sessionStorage.setItem(key, value);
+    }
+  } catch (e) {
+    console.warn("Failed to write to sessionStorage:", e);
+  }
+}
+
+function safeRemoveSessionStorage(key) {
+  try {
+    if (typeof window !== "undefined" && window.sessionStorage) {
+      sessionStorage.removeItem(key);
+    }
+  } catch (e) {
+    console.warn("Failed to remove from sessionStorage:", e);
+  }
+}
+
 function escapeHtml(value) {
+  if (value === null || value === undefined) return "";
   const div = document.createElement("div");
-  div.textContent = value;
+  div.textContent = String(value);
   return div.innerHTML;
 }
 
@@ -95,9 +136,18 @@ function renderGitHubPRs(items) {
   const grid = document.getElementById("github-grid");
   if (!grid) return;
 
+  if (!Array.isArray(items)) {
+    if (statusEl) statusEl.textContent = "Could not load GitHub activity right now.";
+    return;
+  }
+
   const variants = ["primary", "secondary", "tertiary"];
   const prs = items
-    .filter((pr) => !GITHUB_SKIP_REPOS.has(pr.repository_url.replace("https://api.github.com/repos/", "")))
+    .filter((pr) => {
+      if (!pr || !pr.repository_url || typeof pr.repository_url !== "string") return false;
+      const repoName = pr.repository_url.replace("https://api.github.com/repos/", "");
+      return !GITHUB_SKIP_REPOS.has(repoName);
+    })
     .slice(0, GITHUB_MAX);
 
   if (prs.length === 0) {
@@ -105,6 +155,9 @@ function renderGitHubPRs(items) {
     return;
   }
   if (statusEl) statusEl.style.display = "none";
+
+  // Clear existing items in case of re-render
+  grid.innerHTML = "";
 
   prs.forEach((pr, i) => {
     const repo = pr.repository_url.replace("https://api.github.com/repos/", "");
@@ -117,7 +170,9 @@ function renderGitHubPRs(items) {
     const statusIcon = isMerged ? "merge" : isOpen ? "call_merge" : "close";
 
     const date = new Date(isMerged ? pr.pull_request.merged_at : pr.updated_at);
-    const dateStr = date.toLocaleDateString("en-US", { month: "short", year: "numeric" });
+    const dateStr = !isNaN(date.getTime())
+      ? date.toLocaleDateString("en-US", { month: "short", year: "numeric" })
+      : "Recent";
 
     const card = document.createElement("article");
     card.className = `glass-panel project-card project-card--${variant}`;
@@ -134,7 +189,7 @@ function renderGitHubPRs(items) {
       <div class="tag-cloud gh-card-tags">
         <span class="tech-tag tech-tag--${statusColor}">${statusLabel}</span>
       </div>
-      <a href="${encodeURI(pr.html_url)}" target="_blank" rel="noopener noreferrer" class="btn btn--ghost btn--sm gh-card-link">
+      <a href="${encodeURI(pr.html_url || '#')}" target="_blank" rel="noopener noreferrer" class="btn btn--ghost btn--sm gh-card-link">
         View PR
         <span class="material-symbols-outlined">arrow_outward</span>
       </a>
@@ -145,7 +200,11 @@ function renderGitHubPRs(items) {
   // Reveal-animate the cards that were added after initial page load.
   grid.querySelectorAll(".project-card").forEach((el) => {
     el.classList.add("reveal");
-    revealObserver.observe(el);
+    if (revealObserver) {
+      revealObserver.observe(el);
+    } else {
+      el.classList.add("is-visible");
+    }
   });
 }
 
@@ -153,30 +212,30 @@ async function loadGitHubPRs() {
   const statusEl = document.getElementById("github-status");
   if (!document.getElementById("github-grid")) return;
 
-  const cached = sessionStorage.getItem(GITHUB_CACHE_KEY);
+  const cached = safeGetSessionStorage(GITHUB_CACHE_KEY);
   if (cached) {
     try {
       renderGitHubPRs(JSON.parse(cached));
       return;
-    } catch {
-      sessionStorage.removeItem(GITHUB_CACHE_KEY);
+    } catch (e) {
+      safeRemoveSessionStorage(GITHUB_CACHE_KEY);
     }
   }
 
   try {
     const res = await fetch(
-      `https://api.github.com/search/issues?q=${GITHUB_QUERY}&sort=updated&per_page=12`,
+      `https://api.github.com/search/issues?q=${encodeURIComponent(GITHUB_QUERY)}&sort=updated&per_page=12`,
       { headers: { Accept: "application/vnd.github+json" } }
     );
     if (!res.ok) throw new Error(`GitHub API ${res.status}`);
 
     const data = await res.json();
     const items = data.items || [];
-    sessionStorage.setItem(GITHUB_CACHE_KEY, JSON.stringify(items));
+    safeSetSessionStorage(GITHUB_CACHE_KEY, JSON.stringify(items));
     renderGitHubPRs(items);
   } catch (err) {
     if (statusEl) statusEl.textContent = "Could not load GitHub activity right now.";
-    console.error(err);
+    console.error("Error loading GitHub PRs:", err);
   }
 }
 
