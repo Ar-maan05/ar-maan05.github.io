@@ -23,8 +23,9 @@
     </a>
     <ul class="nav-links">
       <li><a href="#home" class="nav-link nav-link--active" data-nav="home">_Home</a></li>
-      <li><a href="#about" class="nav-link" data-nav="about">_About</a></li>
+      <li><a href="#github" class="nav-link" data-nav="github">_GitHub</a></li>
       <li><a href="#projects" class="nav-link" data-nav="projects">_Projects</a></li>
+      <li><a href="#about" class="nav-link" data-nav="about">_About</a></li>
       <li><a href="#contact" class="nav-link" data-nav="contact">_Contact</a></li>
     </ul>
     <button class="nav-icon-btn" id="menuToggle" aria-label="Toggle menu" aria-expanded="false">
@@ -117,291 +118,64 @@
       </div>
     </section>
 
-    <section id="about" class="section">
-      <p class="label-mono section-eyebrow">// 01 · ABOUT</p>
-      <h2 class="headline-lg">
-        <span class="text-gradient">System.out.println</span>("Hello, World");
-      </h2>
 
-      <div class="about-grid">
-        <div class="about-main">
-          <div class="glass-panel panel">
-            <p class="body-lg">
-              I'm a sophomore at Worcester Polytechnic Institute aiming for a 4-year
-              accelerated BS/MS in Computer Science and Artificial Intelligence. I'm running
-              multiple courses ahead of pace with a 4.0 GPA across math, theory, and
-              systems coursework.
-            </p>
-            <p class="body-md muted">
-              I started coding young, building browser games as a kid before
-              pivoting toward lower-level work: C, C++, Rust, assembly, and systems
-              programming. These days I contribute upstream to systems programming and AI tools
-              like CPython, the MCP SDK, and Lightpanda, and teach on the side, both as a Peer Learning
-              Assistant for the CS department and as a Community Advisor for WPI's Office of
-              Academic Advising. Outside CS, I'm a 2nd degree black belt in
-              Shotokan Karate with over a decade of instructing experience and
-              a few medals to show for it.
-            </p>
-          </div>
+    <!-- ============= OPEN SOURCE / GITHUB ============= -->
+    <section id="github" class="section">
+      <p class="label-mono section-eyebrow">// 01 · OPEN SOURCE</p>
+      <h2 class="headline-lg"><span class="text-gradient">Open Source</span> Work</h2>
+      <p class="body-lg muted section-intro">
+        Production contributions to systems programming and AI infrastructure, plus a
+        published package. Pull requests are pulled live from GitHub.
+      </p>
 
-          <div class="subsection">
-            <header class="subsection-header">
-              <span class="material-symbols-outlined text-primary">school</span>
-              <h3 class="headline-md">Education</h3>
-            </header>
-            <div class="glass-panel panel education-row">
-              <div>
-                <h4 class="headline-sm">Worcester Polytechnic Institute</h4>
-                <p class="text-primary body-md">Combined BS/MS, Computer Science + Artificial Intelligence</p>
-                <p class="body-sm muted">GPA 4.0 · Dean's List · 4-year accelerated track</p>
-              </div>
-              <div class="date-pill">
-                <span class="material-symbols-outlined">calendar_today</span>
-                <span class="label-mono">Expected May 2029</span>
-              </div>
-            </div>
-            <div class="glass-panel panel education-row">
-              <div>
-                <h4 class="headline-sm">Carmel Junior College · Jamshedpur, India</h4>
-                <p class="text-primary body-md">High School Diploma</p>
-                <p class="body-sm muted">97% (Unweighted) · Valedictorian, Class of 2025</p>
-              </div>
-              <div class="date-pill">
-                <span class="material-symbols-outlined">calendar_today</span>
-                <span class="label-mono">2010 to 2025</span>
-              </div>
-            </div>
+      <p class="label-mono muted gh-subhead gh-subhead--tertiary">// FEATURED_PACKAGE</p>
+      <article class="glass-panel project-card project-card--tertiary gh-featured">
+        <div class="project-card-glow" aria-hidden="true"></div>
+        <header class="project-card-header">
+          <div class="project-icon">
+            <span class="material-symbols-outlined">package_2</span>
           </div>
-
-          <div class="subsection">
-            <header class="subsection-header">
-              <span class="material-symbols-outlined text-secondary">work</span>
-              <h3 class="headline-md">Experience</h3>
-            </header>
-            <div class="glass-panel panel education-row">
-              <div>
-                <h4 class="headline-sm">Peer Learning Assistant</h4>
-                <p class="text-primary body-md">Computer Science Department, WPI</p>
-                <p class="body-sm muted">Support students across intro CS courses: Intro to Program Design, OO Program Design, Systems Programming, and Machine Organization &amp; Assembly.</p>
-              </div>
-              <div class="date-pill">
-                <span class="material-symbols-outlined">calendar_today</span>
-                <span class="label-mono">2026 to Present</span>
-              </div>
-            </div>
-            <div class="glass-panel panel education-row">
-              <div>
-                <h4 class="headline-sm">Community Advisor</h4>
-                <p class="text-primary body-md">Office of Academic Advising, WPI</p>
-                <p class="body-sm muted">Mentor students, host community programming, and serve as a frontline academic and personal resource within campus residences.</p>
-              </div>
-              <div class="date-pill">
-                <span class="material-symbols-outlined">calendar_today</span>
-                <span class="label-mono">2026 to Present</span>
-              </div>
-            </div>
-            <div class="glass-panel panel education-row">
-              <div>
-                <h4 class="headline-sm">Karate Instructor / Senior Student</h4>
-                <p class="text-primary body-md">Shotokan Academy India</p>
-                <p class="body-sm muted">2nd Degree Black Belt (Ni Dan). 2× gold medalist at Nationals; silver and bronze medalist at Internationals. Over a decade instructing students of varying ages and skill levels through structured, incremental modules.</p>
-              </div>
-              <div class="date-pill">
-                <span class="material-symbols-outlined">calendar_today</span>
-                <span class="label-mono">2014 to 2025</span>
-              </div>
-            </div>
+          <div class="project-card-links">
+            <a href="https://pypi.org/project/mcp-persist" target="_blank" rel="noopener noreferrer" aria-label="PyPI"><span class="material-symbols-outlined">open_in_new</span></a>
+            <a href="https://github.com/Ar-maan05/mcp-persist" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><span class="material-symbols-outlined">code</span></a>
           </div>
-
-          <div class="subsection">
-            <header class="subsection-header">
-              <span class="material-symbols-outlined text-primary">emoji_events</span>
-              <h3 class="headline-md">Awards &amp; Honors</h3>
-            </header>
-            <div class="interests-grid">
-              <div class="glass-panel panel interest-card">
-                <span class="material-symbols-outlined text-tertiary">sports_martial_arts</span>
-                <div>
-                  <h4 class="label-mono interest-tag">BLACK_BELT_NI_DAN</h4>
-                  <p class="body-sm muted">Ni Dan (2nd Degree Black Belt), Shotokan Karate India. Federation recognized by the International Olympic Committee.</p>
-                </div>
-              </div>
-              <div class="glass-panel panel interest-card">
-                <span class="material-symbols-outlined text-primary">military_tech</span>
-                <div>
-                  <h4 class="label-mono interest-tag">KARATE_NATIONALS</h4>
-                  <p class="body-sm muted">2× Gold medalist, Shotokan Karate (Nationals).</p>
-                </div>
-              </div>
-              <div class="glass-panel panel interest-card">
-                <span class="material-symbols-outlined text-secondary">public</span>
-                <div>
-                  <h4 class="label-mono interest-tag">KARATE_INTERNATIONALS</h4>
-                  <p class="body-sm muted">Silver and bronze medalist, Shotokan Karate (Internationals).</p>
-                </div>
-              </div>
-              <div class="glass-panel panel interest-card">
-                <span class="material-symbols-outlined text-primary">workspace_premium</span>
-                <div>
-                  <h4 class="label-mono interest-tag">DEAN'S_LIST</h4>
-                  <p class="body-sm muted">Worcester Polytechnic Institute (Fall 2025).</p>
-                </div>
-              </div>
-              <div class="glass-panel panel interest-card">
-                <span class="material-symbols-outlined text-secondary">school</span>
-                <div>
-                  <h4 class="label-mono interest-tag">VALEDICTORIAN</h4>
-                  <p class="body-sm muted">Carmel Junior College, Class of 2025.</p>
-                </div>
-              </div>
-              <div class="glass-panel panel interest-card">
-                <span class="material-symbols-outlined text-primary">star</span>
-                <div>
-                  <h4 class="label-mono interest-tag">MOST_OUTSTANDING_STUDENT</h4>
-                  <p class="body-sm muted">Awarded for excellence in academics, leadership, and extracurriculars.</p>
-                </div>
-              </div>
-              <div class="glass-panel panel interest-card">
-                <span class="material-symbols-outlined text-secondary">computer</span>
-                <div>
-                  <h4 class="label-mono interest-tag">COMPUTER_CHAMP</h4>
-                  <p class="body-sm muted">Awarded for academic excellence in computing.</p>
-                </div>
-              </div>
-              <div class="glass-panel panel interest-card">
-                <span class="material-symbols-outlined text-primary">code</span>
-                <div>
-                  <h4 class="label-mono interest-tag">JAVA_COMPETITION</h4>
-                  <p class="body-sm muted">2nd Place, Interschool Java Coding Competition (2023, 2024).</p>
-                </div>
-              </div>
-              <div class="glass-panel panel interest-card">
-                <span class="material-symbols-outlined text-secondary">edit_note</span>
-                <div>
-                  <h4 class="label-mono interest-tag">EDITOR_OF_BATCH</h4>
-                  <p class="body-sm muted">Recognized for excellence in academic writing and editorial leadership.</p>
-                </div>
-              </div>
-              <div class="glass-panel panel interest-card">
-                <span class="material-symbols-outlined text-primary">verified_user</span>
-                <div>
-                  <h4 class="label-mono interest-tag">STUDENT_CONDUCT</h4>
-                  <p class="body-sm muted">Recognized as Most Responsible and Most Disciplined Student.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="subsection">
-            <header class="subsection-header">
-              <span class="material-symbols-outlined text-secondary">groups</span>
-              <h3 class="headline-md">Leadership &amp; Service</h3>
-            </header>
-            <div class="glass-panel panel education-row">
-              <div>
-                <h4 class="headline-sm">Student Council Secretary</h4>
-                <p class="text-primary body-md">Carmel Junior College</p>
-                <p class="body-sm muted">Represented the student body to administration and managed large-scale logistics for interschool fests and multi-departmental events.</p>
-              </div>
-              <div class="date-pill">
-                <span class="material-symbols-outlined">calendar_today</span>
-                <span class="label-mono">2023 to 2025</span>
-              </div>
-            </div>
-            <div class="glass-panel panel education-row">
-              <div>
-                <h4 class="headline-sm">Secretary, Legal Literacy &amp; Literary Clubs</h4>
-                <p class="text-primary body-md">Carmel Junior College</p>
-                <p class="body-sm muted">Facilitated discussions on civic awareness and organized academic writing-focused events; handled administrative tasks demanding discretion and reliability.</p>
-              </div>
-              <div class="date-pill">
-                <span class="material-symbols-outlined">calendar_today</span>
-                <span class="label-mono">2023 to 2025</span>
-              </div>
-            </div>
-            <div class="glass-panel panel education-row">
-              <div>
-                <h4 class="headline-sm">Organizer, Carmel Summit</h4>
-                <p class="text-primary body-md">Carmel Junior College</p>
-                <p class="body-sm muted">Coordinated logistics and scheduling for a large-scale academic event with diverse student groups.</p>
-              </div>
-              <div class="date-pill">
-                <span class="material-symbols-outlined">calendar_today</span>
-                <span class="label-mono">2023 to 2025</span>
-              </div>
-            </div>
-            <div class="glass-panel panel education-row">
-              <div>
-                <h4 class="headline-sm">Financial Literacy Mentor</h4>
-                <p class="text-primary body-md">Community Service Initiative</p>
-                <p class="body-sm muted">Five-year service initiative educating underprivileged community members on banking access and financial tools.</p>
-              </div>
-              <div class="date-pill">
-                <span class="material-symbols-outlined">calendar_today</span>
-                <span class="label-mono">5-year commitment</span>
-              </div>
-            </div>
-          </div>
+        </header>
+        <p class="label-mono muted gh-repo">Ar-maan05 / mcp-persist</p>
+        <h3 class="project-title">mcp-persist</h3>
+        <p class="body-md muted project-description">
+          Production-grade persistence backends for the MCP Python SDK's EventStore
+          interface: Redis, SQLite, and PostgreSQL backends for SSE stream resumability
+          across multi-worker deployments. 60+ async tests, CI across Python 3.10–3.13.
+        </p>
+        <div class="tag-cloud">
+          <span class="tech-tag tech-tag--tertiary">Python</span>
+          <span class="tech-tag tech-tag--tertiary">Redis</span>
+          <span class="tech-tag tech-tag--tertiary">SQLite</span>
+          <span class="tech-tag tech-tag--tertiary">PostgreSQL</span>
+          <span class="tech-tag tech-tag--tertiary">MCP</span>
+          <span class="tech-tag tech-tag--tertiary">PyPI Package</span>
         </div>
+        <div class="gh-cta-row">
+          <a href="https://pypi.org/project/mcp-persist" target="_blank" rel="noopener noreferrer" class="btn btn--primary btn--sm">
+            PyPI
+            <span class="material-symbols-outlined">open_in_new</span>
+          </a>
+          <a href="https://github.com/Ar-maan05/mcp-persist" target="_blank" rel="noopener noreferrer" class="btn btn--ghost btn--sm">
+            GitHub
+            <span class="material-symbols-outlined">code</span>
+          </a>
+        </div>
+      </article>
 
-        <aside class="about-sidebar">
-          <header class="subsection-header">
-            <span class="material-symbols-outlined text-primary">code_blocks</span>
-            <h3 class="headline-md">Technical Toolkit</h3>
-          </header>
+      <p class="label-mono muted gh-subhead gh-subhead--secondary">// PULL_REQUESTS</p>
+      <div id="github-status" class="label-mono muted gh-status">Fetching pull requests…</div>
+      <div id="github-grid" class="projects-grid gh-grid"></div>
 
-          <div class="glass-panel panel toolkit-card">
-            <h4 class="toolkit-title label-mono">
-              <span class="material-symbols-outlined">terminal</span>
-              LANGUAGES
-            </h4>
-            <div class="tag-cloud">
-              <span class="tech-tag">Java</span>
-              <span class="tech-tag">Python</span>
-              <span class="tech-tag">C / C++</span>
-              <span class="tech-tag">Rust</span>
-              <span class="tech-tag">Zig</span>
-              <span class="tech-tag">x86 ASM</span>
-              <span class="tech-tag">JavaScript</span>
-              <span class="tech-tag">Racket</span>
-              <span class="tech-tag">HTML / CSS</span>
-            </div>
-          </div>
-
-          <div class="glass-panel panel toolkit-card">
-            <h4 class="toolkit-title label-mono toolkit-title--secondary">
-              <span class="material-symbols-outlined">hub</span>
-              CONCEPTS_&_DOMAINS
-            </h4>
-            <div class="tag-cloud">
-              <span class="tech-tag">Systems Programming</span>
-              <span class="tech-tag">Language Runtimes</span>
-              <span class="tech-tag">AI Agents &amp; Tooling</span>
-              <span class="tech-tag">Browser Engines</span>
-              <span class="tech-tag">Machine Organization &amp; Assembly</span>
-              <span class="tech-tag">Object-Oriented Design</span>
-              <span class="tech-tag">Linear Algebra</span>
-              <span class="tech-tag">Applied Probability</span>
-              <span class="tech-tag">Open Source</span>
-            </div>
-          </div>
-
-          <div class="glass-panel panel toolkit-card">
-            <h4 class="toolkit-title label-mono toolkit-title--tertiary">
-              <span class="material-symbols-outlined">build</span>
-              TOOLS_&_DEVOPS
-            </h4>
-            <div class="tag-cloud">
-              <span class="tech-tag">Git</span>
-              <span class="tech-tag">GDB</span>
-              <span class="tech-tag">Linux</span>
-              <span class="tech-tag">Bash</span>
-              <span class="tech-tag">Valgrind</span>
-              <span class="tech-tag">IntelliJ IDEA</span>
-              <span class="tech-tag">VS Code</span>
-            </div>
-          </div>
-        </aside>
+      <div class="see-more-row">
+        <a href="https://github.com/Ar-maan05" target="_blank" rel="noopener noreferrer" class="btn btn--ghost">
+          View GitHub Profile
+          <span class="material-symbols-outlined">arrow_outward</span>
+        </a>
       </div>
     </section>
 
@@ -563,11 +337,264 @@
       </div>
     </section>
 
+
+    <section id="about" class="section">
+      <p class="label-mono section-eyebrow">// 03 · ABOUT</p>
+      <h2 class="headline-lg">
+        <span class="text-gradient">System.out.println</span>("Hello, World");
+      </h2>
+
+      <div class="about-grid">
+        <div class="about-main">
+          <div class="glass-panel panel">
+            <p class="body-lg">
+              I'm a sophomore at Worcester Polytechnic Institute aiming for a 4-year
+              accelerated BS/MS in Computer Science and Artificial Intelligence. I'm running
+              multiple courses ahead of pace with a 4.0 GPA across math, theory, and
+              systems coursework.
+            </p>
+            <p class="body-md muted">
+              I started coding young, building browser games as a kid before
+              pivoting toward lower-level work: C, C++, Rust, assembly, and systems
+              programming. These days I contribute upstream to systems programming and AI tools
+              like CPython, the MCP SDK, and Lightpanda, and teach on the side, both as a Peer Learning
+              Assistant for the CS department and as a Community Advisor for WPI's Office of
+              Academic Advising. Outside CS, I'm a 2nd degree black belt in
+              Shotokan Karate with over a decade of instructing experience and
+              a few medals to show for it.
+            </p>
+          </div>
+
+          <div class="subsection">
+            <header class="subsection-header">
+              <span class="material-symbols-outlined text-primary">school</span>
+              <h3 class="headline-md">Education</h3>
+            </header>
+            <div class="glass-panel panel education-row">
+              <div>
+                <h4 class="headline-sm">Worcester Polytechnic Institute</h4>
+                <p class="text-primary body-md">Combined BS/MS, Computer Science + Artificial Intelligence</p>
+                <p class="body-sm muted">GPA 4.0 · Dean's List · 4-year accelerated track</p>
+              </div>
+              <div class="date-pill">
+                <span class="material-symbols-outlined">calendar_today</span>
+                <span class="label-mono">Expected May 2029</span>
+              </div>
+            </div>
+            <div class="glass-panel panel education-row">
+              <div>
+                <h4 class="headline-sm">Carmel Junior College · Jamshedpur, India</h4>
+                <p class="text-primary body-md">High School Diploma</p>
+                <p class="body-sm muted">97% (Unweighted) · Valedictorian, Class of 2025</p>
+              </div>
+              <div class="date-pill">
+                <span class="material-symbols-outlined">calendar_today</span>
+                <span class="label-mono">2010 to 2025</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="subsection">
+            <header class="subsection-header">
+              <span class="material-symbols-outlined text-secondary">work</span>
+              <h3 class="headline-md">Experience</h3>
+            </header>
+            <div class="glass-panel panel education-row">
+              <div>
+                <h4 class="headline-sm">Peer Learning Assistant</h4>
+                <p class="text-primary body-md">Computer Science Department, WPI</p>
+                <p class="body-sm muted">Support students across intro CS courses: Intro to Program Design, OO Program Design, Systems Programming, and Machine Organization &amp; Assembly.</p>
+              </div>
+              <div class="date-pill">
+                <span class="material-symbols-outlined">calendar_today</span>
+                <span class="label-mono">2026 to Present</span>
+              </div>
+            </div>
+            <div class="glass-panel panel education-row">
+              <div>
+                <h4 class="headline-sm">Community Advisor</h4>
+                <p class="text-primary body-md">Office of Academic Advising, WPI</p>
+                <p class="body-sm muted">Mentor students, host community programming, and serve as a frontline academic and personal resource within campus residences.</p>
+              </div>
+              <div class="date-pill">
+                <span class="material-symbols-outlined">calendar_today</span>
+                <span class="label-mono">2026 to Present</span>
+              </div>
+            </div>
+            <div class="glass-panel panel education-row">
+              <div>
+                <h4 class="headline-sm">Karate Instructor / Senior Student</h4>
+                <p class="text-primary body-md">Shotokan Academy India</p>
+                <p class="body-sm muted">2nd Degree Black Belt (Ni Dan). 2× gold medalist at Nationals; silver and bronze medalist at Internationals. Over a decade instructing students of varying ages and skill levels through structured, incremental modules.</p>
+              </div>
+              <div class="date-pill">
+                <span class="material-symbols-outlined">calendar_today</span>
+                <span class="label-mono">2014 to 2025</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="subsection">
+            <header class="subsection-header">
+              <span class="material-symbols-outlined text-secondary">groups</span>
+              <h3 class="headline-md">Leadership &amp; Service</h3>
+            </header>
+            <div class="leadership-grid">
+              <div class="glass-panel panel leadership-item">
+                <h4 class="headline-sm">Student Council Secretary</h4>
+                <p class="label-mono muted leadership-meta">Carmel Junior College · 2023–2025</p>
+                <p class="body-sm muted">Represented the student body and ran logistics for interschool fests and multi-departmental events.</p>
+              </div>
+              <div class="glass-panel panel leadership-item">
+                <h4 class="headline-sm">Secretary, Legal Literacy &amp; Literary Clubs</h4>
+                <p class="label-mono muted leadership-meta">Carmel Junior College · 2023–2025</p>
+                <p class="body-sm muted">Led civic-awareness discussions and academic writing events.</p>
+              </div>
+              <div class="glass-panel panel leadership-item">
+                <h4 class="headline-sm">Organizer, Carmel Summit</h4>
+                <p class="label-mono muted leadership-meta">Carmel Junior College · 2023–2025</p>
+                <p class="body-sm muted">Coordinated logistics and scheduling for a large-scale academic event.</p>
+              </div>
+              <div class="glass-panel panel leadership-item">
+                <h4 class="headline-sm">Financial Literacy Mentor</h4>
+                <p class="label-mono muted leadership-meta">Community Service · 5 years</p>
+                <p class="body-sm muted">Taught underprivileged community members about banking access and financial tools.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <aside class="about-sidebar">
+          <header class="subsection-header">
+            <span class="material-symbols-outlined text-primary">code_blocks</span>
+            <h3 class="headline-md">Technical Toolkit</h3>
+          </header>
+
+          <div class="glass-panel panel toolkit-card">
+            <h4 class="toolkit-title label-mono">
+              <span class="material-symbols-outlined">terminal</span>
+              LANGUAGES
+            </h4>
+            <div class="tag-cloud">
+              <span class="tech-tag">Java</span>
+              <span class="tech-tag">Python</span>
+              <span class="tech-tag">C / C++</span>
+              <span class="tech-tag">Rust</span>
+              <span class="tech-tag">Zig</span>
+              <span class="tech-tag">x86 ASM</span>
+              <span class="tech-tag">JavaScript</span>
+              <span class="tech-tag">HTML / CSS</span>
+            </div>
+          </div>
+
+          <div class="glass-panel panel toolkit-card">
+            <h4 class="toolkit-title label-mono toolkit-title--secondary">
+              <span class="material-symbols-outlined">hub</span>
+              CONCEPTS_&_DOMAINS
+            </h4>
+            <div class="tag-cloud">
+              <span class="tech-tag">Systems Programming</span>
+              <span class="tech-tag">Language Runtimes</span>
+              <span class="tech-tag">AI Agents &amp; Tooling</span>
+              <span class="tech-tag">Browser Engines</span>
+              <span class="tech-tag">Machine Organization &amp; Assembly</span>
+              <span class="tech-tag">Object-Oriented Design</span>
+              <span class="tech-tag">Linear Algebra</span>
+              <span class="tech-tag">Applied Probability</span>
+              <span class="tech-tag">Open Source</span>
+            </div>
+          </div>
+
+          <div class="glass-panel panel toolkit-card">
+            <h4 class="toolkit-title label-mono toolkit-title--tertiary">
+              <span class="material-symbols-outlined">build</span>
+              TOOLS_&_DEVOPS
+            </h4>
+            <div class="tag-cloud">
+              <span class="tech-tag">Git</span>
+              <span class="tech-tag">GDB</span>
+              <span class="tech-tag">Linux</span>
+              <span class="tech-tag">Bash</span>
+              <span class="tech-tag">Valgrind</span>
+              <span class="tech-tag">IntelliJ IDEA</span>
+              <span class="tech-tag">VS Code</span>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+
+    <!-- ============= AWARDS & HONORS ============= -->
+    <section id="awards" class="section">
+      <p class="label-mono section-eyebrow">// 04 · AWARDS & HONORS</p>
+      <h2 class="headline-lg"><span class="text-gradient">Recognition</span></h2>
+
+      <div class="interests-grid awards-grid">
+        <div class="glass-panel panel interest-card">
+          <span class="material-symbols-outlined text-primary">workspace_premium</span>
+          <div>
+            <h4 class="label-mono interest-tag">DEAN'S_LIST</h4>
+            <p class="body-sm muted">WPI, Fall 2025.</p>
+          </div>
+        </div>
+        <div class="glass-panel panel interest-card">
+          <span class="material-symbols-outlined text-secondary">school</span>
+          <div>
+            <h4 class="label-mono interest-tag">VALEDICTORIAN</h4>
+            <p class="body-sm muted">Carmel Junior College, 2025.</p>
+          </div>
+        </div>
+        <div class="glass-panel panel interest-card">
+          <span class="material-symbols-outlined text-primary">star</span>
+          <div>
+            <h4 class="label-mono interest-tag">MOST_OUTSTANDING_STUDENT</h4>
+            <p class="body-sm muted">Academics, leadership, and extracurriculars.</p>
+          </div>
+        </div>
+        <div class="glass-panel panel interest-card">
+          <span class="material-symbols-outlined text-tertiary">sports_martial_arts</span>
+          <div>
+            <h4 class="label-mono interest-tag">BLACK_BELT_NI_DAN</h4>
+            <p class="body-sm muted">2nd Degree Black Belt, Shotokan Karate India (IOC-recognized federation).</p>
+          </div>
+        </div>
+        <div class="glass-panel panel interest-card">
+          <span class="material-symbols-outlined text-primary">military_tech</span>
+          <div>
+            <h4 class="label-mono interest-tag">KARATE_NATIONALS</h4>
+            <p class="body-sm muted">2× Gold medalist, Nationals.</p>
+          </div>
+        </div>
+        <div class="glass-panel panel interest-card">
+          <span class="material-symbols-outlined text-secondary">public</span>
+          <div>
+            <h4 class="label-mono interest-tag">KARATE_INTERNATIONALS</h4>
+            <p class="body-sm muted">Silver &amp; bronze medalist, Internationals.</p>
+          </div>
+        </div>
+        <div class="glass-panel panel interest-card">
+          <span class="material-symbols-outlined text-secondary">computer</span>
+          <div>
+            <h4 class="label-mono interest-tag">COMPUTER_CHAMP</h4>
+            <p class="body-sm muted">Academic excellence in computing.</p>
+          </div>
+        </div>
+        <div class="glass-panel panel interest-card">
+          <span class="material-symbols-outlined text-primary">code</span>
+          <div>
+            <h4 class="label-mono interest-tag">JAVA_COMPETITION</h4>
+            <p class="body-sm muted">2nd Place, Interschool Java (2023, 2024).</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- ============= CONTACT ============= -->
     <section id="contact" class="section">
       <div class="contact-grid">
         <div class="contact-intro">
-          <p class="label-mono section-eyebrow">// 03 · CONTACT</p>
+          <p class="label-mono section-eyebrow">// 05 · CONTACT</p>
           <h2 class="headline-xl">
             <span class="text-gradient">initiate</span><br />_connection
           </h2>
@@ -607,8 +634,6 @@
             </a>
           </div>
         </div>
-
-        
       </div>
     </section>
   </main>

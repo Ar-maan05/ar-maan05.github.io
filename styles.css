@@ -496,6 +496,36 @@ main { padding-top: 96px; }
   margin-bottom: 6px;
 }
 
+.awards-grid { margin-top: 32px; }
+@media (min-width: 1000px) {
+  .awards-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+.leadership-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+.leadership-item {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.leadership-item:hover { border-color: rgba(0, 209, 255, 0.3); }
+.leadership-meta { color: var(--outline); }
+
+/* Experience + Leadership side by side on wide screens */
+.about-columns {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 56px;
+  align-items: start;
+}
+@media (min-width: 1100px) {
+  .about-columns { grid-template-columns: 1fr 1fr; gap: 32px; }
+}
+
 /* Toolkit */
 .toolkit-card { padding: 24px; }
 .toolkit-title {
@@ -608,6 +638,28 @@ main { padding-top: 96px; }
   display: flex;
   justify-content: center;
 }
+
+.btn--sm { padding: 10px 18px; font-size: 12px; }
+.btn--sm .material-symbols-outlined { font-size: 16px; }
+
+/*
+   GitHub / Open Source section
+    */
+.gh-subhead { margin-bottom: 16px; }
+.gh-subhead--secondary { color: var(--secondary); }
+.gh-subhead--tertiary { color: var(--tertiary); }
+
+.gh-featured { max-width: 480px; margin-bottom: 40px; }
+.gh-repo { font-size: 11px; }
+.gh-cta-row { display: flex; gap: 12px; margin-top: 4px; }
+
+.gh-status { padding: 8px 0 24px; }
+.gh-grid { margin-top: 0; }
+
+/* Live PR cards: push status tag + link to the bottom so cards align */
+.gh-card-date { font-size: 11px; }
+.gh-card-tags { margin-top: auto; padding-top: 16px; }
+.gh-card-link { margin-top: 12px; align-self: flex-start; }
 
 /* 
    Contact

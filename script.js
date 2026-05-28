@@ -73,3 +73,111 @@ form?.addEventListener("submit", (e) => {
   status.dataset.state = "success";
   form.reset();
 });
+
+// GitHub PR feed — fetch authored PRs and render a status-badged card per PR.
+// Results are cached for the tab session so refreshes don't burn the
+// unauthenticated Search API rate limit (10 req/min per IP).
+const GITHUB_USER = "Ar-maan05";
+const GITHUB_QUERY = `author:${GITHUB_USER}+type:pr`;
+const GITHUB_CACHE_KEY = "gh-prs:" + GITHUB_QUERY;
+const GITHUB_MAX = 9;
+// Shown as a dedicated featured card already, so skip it in the live feed.
+const GITHUB_SKIP_REPOS = new Set([`${GITHUB_USER}/mcp-persist`]);
+
+function escapeHtml(value) {
+  const div = document.createElement("div");
+  div.textContent = value;
+  return div.innerHTML;
+}
+
+function renderGitHubPRs(items) {
+  const statusEl = document.getElementById("github-status");
+  const grid = document.getElementById("github-grid");
+  if (!grid) return;
+
+  const variants = ["primary", "secondary", "tertiary"];
+  const prs = items
+    .filter((pr) => !GITHUB_SKIP_REPOS.has(pr.repository_url.replace("https://api.github.com/repos/", "")))
+    .slice(0, GITHUB_MAX);
+
+  if (prs.length === 0) {
+    if (statusEl) statusEl.textContent = "No public pull requests yet.";
+    return;
+  }
+  if (statusEl) statusEl.style.display = "none";
+
+  prs.forEach((pr, i) => {
+    const repo = pr.repository_url.replace("https://api.github.com/repos/", "");
+    const variant = variants[i % variants.length];
+
+    const isMerged = pr.pull_request?.merged_at != null;
+    const isOpen = pr.state === "open";
+    const statusLabel = isMerged ? "Merged" : isOpen ? "Open" : "Closed";
+    const statusColor = isMerged ? "secondary" : isOpen ? "primary" : "tertiary";
+    const statusIcon = isMerged ? "merge" : isOpen ? "call_merge" : "close";
+
+    const date = new Date(isMerged ? pr.pull_request.merged_at : pr.updated_at);
+    const dateStr = date.toLocaleDateString("en-US", { month: "short", year: "numeric" });
+
+    const card = document.createElement("article");
+    card.className = `glass-panel project-card project-card--${variant}`;
+    card.innerHTML = `
+      <div class="project-card-glow" aria-hidden="true"></div>
+      <header class="project-card-header">
+        <div class="project-icon">
+          <span class="material-symbols-outlined">${statusIcon}</span>
+        </div>
+        <span class="label-mono muted gh-card-date">${dateStr}</span>
+      </header>
+      <p class="label-mono muted gh-repo">${escapeHtml(repo)}</p>
+      <h3 class="project-title">${escapeHtml(pr.title)}</h3>
+      <div class="tag-cloud gh-card-tags">
+        <span class="tech-tag tech-tag--${statusColor}">${statusLabel}</span>
+      </div>
+      <a href="${encodeURI(pr.html_url)}" target="_blank" rel="noopener noreferrer" class="btn btn--ghost btn--sm gh-card-link">
+        View PR
+        <span class="material-symbols-outlined">arrow_outward</span>
+      </a>
+    `;
+    grid.appendChild(card);
+  });
+
+  // Reveal-animate the cards that were added after initial page load.
+  grid.querySelectorAll(".project-card").forEach((el) => {
+    el.classList.add("reveal");
+    revealObserver.observe(el);
+  });
+}
+
+async function loadGitHubPRs() {
+  const statusEl = document.getElementById("github-status");
+  if (!document.getElementById("github-grid")) return;
+
+  const cached = sessionStorage.getItem(GITHUB_CACHE_KEY);
+  if (cached) {
+    try {
+      renderGitHubPRs(JSON.parse(cached));
+      return;
+    } catch {
+      sessionStorage.removeItem(GITHUB_CACHE_KEY);
+    }
+  }
+
+  try {
+    const res = await fetch(
+      `https://api.github.com/search/issues?q=${GITHUB_QUERY}&sort=updated&per_page=12`,
+      { headers: { Accept: "application/vnd.github+json" } }
+    );
+    if (!res.ok) throw new Error(`GitHub API ${res.status}`);
+
+    const data = await res.json();
+    const items = data.items || [];
+    sessionStorage.setItem(GITHUB_CACHE_KEY, JSON.stringify(items));
+    renderGitHubPRs(items);
+  } catch (err) {
+    if (statusEl) statusEl.textContent = "Could not load GitHub activity right now.";
+    console.error(err);
+  }
+}
+
+loadGitHubPRs();
