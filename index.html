@@ -146,13 +146,22 @@
         </header>
         <p class="label-mono muted gh-repo">Ar-maan05 / mcp-persist</p>
         <h3 class="project-title">mcp-persist</h3>
+        <p class="label-mono mcp-downloads" id="mcp-downloads" hidden>
+          <span class="material-symbols-outlined">download</span>
+          <span class="mcp-downloads-num" id="mcp-download-count"></span>
+          <span class="muted">downloads on PyPI</span>
+        </p>
         <p class="body-md muted project-description">
-          Production-grade persistence backends for the MCP Python SDK's EventStore
-          interface: Redis, SQLite, and PostgreSQL backends for SSE stream resumability
-          across multi-worker deployments. 60+ async tests, CI across Python 3.10–3.13.
+          Drop-in durable EventStore backends (SQLite, Redis, PostgreSQL) that keep MCP
+          SSE streams resumable across process restarts and multi-worker deployments. A
+          two-line <code>with_persistence()</code> helper wires durable persistence into
+          any FastMCP app, and a standalone proxy adds resumability in front of any MCP
+          server (even non-Python ones) without touching it. 300+ async tests, CI across
+          Python 3.10–3.13.
         </p>
         <div class="tag-cloud">
           <span class="tech-tag tech-tag--tertiary">Python</span>
+          <span class="tech-tag tech-tag--tertiary">FastMCP</span>
           <span class="tech-tag tech-tag--tertiary">Redis</span>
           <span class="tech-tag tech-tag--tertiary">SQLite</span>
           <span class="tech-tag tech-tag--tertiary">PostgreSQL</span>

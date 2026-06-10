@@ -291,3 +291,57 @@ async function loadGitHubPRs() {
 }
 
 loadGitHubPRs();
+
+// Live PyPI download count for mcp-persist, parsed from the pepy.tech badge
+// (the same total-downloads source the README uses). Cached per session and
+// hidden entirely if the fetch or parse fails, so nothing broken ever shows.
+const MCP_DOWNLOADS_BADGE = "https://static.pepy.tech/badge/mcp-persist";
+const MCP_DOWNLOADS_CACHE_KEY = "mcp-persist:downloads";
+
+function showMcpDownloads(count) {
+  const wrap = document.getElementById("mcp-downloads");
+  const num = document.getElementById("mcp-download-count");
+  if (!wrap || !num || !count) return;
+  num.textContent = count;
+  wrap.hidden = false;
+}
+
+// The badge is a shields-style SVG; the right-hand "message" is the last <text>
+// element, e.g. "7k". Returns a trimmed count string, or "" if it can't be read.
+function parseDownloadsFromBadge(svgText) {
+  try {
+    const doc = new DOMParser().parseFromString(svgText, "image/svg+xml");
+    const texts = doc.querySelectorAll("text");
+    if (!texts.length) return "";
+    const value = (texts[texts.length - 1].textContent || "").trim();
+    // Guard against grabbing the "downloads" label or an error page.
+    if (!value || /^downloads$/i.test(value) || !/[0-9]/.test(value)) return "";
+    return value;
+  } catch (e) {
+    return "";
+  }
+}
+
+async function loadMcpDownloads() {
+  if (!document.getElementById("mcp-downloads")) return;
+
+  const cached = safeGetSessionStorage(MCP_DOWNLOADS_CACHE_KEY);
+  if (cached) {
+    showMcpDownloads(cached);
+    return;
+  }
+
+  try {
+    const res = await fetchWithTimeout(MCP_DOWNLOADS_BADGE, { timeout: 6000 });
+    if (!res.ok) throw new Error("pepy badge " + res.status);
+    const count = parseDownloadsFromBadge(await res.text());
+    if (!count) throw new Error("could not parse download count");
+    safeSetSessionStorage(MCP_DOWNLOADS_CACHE_KEY, count);
+    showMcpDownloads(count);
+  } catch (err) {
+    // Leave the line hidden; the tile reads fine without it.
+    console.error("Error loading mcp-persist downloads:", err);
+  }
+}
+
+loadMcpDownloads();

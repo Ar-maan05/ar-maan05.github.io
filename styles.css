@@ -653,6 +653,18 @@ main { padding-top: 96px; }
 .gh-repo { font-size: 11px; }
 .gh-cta-row { display: flex; gap: 12px; margin-top: 4px; }
 
+/* Live PyPI download count on the featured package tile */
+.mcp-downloads {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  margin: -4px 0 2px;
+}
+.mcp-downloads[hidden] { display: none; }
+.mcp-downloads .material-symbols-outlined { font-size: 16px; color: var(--tertiary); }
+.mcp-downloads-num { color: var(--tertiary); font-weight: 700; }
+
 .gh-status { padding: 8px 0 24px; }
 .gh-grid { margin-top: 0; }
 
