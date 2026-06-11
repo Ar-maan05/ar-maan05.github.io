@@ -1,347 +1,554 @@
-// Global error debugger: displays any load-time errors directly in the UI
-window.onerror = function(message, source, lineno, colno, error) {
-  const statusEl = document.getElementById("github-status");
-  if (statusEl) {
-    statusEl.innerHTML = `<span style="color: #ff6b6b; font-family: monospace;">[JS Error] ${message} at line ${lineno}</span>`;
-    statusEl.style.display = "block";
-  }
-  return false;
-};
+/* Core script: nav, scroll reveals, diff tab switcher, and same-origin hydration
+   of the live receipts (stats.json + activity.json + diffs.json).
+   Never renders an error string; never drops below baked floors. */
+(function () {
+  "use strict";
+  var doc = document;
+  var reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-// Footer year
-const footerYear = document.getElementById("footerYear");
-if (footerYear) {
-  footerYear.textContent = new Date().getFullYear();
-}
-
-// Mobile nav toggle
-const nav = document.querySelector(".nav");
-const menuToggle = document.getElementById("menuToggle");
-if (menuToggle && nav) {
-  menuToggle.addEventListener("click", function() {
-    const open = nav.classList.toggle("is-open");
-    menuToggle.setAttribute("aria-expanded", String(open));
-  });
-}
-
-// Close mobile nav when a link is clicked
-document.querySelectorAll(".nav-link").forEach(function(link) {
-  link.addEventListener("click", function() {
-    if (nav && nav.classList.contains("is-open")) {
-      nav.classList.remove("is-open");
-      if (menuToggle) {
-        menuToggle.setAttribute("aria-expanded", "false");
-      }
-    }
-  });
-});
-
-// Scroll-spy: highlight nav link for the section in view
-const sections = document.querySelectorAll("section[id]");
-const navLinks = document.querySelectorAll(".nav-link[data-nav]");
-
-if (typeof IntersectionObserver !== "undefined") {
-  const spy = new IntersectionObserver(
-    function(entries) {
-      entries.forEach(function(entry) {
-        if (entry.isIntersecting) {
-          const id = entry.target.id;
-          navLinks.forEach(function(link) {
-            link.classList.toggle("nav-link--active", link.dataset.nav === id);
-          });
-        }
-      });
-    },
-    { rootMargin: "-40% 0px -55% 0px", threshold: 0 }
-  );
-  sections.forEach(function(s) { spy.observe(s); });
-}
-
-// Reveal-on-scroll: add .reveal to anything that should animate in
-const revealTargets = document.querySelectorAll(
-  ".hero-card, .panel, .project-card, .toolkit-card, .interest-card, .contact-form, .quick-stats"
-);
-revealTargets.forEach(function(el) { el.classList.add("reveal"); });
-
-let revealObserver = null;
-if (typeof IntersectionObserver !== "undefined") {
-  revealObserver = new IntersectionObserver(
-    function(entries) {
-      entries.forEach(function(entry) {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("is-visible");
-          revealObserver.unobserve(entry.target);
-        }
-      });
-    },
-    { threshold: 0.1 }
-  );
-  revealTargets.forEach(function(el) { revealObserver.observe(el); });
-} else {
-  // If IntersectionObserver is not supported, reveal immediately
-  revealTargets.forEach(function(el) { el.classList.add("is-visible"); });
-}
-
-// Contact form — client-side placeholder.
-const form = document.getElementById("contactForm");
-const status = document.getElementById("formStatus");
-if (form) {
-  form.addEventListener("submit", function(e) {
-    e.preventDefault();
-    const data = Object.fromEntries(new FormData(form).entries());
-    if (!data.name || !data.email || !data.message) {
-      if (status) {
-        status.textContent = "Please fill in all fields.";
-        status.dataset.state = "error";
-      }
-      return;
-    }
-    if (status) {
-      status.textContent = "[Stub] Message captured locally. Wire up a real handler.";
-      status.dataset.state = "success";
-    }
-    form.reset();
-  });
-}
-
-// GitHub PR feed — fetch authored PRs and render a status-badged card per PR.
-const GITHUB_USER = "Ar-maan05";
-const GITHUB_QUERY = "author:" + GITHUB_USER + " type:pr";
-const GITHUB_CACHE_KEY = "gh-prs:" + GITHUB_QUERY;
-const GITHUB_MAX = 9;
-const GITHUB_SKIP_REPOS = new Set([
-  (GITHUB_USER + "/mcp-persist").toLowerCase()
-]);
-
-// Fetch helper with timeout
-async function fetchWithTimeout(resource, options) {
-  const timeout = (options && options.timeout) || 6000;
-  const controller = new AbortController();
-  const id = setTimeout(function() { controller.abort(); }, timeout);
-  
-  try {
-    const response = await fetch(resource, {
-      ...options,
-      signal: controller.signal
+  // Mobile nav
+  var toggle = doc.getElementById("nav-toggle");
+  var links = doc.getElementById("nav-links");
+  if (toggle && links) {
+    var setOpen = function (open) {
+      toggle.setAttribute("aria-expanded", String(open));
+      links.setAttribute("data-open", String(open));
+    };
+    toggle.addEventListener("click", function () {
+      setOpen(toggle.getAttribute("aria-expanded") !== "true");
     });
-    clearTimeout(id);
-    return response;
-  } catch (error) {
-    clearTimeout(id);
-    throw error;
-  }
-}
-
-// Safe sessionStorage helper functions
-function safeGetSessionStorage(key) {
-  try {
-    return typeof window !== "undefined" && window.sessionStorage ? sessionStorage.getItem(key) : null;
-  } catch (e) {
-    console.warn("sessionStorage is not accessible:", e);
-    return null;
-  }
-}
-
-function safeSetSessionStorage(key, value) {
-  try {
-    if (typeof window !== "undefined" && window.sessionStorage) {
-      sessionStorage.setItem(key, value);
-    }
-  } catch (e) {
-    console.warn("Failed to write to sessionStorage:", e);
-  }
-}
-
-function safeRemoveSessionStorage(key) {
-  try {
-    if (typeof window !== "undefined" && window.sessionStorage) {
-      sessionStorage.removeItem(key);
-    }
-  } catch (e) {
-    console.warn("Failed to remove from sessionStorage:", e);
-  }
-}
-
-function escapeHtml(value) {
-  if (value === null || value === undefined) return "";
-  const div = document.createElement("div");
-  div.textContent = String(value);
-  return div.innerHTML;
-}
-
-function renderGitHubPRs(items) {
-  const statusEl = document.getElementById("github-status");
-  const grid = document.getElementById("github-grid");
-  if (!grid) return;
-
-  if (!Array.isArray(items)) {
-    if (statusEl) {
-      statusEl.textContent = "Could not load GitHub activity right now.";
-      statusEl.style.display = "block";
-    }
-    return;
+    links.addEventListener("click", function (e) {
+      if (e.target.closest("a")) setOpen(false);
+    });
+    doc.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") setOpen(false);
+    });
   }
 
-  const variants = ["primary", "secondary", "tertiary"];
-  const prs = items
-    .filter(function(pr) {
-      if (!pr || !pr.repository_url || typeof pr.repository_url !== "string") return false;
-      const repoName = pr.repository_url.replace("https://api.github.com/repos/", "");
-      return !GITHUB_SKIP_REPOS.has(repoName.toLowerCase());
-    })
-    .slice(0, GITHUB_MAX);
-
-  if (prs.length === 0) {
-    if (statusEl) {
-      statusEl.textContent = "No public pull requests yet.";
-      statusEl.style.display = "block";
-    }
-    return;
-  }
-  if (statusEl) statusEl.style.display = "none";
-
-  // Clear existing items in case of re-render
-  grid.innerHTML = "";
-
-  prs.forEach(function(pr, i) {
-    if (!pr) return;
-    const repo = pr.repository_url.replace("https://api.github.com/repos/", "");
-    const variant = variants[i % variants.length];
-
-    const isMerged = pr.pull_request && pr.pull_request.merged_at != null;
-    const isOpen = pr.state === "open";
-    const statusLabel = isMerged ? "Merged" : isOpen ? "Open" : "Closed";
-    const statusColor = isMerged ? "secondary" : isOpen ? "primary" : "tertiary";
-    const statusIcon = isMerged ? "merge" : isOpen ? "call_merge" : "close";
-
-    const dateVal = isMerged ? pr.pull_request.merged_at : pr.updated_at;
-    const date = new Date(dateVal);
-    const dateStr = !isNaN(date.getTime())
-      ? date.toLocaleDateString("en-US", { month: "short", year: "numeric" })
-      : "Recent";
-
-    const card = document.createElement("article");
-    card.className = "glass-panel project-card project-card--" + variant;
-    card.innerHTML = `
-      <div class="project-card-glow" aria-hidden="true"></div>
-      <header class="project-card-header">
-        <div class="project-icon">
-          <span class="material-symbols-outlined">${statusIcon}</span>
-        </div>
-        <span class="label-mono muted gh-card-date">${dateStr}</span>
-      </header>
-      <p class="label-mono muted gh-repo">${escapeHtml(repo)}</p>
-      <h3 class="project-title">${escapeHtml(pr.title)}</h3>
-      <div class="tag-cloud gh-card-tags">
-        <span class="tech-tag tech-tag--${statusColor}">${statusLabel}</span>
-      </div>
-      <a href="${encodeURI(pr.html_url || '#')}" target="_blank" rel="noopener noreferrer" class="btn btn--ghost btn--sm gh-card-link">
-        View PR
-        <span class="material-symbols-outlined">arrow_outward</span>
-      </a>
-    `;
-    grid.appendChild(card);
-  });
-
-  // Reveal-animate the cards that were added after initial page load.
-  grid.querySelectorAll(".project-card").forEach(function(el) {
-    el.classList.add("reveal");
-    if (revealObserver) {
-      revealObserver.observe(el);
-    } else {
-      el.classList.add("is-visible");
-    }
-  });
-}
-
-async function loadGitHubPRs() {
-  const statusEl = document.getElementById("github-status");
-  if (!document.getElementById("github-grid")) return;
-
-  const cached = safeGetSessionStorage(GITHUB_CACHE_KEY);
-  if (cached) {
-    try {
-      renderGitHubPRs(JSON.parse(cached));
-      return;
-    } catch (e) {
-      safeRemoveSessionStorage(GITHUB_CACHE_KEY);
-    }
-  }
-
-  try {
-    const res = await fetchWithTimeout(
-      "https://api.github.com/search/issues?q=" + encodeURIComponent(GITHUB_QUERY) + "&sort=updated&per_page=12",
-      { 
-        headers: { Accept: "application/vnd.github+json" },
-        timeout: 6000
+  // Theme Toggle
+  var themeToggle = doc.getElementById("theme-toggle");
+  if (themeToggle) {
+    themeToggle.addEventListener("click", function () {
+      var current = doc.documentElement.getAttribute("data-theme");
+      if (!current) {
+        current = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
       }
-    );
-    if (!res.ok) throw new Error("GitHub API " + res.status);
+      var next = current === "dark" ? "light" : "dark";
+      doc.documentElement.setAttribute("data-theme", next);
+      localStorage.setItem("theme", next);
+    });
+  }
 
-    const data = await res.json();
-    const items = data.items || [];
-    safeSetSessionStorage(GITHUB_CACHE_KEY, JSON.stringify(items));
-    renderGitHubPRs(items);
-  } catch (err) {
-    if (statusEl) {
-      statusEl.textContent = "Could not load GitHub activity right now.";
+
+  // Hero entrance is pure CSS (§10.1); no JS needed for it.
+  // Scroll reveals (§10.3)
+  var revealTargets = doc.querySelectorAll("main > section:not(.hero)");
+  if ("IntersectionObserver" in window && !reduce) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) { en.target.classList.add("in"); io.unobserve(en.target); }
+      });
+    }, { threshold: 0.15 });
+    revealTargets.forEach(function (s) { io.observe(s); });
+  } else {
+    revealTargets.forEach(function (s) { s.classList.add("in"); });
+  }
+
+  // Same-origin fetch with timeout
+  function getJSON(url) {
+    var ctrl = new AbortController();
+    var t = setTimeout(function () { ctrl.abort(); }, 6000);
+    return fetch(url, { signal: ctrl.signal, cache: "no-cache" })
+      .then(function (r) { return r.ok ? r.json() : Promise.reject(); })
+      .then(function (d) { clearTimeout(t); return d; })
+      .catch(function () { clearTimeout(t); return null; });
+  }
+
+  function fmt(n) { return n.toLocaleString("en-US"); }
+
+  // Downloads counter (§7.7, §10.2)
+  var FLOOR = 8000;
+  function setDownloads(text) {
+    doc.querySelectorAll("[data-downloads]").forEach(function (el) { el.textContent = text; });
+  }
+  function animateDownloads(target) {
+    var els = doc.querySelectorAll("[data-downloads]");
+    if (reduce || !els.length) { setDownloads(fmt(target) + "+"); return; }
+    var start = performance.now(), dur = 900;
+    function tick(now) {
+      var p = Math.min(1, (now - start) / dur);
+      var eased = 1 - Math.pow(2, -10 * p);          /* easeOutExpo */
+      var val = Math.round(FLOOR + (target - FLOOR) * (p >= 1 ? 1 : eased));
+      setDownloads(fmt(val) + "+");
+      if (p < 1) requestAnimationFrame(tick);
     }
-    console.error("Error loading GitHub PRs:", err);
-  }
-}
-
-loadGitHubPRs();
-
-// Live PyPI download count for mcp-persist, parsed from the pepy.tech badge
-// (the same total-downloads source the README uses). Cached per session and
-// hidden entirely if the fetch or parse fails, so nothing broken ever shows.
-const MCP_DOWNLOADS_BADGE = "https://static.pepy.tech/badge/mcp-persist";
-const MCP_DOWNLOADS_CACHE_KEY = "mcp-persist:downloads";
-
-function showMcpDownloads(count) {
-  const wrap = document.getElementById("mcp-downloads");
-  const num = document.getElementById("mcp-download-count");
-  if (!wrap || !num || !count) return;
-  num.textContent = count;
-  wrap.hidden = false;
-}
-
-// The badge is a shields-style SVG; the right-hand "message" is the last <text>
-// element, e.g. "7k". Returns a trimmed count string, or "" if it can't be read.
-function parseDownloadsFromBadge(svgText) {
-  try {
-    const doc = new DOMParser().parseFromString(svgText, "image/svg+xml");
-    const texts = doc.querySelectorAll("text");
-    if (!texts.length) return "";
-    const value = (texts[texts.length - 1].textContent || "").trim();
-    // Guard against grabbing the "downloads" label or an error page.
-    if (!value || /^downloads$/i.test(value) || !/[0-9]/.test(value)) return "";
-    return value;
-  } catch (e) {
-    return "";
-  }
-}
-
-async function loadMcpDownloads() {
-  if (!document.getElementById("mcp-downloads")) return;
-
-  const cached = safeGetSessionStorage(MCP_DOWNLOADS_CACHE_KEY);
-  if (cached) {
-    showMcpDownloads(cached);
-    return;
+    requestAnimationFrame(tick);
   }
 
-  try {
-    const res = await fetchWithTimeout(MCP_DOWNLOADS_BADGE, { timeout: 6000 });
-    if (!res.ok) throw new Error("pepy badge " + res.status);
-    const count = parseDownloadsFromBadge(await res.text());
-    if (!count) throw new Error("could not parse download count");
-    safeSetSessionStorage(MCP_DOWNLOADS_CACHE_KEY, count);
-    showMcpDownloads(count);
-  } catch (err) {
-    // Leave the line hidden; the tile reads fine without it.
-    console.error("Error loading mcp-persist downloads:", err);
-  }
-}
+  // Diff tab switcher (§7.1 v1.1) — keyboard nav, aria-selected, 120ms cross-fade
+  var tablist = doc.querySelector(".diff-tablist");
+  var tabs = tablist ? Array.from(tablist.querySelectorAll(".diff-tab")) : [];
+  var diffsLoaded = {};   // cache populated by diffs.json
 
-loadMcpDownloads();
+  function escHtml(s) {
+    return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+
+  function renderDiffBody(bodyEl, lines) {
+    bodyEl.innerHTML = "";
+    (lines || []).forEach(function (line, index) {
+      var span = doc.createElement("span");
+      var type = line.type || "ctx";
+      span.className = "diff-line" + (type === "add" ? " add" : type === "del" ? " del" : "");
+      span.setAttribute("data-anim", "");
+      span.style.setProperty("--d", (index * 70) + "ms");
+      var g = doc.createElement("span");
+      g.className = "g";
+      g.setAttribute("aria-hidden", "true");
+      g.textContent = type === "add" ? "+" : type === "del" ? "-" : " ";
+      var c = doc.createElement("span");
+      c.className = "c";
+      // truncate at 52 chars per spec
+      var text = (line.text || "");
+      c.textContent = text.length > 52 ? text.slice(0, 52) + "\u2026" : text;
+      span.appendChild(g);
+      span.appendChild(c);
+      bodyEl.appendChild(span);
+    });
+  }
+
+  function populatePanel(tab) {
+    /* Fill a non-default panel from the diffsLoaded cache. Safe to call any
+       number of times; idempotent once dataset.populated is set. */
+    var repo = tab.dataset.repo;
+    var panelId = tab.getAttribute("aria-controls");
+    if (!repo || !panelId || !diffsLoaded[repo]) return;
+    var panel = doc.getElementById(panelId);
+    if (!panel) return;
+    var bodyId = "dbody-" + tab.id.replace("dtab-", "");
+    var bodyEl = doc.getElementById(bodyId);
+    if (!bodyEl || bodyEl.dataset.populated) return;   // already done or no slot
+    renderDiffBody(bodyEl, diffsLoaded[repo].lines);
+    var head = panel.querySelector(".diff-repo");
+    if (head) head.innerHTML = "<b>" + escHtml(repo) + "</b> &middot; #" + diffsLoaded[repo].pr;
+    panel.href = diffsLoaded[repo].url || panel.href;
+    bodyEl.dataset.populated = "1";
+  }
+
+  function switchTab(tab) {
+    if (!tab) return;
+    var panelId = tab.getAttribute("aria-controls");
+    var panel = doc.getElementById(panelId);
+    if (!panel) return;
+
+    // Deactivate all
+    tabs.forEach(function (t) {
+      t.setAttribute("aria-selected", "false");
+      t.setAttribute("tabindex", "-1");
+    });
+    doc.querySelectorAll("[role='tabpanel'].diff").forEach(function (p) {
+      p.hidden = true;
+    });
+
+    // Activate selected
+    tab.setAttribute("aria-selected", "true");
+    tab.setAttribute("tabindex", "0");
+    panel.hidden = false;
+
+    // Try to fill the panel first (so elements exist in the DOM with their data-anim attributes)
+    populatePanel(tab);
+
+    // Replay the staggered rise animation on every switch
+    panel.querySelectorAll("[data-anim]").forEach(function (el) {
+      el.style.animation = "none";
+    });
+    void panel.offsetWidth; // single reflow flushes all at once
+    panel.querySelectorAll("[data-anim]").forEach(function (el) {
+      el.style.animation = "";
+    });
+  }
+
+  if (tabs.length) {
+    // Set initial tabindex
+    tabs.forEach(function (t, i) {
+      t.setAttribute("tabindex", i === 0 ? "0" : "-1");
+    });
+
+    tabs.forEach(function (tab) {
+      tab.addEventListener("click", function () { switchTab(tab); });
+    });
+
+    // Arrow-key navigation per ARIA tablist pattern
+    tablist.addEventListener("keydown", function (e) {
+      var idx = tabs.indexOf(doc.activeElement);
+      if (idx === -1) return;
+      var next;
+      if (e.key === "ArrowRight") next = tabs[(idx + 1) % tabs.length];
+      else if (e.key === "ArrowLeft") next = tabs[(idx - 1 + tabs.length) % tabs.length];
+      else if (e.key === "Home") next = tabs[0];
+      else if (e.key === "End") next = tabs[tabs.length - 1];
+      if (next) { e.preventDefault(); next.focus(); switchTab(next); }
+    });
+  }
+
+  // Load stats.json: downloads + version
+  getJSON("data/stats.json").then(function (s) {
+    if (!s) return;
+    if (typeof s.downloads === "number") {
+      var live = Math.max(FLOOR, s.downloads);
+      if (live > FLOOR) animateDownloads(live);
+    }
+    // Hydrate version data-bake spans
+    if (s.version) {
+      doc.querySelectorAll("[data-bake='version']").forEach(function (el) {
+        el.textContent = s.version;
+      });
+    }
+  });
+
+  // Load diffs.json: populate non-default hero diff panels
+  getJSON("data/diffs.json").then(function (d) {
+    if (!d || !d.diffs) return;
+    Object.keys(d.diffs).forEach(function (repo) {
+      diffsLoaded[repo] = d.diffs[repo];
+    });
+    // If the user already switched to a non-default tab before this fetch
+    // completed, retroactively fill it now.
+    tabs.forEach(function (tab) {
+      if (tab.getAttribute("aria-selected") === "true") {
+        populatePanel(tab);
+      }
+    });
+  });
+
+  // Ledger hydration + recent activity (§7.4, §11)
+  function chip(state) {
+    var cls = state === "merged" ? "chip-merged" : state === "open" ? "chip-open" : "chip-closed";
+    var span = doc.createElement("span");
+    span.className = "chip " + cls;
+    span.textContent = state;
+    return span;
+  }
+
+  getJSON("data/activity.json").then(function (a) {
+    if (!a) return;
+    /* hydrate baked curated states from live data */
+    if (Array.isArray(a.curated)) {
+      var merged = 0;
+      a.curated.forEach(function (c) {
+        if (c.state === "merged") merged++;
+        var cell = doc.querySelector('[data-pr="' + c.repo + "#" + c.number + '"] .col-state');
+        if (cell && c.state) { cell.textContent = ""; cell.appendChild(chip(c.state)); }
+      });
+      var mc = doc.querySelector("[data-merged-count]");
+      if (mc && merged >= 8) mc.textContent = String(merged);
+    }
+    /* append recent activity */
+    var body = doc.getElementById("recent-body");
+    var wrap = doc.getElementById("recent-activity");
+    if (body && wrap && Array.isArray(a.recent) && a.recent.length) {
+      a.recent.slice(0, 6).forEach(function (r) {
+        var tr = doc.createElement("tr");
+        var s = doc.createElement("td"); s.className = "col-state"; s.appendChild(chip(r.state || "open"));
+        var repo = doc.createElement("td"); repo.className = "col-repo"; repo.textContent = r.repo;
+        var title = doc.createElement("td"); title.className = "col-title";
+        var link = doc.createElement("a");
+        link.href = r.url; link.target = "_blank"; link.rel = "noopener";
+        link.textContent = r.title || (r.repo + " #" + r.number);
+        title.appendChild(link);
+        var date = doc.createElement("td"); date.className = "col-date";
+        date.textContent = (r.updated_at || r.merged_at || "").slice(0, 10);
+        tr.appendChild(s); tr.appendChild(repo); tr.appendChild(title); tr.appendChild(date);
+        body.appendChild(tr);
+      });
+      wrap.hidden = false;
+    }
+  });
+
+  // 1. Spotlight border glow cards
+  var glowCards = doc.querySelectorAll(".glow-card");
+  if (glowCards.length && !reduce) {
+    doc.addEventListener("mousemove", function (e) {
+      glowCards.forEach(function (card) {
+        var rect = card.getBoundingClientRect();
+        var x = e.clientX - rect.left;
+        var y = e.clientY - rect.top;
+        card.style.setProperty("--mx", x + "px");
+        card.style.setProperty("--my", y + "px");
+      });
+    });
+  }
+
+  // 2. Command Palette (Cmd+K)
+  var cmdk = doc.getElementById("cmdk");
+  var cmdkTrigger = doc.getElementById("cmdk-trigger");
+  var cmdkInput = doc.getElementById("cmdk-input");
+  var cmdkResults = doc.getElementById("cmdk-results");
+  var cmdkBackdrop = cmdk ? cmdk.querySelector(".cmdk-backdrop") : null;
+
+  var cmdkItems = [
+    { name: "Jump to: Hero Section", category: "Navigation", icon: "arrow-right", action: function() { window.location.hash = "top"; } },
+    { name: "Jump to: Case Study (mcp-persist)", category: "Navigation", icon: "arrow-right", action: function() { window.location.hash = "work"; } },
+    { name: "Jump to: Merged PR Ledger", category: "Navigation", icon: "arrow-right", action: function() { window.location.hash = "ledger"; } },
+    { name: "Jump to: Foundations / Systems", category: "Navigation", icon: "arrow-right", action: function() { window.location.hash = "foundations"; } },
+    { name: "Jump to: Now / About", category: "Navigation", icon: "arrow-right", action: function() { window.location.hash = "about"; } },
+    { name: "Jump to: Contact / Links", category: "Navigation", icon: "arrow-right", action: function() { window.location.hash = "contact"; } },
+    { name: "Jump to: Interactive Terminal", category: "Navigation", icon: "arrow-right", action: function() { window.location.hash = "console"; } },
+    { name: "Action: Toggle Light/Dark Mode", category: "Actions", icon: "sun", action: function() { 
+      var toggleBtn = doc.getElementById("theme-toggle");
+      if (toggleBtn) toggleBtn.click();
+    } },
+    { name: "Action: Download Resume PDF", category: "Actions", icon: "download", action: function() { 
+      var link = doc.createElement("a");
+      link.href = "Resume.pdf";
+      link.target = "_blank";
+      link.click();
+    } },
+    { name: "Action: Email Armaan", category: "Actions", icon: "mail", action: function() { window.location.href = "mailto:asandhu@wpi.edu"; } }
+  ];
+
+  var cmdkSelectedIdx = 0;
+  var cmdkFiltered = [];
+
+  function renderCmdkItems() {
+    if (!cmdkResults) return;
+    cmdkResults.innerHTML = "";
+    var query = (cmdkInput ? cmdkInput.value : "").toLowerCase().trim();
+    
+    cmdkFiltered = cmdkItems.filter(function (item) {
+      return item.name.toLowerCase().indexOf(query) !== -1 || item.category.toLowerCase().indexOf(query) !== -1;
+    });
+
+    if (cmdkFiltered.length === 0) {
+      var noResults = doc.createElement("div");
+      noResults.style.padding = "20px";
+      noResults.style.color = "var(--ink-muted)";
+      noResults.style.textAlign = "center";
+      noResults.style.fontSize = "14px";
+      noResults.textContent = "No commands found matching \"" + query + "\"";
+      cmdkResults.appendChild(noResults);
+      return;
+    }
+
+    if (cmdkSelectedIdx >= cmdkFiltered.length) {
+      cmdkSelectedIdx = 0;
+    }
+
+    cmdkFiltered.forEach(function (item, idx) {
+      var div = doc.createElement("div");
+      div.className = "cmdk-item";
+      div.setAttribute("data-selected", String(idx === cmdkSelectedIdx));
+      
+      var left = doc.createElement("div");
+      left.className = "cmdk-item-left";
+      
+      // select svg based on category / action
+      var svg = doc.createElementNS("http://www.w3.org/2000/svg", "svg");
+      svg.setAttribute("class", "icon");
+      svg.setAttribute("viewBox", "0 0 24 24");
+      svg.setAttribute("fill", "none");
+      svg.setAttribute("stroke", "currentColor");
+      svg.setAttribute("stroke-width", "1.75");
+      svg.setAttribute("stroke-linecap", "round");
+      svg.setAttribute("stroke-linejoin", "round");
+      
+      var path = doc.createElementNS("http://www.w3.org/2000/svg", "path");
+      if (item.icon === "download") {
+        path.setAttribute("d", "M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3");
+      } else if (item.icon === "mail") {
+        path.setAttribute("d", "M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2zM22 6l-10 7L2 6");
+      } else if (item.icon === "sun") {
+        path.setAttribute("d", "M12 12m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0");
+      } else {
+        path.setAttribute("d", "M5 12h14M12 5l7 7-7 7");
+      }
+      svg.appendChild(path);
+      
+      var text = doc.createElement("span");
+      text.textContent = item.name;
+      
+      left.appendChild(svg);
+      left.appendChild(text);
+      
+      var badge = doc.createElement("span");
+      badge.className = "cmdk-item-badge";
+      badge.textContent = item.category;
+      
+      div.appendChild(left);
+      div.appendChild(badge);
+      
+      div.addEventListener("click", function () {
+        executeCmdkItem(item);
+      });
+
+      cmdkResults.appendChild(div);
+    });
+  }
+
+  function executeCmdkItem(item) {
+    if (!item) return;
+    closeCmdk();
+    item.action();
+  }
+
+  function openCmdk() {
+    if (!cmdk) return;
+    cmdk.showModal();
+    cmdkSelectedIdx = 0;
+    if (cmdkInput) {
+      cmdkInput.value = "";
+      cmdkInput.focus();
+    }
+    renderCmdkItems();
+  }
+
+  function closeCmdk() {
+    if (!cmdk) return;
+    cmdk.close();
+  }
+
+  if (cmdkTrigger) {
+    cmdkTrigger.addEventListener("click", function (e) {
+      e.stopPropagation();
+      openCmdk();
+    });
+  }
+  if (cmdkBackdrop) {
+    cmdkBackdrop.addEventListener("click", closeCmdk);
+  }
+  if (cmdk) {
+    cmdk.addEventListener("close", function () {
+      if (cmdkInput) cmdkInput.value = "";
+    });
+  }
+
+  if (cmdkInput) {
+    cmdkInput.addEventListener("input", function () {
+      cmdkSelectedIdx = 0;
+      renderCmdkItems();
+    });
+    
+    cmdkInput.addEventListener("keydown", function (e) {
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        cmdkSelectedIdx = (cmdkSelectedIdx + 1) % cmdkFiltered.length;
+        renderCmdkItems();
+        var selectedEl = cmdkResults.querySelector('[data-selected="true"]');
+        if (selectedEl) selectedEl.scrollIntoView({ block: "nearest" });
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        cmdkSelectedIdx = (cmdkSelectedIdx - 1 + cmdkFiltered.length) % cmdkFiltered.length;
+        renderCmdkItems();
+        var selectedEl = cmdkResults.querySelector('[data-selected="true"]');
+        if (selectedEl) selectedEl.scrollIntoView({ block: "nearest" });
+      } else if (e.key === "Enter") {
+        e.preventDefault();
+        if (cmdkFiltered[cmdkSelectedIdx]) {
+          executeCmdkItem(cmdkFiltered[cmdkSelectedIdx]);
+        }
+      }
+    });
+  }
+
+  doc.addEventListener("keydown", function (e) {
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+      e.preventDefault();
+      if (cmdk && cmdk.open) {
+        closeCmdk();
+      } else {
+        openCmdk();
+      }
+    }
+  });
+
+
+  // 3. Interactive CLI Terminal Console
+  var termInput = doc.getElementById("term-input");
+  var termBody = doc.getElementById("term-body");
+
+  if (termInput && termBody) {
+    // Keep focus inside terminal when clicking anywhere in terminal body
+    var terminalBox = doc.querySelector(".terminal-box");
+    if (terminalBox) {
+      terminalBox.addEventListener("click", function () {
+        termInput.focus();
+      });
+    }
+
+    termInput.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") {
+        var cmd = termInput.value.trim().toLowerCase();
+        termInput.value = "";
+        
+        // Output prompt and original command
+        var promptLine = doc.createElement("div");
+        promptLine.className = "term-line";
+        promptLine.innerHTML = '<span class="term-prompt">asandhu@wpi:~$</span> ' + escHtml(cmd);
+        
+        // Insert before prompt line
+        var inputLine = termInput.parentElement;
+        termBody.insertBefore(promptLine, inputLine);
+
+        if (cmd) {
+          var response = "";
+          switch (cmd) {
+            case "help":
+              response = "Available commands:\n" +
+                         "  <span class=\"text-merge\">about</span>       Print brief bio / background\n" +
+                         "  <span class=\"text-merge\">skills</span>      Display core technical stack\n" +
+                         "  <span class=\"text-merge\">merged</span>      View statistics on upstream contributions\n" +
+                         "  <span class=\"text-merge\">downloads</span>   Show total downloads of mcp-persist\n" +
+                         "  <span class=\"text-merge\">clear</span>       Clear the screen";
+              break;
+            case "about":
+              response = "Armaan Sandhu · CS @ WPI\n" +
+                         "Sophomore student developing open-source AI infrastructure.\n" +
+                         "Wrote and maintained mcp-persist. WPI systems tutor and peer advisor.";
+              break;
+            case "skills":
+              response = "<span class=\"text-merge\">[LANGUAGES]</span>\n" +
+                         "  Java, Python, C / C++, Rust, Zig, x86 ASM, JavaScript, HTML / CSS\n\n" +
+                         "<span class=\"text-merge\">[CONCEPTS & DOMAINS]</span>\n" +
+                         "  Systems Programming, Language Runtimes, AI Agents & Tooling,\n" +
+                         "  Browser Engines, Machine Organization & Assembly, Object-Oriented Design,\n" +
+                         "  Linear Algebra, Applied Probability, Open Source\n\n" +
+                         "<span class=\"text-merge\">[TOOLS & DEVOPS]</span>\n" +
+                         "  Git, GDB, Linux, Bash, Valgrind, IntelliJ IDEA, VS Code";
+              break;
+            case "merged":
+              response = "Contributions accepted upstream in reference implementations:\n" +
+                         " - <span class=\"text-merge\">python/cpython</span> : configure.ac CYGWIN port bugfix\n" +
+                         " - <span class=\"text-merge\">lancedb/lancedb</span> : DataFusion predicates and async executors\n" +
+                         " - <span class=\"text-merge\">BerriAI/litellm proxy</span> : budget reservation and route discovery\n" +
+                         " - <span class=\"text-merge\">lightpanda-io/browser</span> : W3C File API surface in Zig";
+              break;
+            case "downloads":
+              var bakedDl = doc.querySelector("[data-downloads]");
+              var dlText = bakedDl ? bakedDl.textContent : "8,000+";
+              response = "mcp-persist downloads total on PyPI: <span class=\"text-merge\">" + dlText + "</span>";
+              break;
+            case "clear":
+              // Clear everything except the prompt line
+              while (termBody.firstChild && termBody.firstChild !== inputLine) {
+                termBody.removeChild(termBody.firstChild);
+              }
+              response = null;
+              break;
+            default:
+              response = "Command not found: '" + escHtml(cmd) + "'. Type <span class=\"text-merge\">help</span> to see options.";
+          }
+
+          if (response !== null) {
+            var respLine = doc.createElement("div");
+            respLine.className = "term-line";
+            respLine.innerHTML = response;
+            termBody.insertBefore(respLine, inputLine);
+          }
+        }
+
+        // Scroll to bottom
+        termBody.scrollTop = termBody.scrollHeight;
+      }
+    });
+  }
+})();

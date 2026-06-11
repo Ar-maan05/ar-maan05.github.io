@@ -1,0 +1,78 @@
+{
+  "generated": "2026-06-11T08:38:54.245Z",
+  "curated": [
+    {
+      "repo": "python/cpython",
+      "number": 150328,
+      "title": "gh-150311: Fix minor issues in configure.ac for the CYGWIN port",
+      "state": "merged",
+      "merged_at": "2026-05-28T12:38:39Z",
+      "url": "https://github.com/python/cpython/pull/150328",
+      "note": "Build-system fix accepted into the reference Python implementation."
+    },
+    {
+      "repo": "lance-format/lance",
+      "number": 6934,
+      "title": "feat(rust): support datafusion expressions for merge insert predicates",
+      "state": "merged",
+      "merged_at": "2026-05-28T04:13:33Z",
+      "url": "https://github.com/lance-format/lance/pull/6934",
+      "note": "DataFusion expressions for merge-insert predicates in a production columnar format."
+    },
+    {
+      "repo": "lancedb/lancedb",
+      "number": 3444,
+      "title": "feat(rust): support datafusion expressions for merge insert predicates",
+      "state": "merged",
+      "merged_at": "2026-06-03T22:47:51Z",
+      "url": "https://github.com/lancedb/lancedb/pull/3444",
+      "note": "The same DataFusion capability carried into LanceDB's Rust core."
+    },
+    {
+      "repo": "lancedb/lancedb",
+      "number": 3459,
+      "title": "fix(python): run AsyncTable.search embeddings on a dedicated executor",
+      "state": "merged",
+      "merged_at": "2026-06-05T04:57:16Z",
+      "url": "https://github.com/lancedb/lancedb/pull/3459",
+      "note": "Moved embedding search onto a dedicated executor to stop event-loop stalls."
+    },
+    {
+      "repo": "lightpanda-io/browser",
+      "number": 2537,
+      "title": "feat(webapi): implement W3C File API",
+      "state": "merged",
+      "merged_at": "2026-05-25T04:10:43Z",
+      "url": "https://github.com/lightpanda-io/browser/pull/2537",
+      "note": "W3C File API surface implemented in Zig for an AI-agent headless browser."
+    },
+    {
+      "repo": "lightpanda-io/browser",
+      "number": 2635,
+      "title": "Implement input type=file support (FileList, input.files/value, DOM.setFileInputFiles)",
+      "state": "merged",
+      "merged_at": "2026-06-05T02:52:24Z",
+      "url": "https://github.com/lightpanda-io/browser/pull/2635",
+      "note": "Completed file-input support, from FileList through DOM.setFileInputFiles."
+    },
+    {
+      "repo": "BerriAI/litellm",
+      "number": 29493,
+      "title": "feat(proxy): add disable_budget_reservation general setting (#27639)",
+      "state": "merged",
+      "merged_at": "2026-06-08T12:36:51Z",
+      "url": "https://github.com/BerriAI/litellm/pull/29493",
+      "note": "Added a proxy-wide setting to disable budget reservation."
+    },
+    {
+      "repo": "BerriAI/litellm",
+      "number": 29483,
+      "title": "fix(proxy): don't enforce budgets on model-discovery / info routes (#27923)",
+      "state": "merged",
+      "merged_at": "2026-06-02T11:18:50Z",
+      "url": "https://github.com/BerriAI/litellm/pull/29483",
+      "note": "Stopped budget enforcement on model-discovery and info routes."
+    }
+  ],
+  "recent": []
+}

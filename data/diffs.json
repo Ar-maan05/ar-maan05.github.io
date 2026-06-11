@@ -1,0 +1,161 @@
+{
+  "generated": "2026-06-11T08:38:48.723Z",
+  "diffs": {
+    "lightpanda-io/browser": {
+      "pr": 2537,
+      "url": "https://github.com/lightpanda-io/browser/pull/2537",
+      "title": "feat(webapi): implement W3C File API",
+      "lines": [
+        {
+          "type": "add",
+          "text": "pub fn init("
+        },
+        {
+          "type": "add",
+          "text": "    parts_: ?[]const js.Value,"
+        },
+        {
+          "type": "add",
+          "text": "    name_: []const u8,"
+        },
+        {
+          "type": "add",
+          "text": "    opts_: ?InitOptions,"
+        },
+        {
+          "type": "add",
+          "text": "    page: *Page,"
+        },
+        {
+          "type": "add",
+          "text": ") !*File {"
+        },
+        {
+          "type": "add",
+          "text": "    const session = page.session;"
+        },
+        {
+          "type": "add",
+          "text": "    const arena = try session.getArena(.large, …"
+        }
+      ]
+    },
+    "python/cpython": {
+      "pr": 150328,
+      "url": "https://github.com/python/cpython/pull/150328",
+      "title": "gh-150311: Fix minor issues in configure.ac for …",
+      "lines": [
+        {
+          "type": "del",
+          "text": "ac_sys_system=Cygwin"
+        },
+        {
+          "type": "add",
+          "text": "ac_sys_system=CYGWIN"
+        },
+        {
+          "type": "del",
+          "text": "LDLIBRARY='libpython$(LDVERSION).dll.a'"
+        },
+        {
+          "type": "add",
+          "text": "LDLIBRARY='libpython$(LDVERSION).a'"
+        },
+        {
+          "type": "del",
+          "text": "LDSHARED=\"gcc -shared -Wl,--enable-auto-im…"
+        },
+        {
+          "type": "add",
+          "text": "LDSHARED='$(CC) -shared -Wl,--enable-auto-…"
+        },
+        {
+          "type": "del",
+          "text": "LDCXXSHARED=\"g++ -shared -Wl,--enable-auto…"
+        },
+        {
+          "type": "add",
+          "text": "LDCXXSHARED='$(CXX) -shared -Wl,--enable-a…"
+        }
+      ]
+    },
+    "BerriAI/litellm": {
+      "pr": 29483,
+      "url": "https://github.com/BerriAI/litellm/pull/29483",
+      "title": "fix(proxy): don't enforce budgets on model-disc…",
+      "lines": [
+        {
+          "type": "add",
+          "text": "MODEL_DISCOVERY_ROUTES = frozenset("
+        },
+        {
+          "type": "add",
+          "text": "    {"
+        },
+        {
+          "type": "add",
+          "text": "        \"/v1/models\","
+        },
+        {
+          "type": "add",
+          "text": "        \"/models\","
+        },
+        {
+          "type": "add",
+          "text": "        \"/model/info\","
+        },
+        {
+          "type": "add",
+          "text": "        \"/v1/model/info\","
+        },
+        {
+          "type": "add",
+          "text": "        \"/model_group/info\","
+        },
+        {
+          "type": "add",
+          "text": "    }"
+        },
+        {
+          "type": "add",
+          "text": ")"
+        }
+      ]
+    },
+    "lance-format/lance": {
+      "pr": 6934,
+      "url": "https://github.com/lance-format/lance/pull/6934",
+      "title": "feat(rust): support datafusion expressions for …",
+      "lines": [
+        {
+          "type": "add",
+          "text": "    /// The row is updated only for rows where"
+        },
+        {
+          "type": "add",
+          "text": "    /// the DataFusion expression evaluates to true."
+        },
+        {
+          "type": "add",
+          "text": "    UpdateIfExpr(Expr),"
+        },
+        {
+          "type": "add",
+          "text": ""
+        },
+        {
+          "type": "add",
+          "text": "    pub fn update_if_expr(expr: Expr) -> Self {"
+        },
+        {
+          "type": "add",
+          "text": "        Self::UpdateIfExpr(expr)"
+        },
+        {
+          "type": "add",
+          "text": "    }"
+        }
+      ]
+    }
+  }
+}
