@@ -55,6 +55,7 @@
   </script>
 </head>
 <body>
+  <div class="scroll-bar" aria-hidden="true"></div>
   <a class="skip-link" href="#main">Skip to content</a>
 
   <!-- Inline icon sprite (Lucide), stroked via .icon in CSS -->
@@ -85,9 +86,6 @@
           <svg class="icon icon-moon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
             <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
           </svg>
-        </button>
-        <button class="btn btn-ghost cmdk-trigger" id="cmdk-trigger" aria-label="Open command palette">
-          <span class="k-symbol">⌘K</span>
         </button>
         <a class="btn btn-ghost resume-link" href="Resume.pdf" target="_blank" rel="noopener">
           <svg class="icon" aria-hidden="true"><use href="#i-download"/></svg>Resume
@@ -126,7 +124,7 @@
               <button role="tab" id="dtab-lightpanda" aria-selected="true"  aria-controls="dpanel-lightpanda" class="diff-tab" data-repo="lightpanda-io/browser">lightpanda-io/browser</button>
               <button role="tab" id="dtab-cpython"    aria-selected="false" aria-controls="dpanel-cpython"    class="diff-tab" data-repo="python/cpython">python/cpython</button>
               <button role="tab" id="dtab-litellm"    aria-selected="false" aria-controls="dpanel-litellm"    class="diff-tab" data-repo="BerriAI/litellm">BerriAI/litellm</button>
-              <button role="tab" id="dtab-lance"      aria-selected="false" aria-controls="dpanel-lance"      class="diff-tab" data-repo="lancedb/lancedb">lancedb/lancedb</button>
+              <button role="tab" id="dtab-lance"      aria-selected="false" aria-controls="dpanel-lance"      class="diff-tab" data-repo="lance-format/lance">lance-format/lance</button>
             </div>
 
             <!-- Default panel: lightpanda #2537 — baked into HTML for no-JS + first paint -->
@@ -138,7 +136,7 @@
                 <span class="diff-repo"><b>lightpanda-io/browser</b> · #2537</span>
                 <span class="chip chip-merged">merged</span>
               </div>
-              <div class="diff-body">
+              <div class="diff-body" id="dbody-lightpanda">
                 <span class="diff-line add" data-anim style="--d:320ms"><span class="g">+</span><span class="c">pub fn init(</span></span>
                 <span class="diff-line add" data-anim style="--d:390ms"><span class="g">+</span><span class="c">    parts_: ?[]const js.Value,</span></span>
                 <span class="diff-line add" data-anim style="--d:460ms"><span class="g">+</span><span class="c">    name_: []const u8,</span></span>
@@ -157,7 +155,7 @@
                 <span class="diff-repo"><b>python/cpython</b> · #150328</span>
                 <span class="chip chip-merged">merged</span>
               </div>
-              <div class="diff-body">
+              <div class="diff-body" id="dbody-cpython">
                 <span class="diff-line del" data-anim style="--d:0ms"><span class="g">-</span><span class="c">		ac_sys_system=Cygwin</span></span>
                 <span class="diff-line add" data-anim style="--d:70ms"><span class="g">+</span><span class="c">		ac_sys_system=CYGWIN</span></span>
                 <span class="diff-line del" data-anim style="--d:140ms"><span class="g">-</span><span class="c">  LDLIBRARY='libpython$(LDVERSION).dll.a'</span></span>
@@ -169,46 +167,45 @@
               </div>
             </a>
 
-            <!-- BerriAI/litellm #29493 — baked -->
+            <!-- BerriAI/litellm #29483 — baked -->
             <a id="dpanel-litellm" role="tabpanel" aria-labelledby="dtab-litellm"
-               class="diff glow-card" href="https://github.com/BerriAI/litellm/pull/29493"
+               class="diff glow-card" href="https://github.com/BerriAI/litellm/pull/29483"
                hidden target="_blank" rel="noopener"
-               aria-label="Merged pull request BerriAI/litellm #29493, opens on GitHub">
+               aria-label="Merged pull request BerriAI/litellm #29483, opens on GitHub">
               <div class="diff-head">
-                <span class="diff-repo"><b>BerriAI/litellm</b> · #29493</span>
+                <span class="diff-repo"><b>BerriAI/litellm</b> · #29483</span>
                 <span class="chip chip-merged">merged</span>
               </div>
-              <div class="diff-body">
-                <span class="diff-line add" data-anim style="--d:0ms"><span class="g">+</span><span class="c">disable_budget_reservation: Optional[bool] = Field(</span></span>
-                <span class="diff-line add" data-anim style="--d:70ms"><span class="g">+</span><span class="c">    None,</span></span>
-                <span class="diff-line add" data-anim style="--d:140ms"><span class="g">+</span><span class="c">    description=(</span></span>
-                <span class="diff-line add" data-anim style="--d:210ms"><span class="g">+</span><span class="c">        "If True, disables the optimistic per-re…</span></span>
-                <span class="diff-line add" data-anim style="--d:280ms"><span class="g">+</span><span class="c">        "WARNING: weakens hard budget enforcement…</span></span>
-                <span class="diff-line add" data-anim style="--d:350ms"><span class="g">+</span><span class="c">        "Enable only if experiencing phantom "</span></span>
-                <span class="diff-line add" data-anim style="--d:420ms"><span class="g">+</span><span class="c">        "BudgetExceededError from leaked reservat…</span></span>
-                <span class="diff-line add" data-anim style="--d:490ms"><span class="g">+</span><span class="c">    ),</span></span>
+              <div class="diff-body" id="dbody-litellm">
+                <span class="diff-line add" data-anim style="--d:0ms"><span class="g">+</span><span class="c">MODEL_DISCOVERY_ROUTES = frozenset(</span></span>
+                <span class="diff-line add" data-anim style="--d:70ms"><span class="g">+</span><span class="c">    {</span></span>
+                <span class="diff-line add" data-anim style="--d:140ms"><span class="g">+</span><span class="c">        "/v1/models",</span></span>
+                <span class="diff-line add" data-anim style="--d:210ms"><span class="g">+</span><span class="c">        "/models",</span></span>
+                <span class="diff-line add" data-anim style="--d:280ms"><span class="g">+</span><span class="c">        "/model/info",</span></span>
+                <span class="diff-line add" data-anim style="--d:350ms"><span class="g">+</span><span class="c">        "/v1/model/info",</span></span>
+                <span class="diff-line add" data-anim style="--d:420ms"><span class="g">+</span><span class="c">        "/model_group/info",</span></span>
+                <span class="diff-line add" data-anim style="--d:490ms"><span class="g">+</span><span class="c">    }</span></span>
                 <span class="diff-line add" data-anim style="--d:560ms"><span class="g">+</span><span class="c">)</span></span>
               </div>
             </a>
 
-            <!-- lancedb/lancedb #3459 — baked -->
+            <!-- lance-format/lance #6934 — baked -->
             <a id="dpanel-lance" role="tabpanel" aria-labelledby="dtab-lance"
-               class="diff glow-card" href="https://github.com/lancedb/lancedb/pull/3459"
+               class="diff glow-card" href="https://github.com/lance-format/lance/pull/6934"
                hidden target="_blank" rel="noopener"
-               aria-label="Merged pull request lancedb/lancedb #3459, opens on GitHub">
+               aria-label="Merged pull request lance-format/lance #6934, opens on GitHub">
               <div class="diff-head">
-                <span class="diff-repo"><b>lancedb/lancedb</b> · #3459</span>
+                <span class="diff-repo"><b>lance-format/lance</b> · #6934</span>
                 <span class="chip chip-merged">merged</span>
               </div>
-              <div class="diff-body">
-                <span class="diff-line add" data-anim style="--d:0ms"><span class="g">+</span><span class="c">def _new_embedding_executor():</span></span>
-                <span class="diff-line add" data-anim style="--d:70ms"><span class="g">+</span><span class="c">    return ThreadPoolExecutor(</span></span>
-                <span class="diff-line add" data-anim style="--d:140ms"><span class="g">+</span><span class="c">        thread_name_prefix="lancedb-embedding"</span></span>
-                <span class="diff-line add" data-anim style="--d:210ms"><span class="g">+</span><span class="c">    )</span></span>
-                <span class="diff-line add" data-anim style="--d:280ms"><span class="g">+</span><span class="c"></span></span>
-                <span class="diff-line add" data-anim style="--d:350ms"><span class="g">+</span><span class="c">def embedding_executor():</span></span>
-                <span class="diff-line add" data-anim style="--d:420ms"><span class="g">+</span><span class="c">    """Dedicated executor for blocking embed calls."""</span></span>
-                <span class="diff-line add" data-anim style="--d:490ms"><span class="g">+</span><span class="c">    return _EMBEDDING_EXECUTOR</span></span>
+              <div class="diff-body" id="dbody-lance">
+                <span class="diff-line add" data-anim style="--d:0ms"><span class="g">+</span><span class="c">    /// The row is updated only for rows where</span></span>
+                <span class="diff-line add" data-anim style="--d:70ms"><span class="g">+</span><span class="c">    /// the DataFusion expression evaluates to true.</span></span>
+                <span class="diff-line add" data-anim style="--d:140ms"><span class="g">+</span><span class="c">    UpdateIfExpr(Expr),</span></span>
+                <span class="diff-line add" data-anim style="--d:210ms"><span class="g">+</span><span class="c"></span></span>
+                <span class="diff-line add" data-anim style="--d:280ms"><span class="g">+</span><span class="c">    pub fn update_if_expr(expr: Expr) -> Self {</span></span>
+                <span class="diff-line add" data-anim style="--d:350ms"><span class="g">+</span><span class="c">        Self::UpdateIfExpr(expr)</span></span>
+                <span class="diff-line add" data-anim style="--d:420ms"><span class="g">+</span><span class="c">    }</span></span>
               </div>
             </a>
 
@@ -223,13 +220,14 @@
 
       <div class="proofbar" aria-label="Proof">
         <a class="receipt" href="https://pepy.tech/project/mcp-persist" target="_blank" rel="noopener" data-anim style="--d:600ms">
+          <span class="live-dot" aria-hidden="true"></span>
           <b class="tnum" data-bake="downloads" data-downloads>8,000+</b>&nbsp;downloads <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg>
         </a>
         <a class="receipt" href="https://github.com/python/cpython/pull/150328" target="_blank" rel="noopener" data-anim style="--d:660ms">
           Merged: CPython <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg>
         </a>
         <a class="receipt" href="#ledger" data-anim style="--d:720ms">
-          <b class="tnum" data-merged-count>8</b>&nbsp;PRs merged upstream
+          <b class="tnum" data-merged-count>9</b>&nbsp;PRs merged upstream
         </a>
         <a class="receipt" href="#adoption" data-anim style="--d:780ms">
           In production
@@ -363,6 +361,7 @@ app = with_persistence(mcp, backend=<span class="s">"redis"</span>, url=<span cl
                 <th scope="col">Contribution</th>
                 <th scope="col">Why it mattered</th>
                 <th scope="col">Date</th>
+                <th scope="col">Simulation</th>
               </tr>
             </thead>
             <tbody id="ledger-body" data-curated>
@@ -372,6 +371,7 @@ app = with_persistence(mcp, backend=<span class="s">"redis"</span>, url=<span cl
                 <td class="col-title"><a href="https://github.com/python/cpython/pull/150328" target="_blank" rel="noopener">gh-150311: Fix minor issues in configure.ac for the CYGWIN port</a></td>
                 <td class="col-why">Build-system fix accepted into the reference Python implementation.</td>
                 <td class="col-date">2026-05-28</td>
+                <td class="col-action"><button class="btn-verify" type="button">Debug</button></td>
               </tr>
               <tr data-pr="lance-format/lance#6934">
                 <td class="col-state"><span class="chip chip-merged">merged</span></td>
@@ -379,6 +379,7 @@ app = with_persistence(mcp, backend=<span class="s">"redis"</span>, url=<span cl
                 <td class="col-title"><a href="https://github.com/lance-format/lance/pull/6934" target="_blank" rel="noopener">feat(rust): support datafusion expressions for merge insert predicates</a></td>
                 <td class="col-why">DataFusion expressions for merge-insert predicates in a production columnar format.</td>
                 <td class="col-date">2026-05-28</td>
+                <td class="col-action"><button class="btn-verify" type="button">Debug</button></td>
               </tr>
               <tr data-pr="lancedb/lancedb#3444">
                 <td class="col-state"><span class="chip chip-merged">merged</span></td>
@@ -386,6 +387,7 @@ app = with_persistence(mcp, backend=<span class="s">"redis"</span>, url=<span cl
                 <td class="col-title"><a href="https://github.com/lancedb/lancedb/pull/3444" target="_blank" rel="noopener">feat(rust): support datafusion expressions for merge insert predicates</a></td>
                 <td class="col-why">The same DataFusion capability carried into LanceDB's Rust core.</td>
                 <td class="col-date">2026-06-03</td>
+                <td class="col-action"><button class="btn-verify" type="button">Debug</button></td>
               </tr>
               <tr data-pr="lancedb/lancedb#3459">
                 <td class="col-state"><span class="chip chip-merged">merged</span></td>
@@ -393,6 +395,7 @@ app = with_persistence(mcp, backend=<span class="s">"redis"</span>, url=<span cl
                 <td class="col-title"><a href="https://github.com/lancedb/lancedb/pull/3459" target="_blank" rel="noopener">fix(python): run AsyncTable.search embeddings on a dedicated executor</a></td>
                 <td class="col-why">Moved embedding search onto a dedicated executor to stop event-loop stalls.</td>
                 <td class="col-date">2026-06-05</td>
+                <td class="col-action"><button class="btn-verify" type="button">Debug</button></td>
               </tr>
               <tr data-pr="lightpanda-io/browser#2537">
                 <td class="col-state"><span class="chip chip-merged">merged</span></td>
@@ -400,6 +403,7 @@ app = with_persistence(mcp, backend=<span class="s">"redis"</span>, url=<span cl
                 <td class="col-title"><a href="https://github.com/lightpanda-io/browser/pull/2537" target="_blank" rel="noopener">feat(webapi): implement W3C File API</a></td>
                 <td class="col-why">W3C File API surface implemented in Zig for an AI-agent headless browser.</td>
                 <td class="col-date">2026-05-25</td>
+                <td class="col-action"><button class="btn-verify" type="button">Debug</button></td>
               </tr>
               <tr data-pr="lightpanda-io/browser#2635">
                 <td class="col-state"><span class="chip chip-merged">merged</span></td>
@@ -407,6 +411,7 @@ app = with_persistence(mcp, backend=<span class="s">"redis"</span>, url=<span cl
                 <td class="col-title"><a href="https://github.com/lightpanda-io/browser/pull/2635" target="_blank" rel="noopener">Implement input type=file support (FileList, input.files/value, DOM.setFileInputFiles)</a></td>
                 <td class="col-why">Completed file-input support, from FileList through DOM.setFileInputFiles.</td>
                 <td class="col-date">2026-06-05</td>
+                <td class="col-action"><button class="btn-verify" type="button">Debug</button></td>
               </tr>
               <tr data-pr="BerriAI/litellm#29493">
                 <td class="col-state"><span class="chip chip-merged">merged</span></td>
@@ -414,6 +419,7 @@ app = with_persistence(mcp, backend=<span class="s">"redis"</span>, url=<span cl
                 <td class="col-title"><a href="https://github.com/BerriAI/litellm/pull/29493" target="_blank" rel="noopener">feat(proxy): add disable_budget_reservation general setting</a></td>
                 <td class="col-why">Added a proxy-wide setting to disable budget reservation.</td>
                 <td class="col-date">2026-06-08</td>
+                <td class="col-action"><button class="btn-verify" type="button">Debug</button></td>
               </tr>
               <tr data-pr="BerriAI/litellm#29483">
                 <td class="col-state"><span class="chip chip-merged">merged</span></td>
@@ -421,6 +427,15 @@ app = with_persistence(mcp, backend=<span class="s">"redis"</span>, url=<span cl
                 <td class="col-title"><a href="https://github.com/BerriAI/litellm/pull/29483" target="_blank" rel="noopener">fix(proxy): don't enforce budgets on model-discovery / info routes</a></td>
                 <td class="col-why">Stopped budget enforcement on model-discovery and info routes.</td>
                 <td class="col-date">2026-06-02</td>
+                <td class="col-action"><button class="btn-verify" type="button">Debug</button></td>
+              </tr>
+              <tr data-pr="BerriAI/litellm#30020">
+                <td class="col-state"><span class="chip chip-merged">merged</span></td>
+                <td class="col-repo">BerriAI/litellm</td>
+                <td class="col-title"><a href="https://github.com/BerriAI/litellm/pull/30020" target="_blank" rel="noopener">fix(proxy): release max_parallel_requests slot when a stream is cancelled mid-flight</a></td>
+                <td class="col-why">Stopped a cancelled stream from stranding its max_parallel_requests slot, which had been pinning capped keys at their limit.</td>
+                <td class="col-date">2026-06-11</td>
+                <td class="col-action"><button class="btn-verify" type="button">Debug</button></td>
               </tr>
             </tbody>
           </table>
@@ -496,11 +511,13 @@ app = with_persistence(mcp, backend=<span class="s">"redis"</span>, url=<span cl
               <span class="dot green"></span>
             </div>
             <span class="terminal-title">asandhu@wpi: ~</span>
+            <span class="terminal-status"><span class="status-dot"></span><span class="status-text">CONNECTED</span></span>
           </div>
           <div class="terminal-body" id="term-body">
             <div class="term-line">WPI systems terminal v1.0.0. Type <span class="text-merge">help</span> to begin.</div>
             <div class="term-line prompt-line">
               <span class="term-prompt">asandhu@wpi:~$</span>
+              <span class="term-render"><span class="term-echo" id="term-echo"></span><span class="term-cursor" aria-hidden="true">█</span></span>
               <input type="text" id="term-input" autocomplete="off" spellcheck="false" aria-label="Terminal Input">
             </div>
           </div>
@@ -530,7 +547,7 @@ app = with_persistence(mcp, backend=<span class="s">"redis"</span>, url=<span cl
     <section class="colophon" id="colophon" aria-label="Colophon">
       <div class="shell">
         <p class="eyebrow">Colophon</p>
-        <p>Built by hand. Vanilla HTML and CSS with under 12KB of JavaScript. No framework, no build step for the pages. PR states refresh daily through a GitHub Action that commits static JSON, so nothing on this page depends on a third-party API at view time. Type is IBM Plex. Hosted on GitHub Pages. <a href="https://github.com/Ar-maan05/ar-maan05.github.io" target="_blank" rel="noopener">Source <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></a></p>
+        <p>Built by hand. Vanilla HTML and CSS with lightweight, zero-dependency JavaScript. No framework, no build step for the pages. PR statuses refresh daily through a GitHub Action that commits static JSON, so nothing on this page depends on a third-party API at view time. Type is IBM Plex. Hosted on GitHub Pages. <a href="https://github.com/Ar-maan05/ar-maan05.github.io" target="_blank" rel="noopener">Source <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></a></p>
         <p class="meta"><a class="receipt" href="https://pagespeed.web.dev/analysis?url=https://ar-maan05.github.io/" target="_blank" rel="noopener">Lighthouse: run it yourself <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></a></p>
       </div>
     </section>
@@ -544,23 +561,6 @@ app = with_persistence(mcp, backend=<span class="s">"redis"</span>, url=<span cl
       <span class="dot-sep"><a href="https://github.com/Ar-maan05/ar-maan05.github.io" target="_blank" rel="noopener">Source <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></a></span>
     </div>
   </footer>
-
-  <!-- ===================== COMMAND PALETTE (Cmd+K) ===================== -->
-  <dialog id="cmdk" class="cmdk-dialog" aria-label="Command Palette">
-    <div class="cmdk-backdrop"></div>
-    <div class="cmdk-box">
-      <div class="cmdk-search">
-        <svg class="icon icon-search" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-        </svg>
-        <input type="text" id="cmdk-input" placeholder="Type a command or search..." autocomplete="off" spellcheck="false">
-        <kbd class="cmdk-esc">ESC</kbd>
-      </div>
-      <div class="cmdk-results" id="cmdk-results">
-        <!-- populated by JS -->
-      </div>
-    </div>
-  </dialog>
 
   <script src="script.js" defer></script>
   <script src="demo.js" defer></script>

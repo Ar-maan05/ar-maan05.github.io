@@ -8,6 +8,7 @@
     { "repo": "lightpanda-io/browser", "number": 2537, "note": "W3C File API surface implemented in Zig for an AI-agent headless browser." },
     { "repo": "lightpanda-io/browser", "number": 2635, "note": "Completed file-input support, from FileList through DOM.setFileInputFiles." },
     { "repo": "BerriAI/litellm", "number": 29493, "note": "Added a proxy-wide setting to disable budget reservation." },
-    { "repo": "BerriAI/litellm", "number": 29483, "note": "Stopped budget enforcement on model-discovery and info routes." }
+    { "repo": "BerriAI/litellm", "number": 29483, "note": "Stopped budget enforcement on model-discovery and info routes." },
+    { "repo": "BerriAI/litellm", "number": 30020, "note": "Stopped a cancelled stream from stranding its max_parallel_requests slot, which had been pinning capped keys at their limit." }
   ]
 }
