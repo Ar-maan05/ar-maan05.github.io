@@ -35,7 +35,9 @@
       }
       var next = current === "dark" ? "light" : "dark";
       doc.documentElement.setAttribute("data-theme", next);
-      localStorage.setItem("theme", next);
+      try {
+        localStorage.setItem("theme", next);
+      } catch (e) {}
     });
   }
 

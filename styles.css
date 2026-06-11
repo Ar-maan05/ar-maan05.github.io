@@ -134,7 +134,7 @@
   justify-content: center;
   width: 42px;
   height: 42px;
-  padding: 0;
+  padding: 0 !important;
   border-radius: 50%;
   background: var(--paper-raised);
   border: 1px solid var(--rule-strong);

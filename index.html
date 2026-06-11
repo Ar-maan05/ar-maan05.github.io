@@ -6,8 +6,10 @@
   <script>
     document.documentElement.className = "js";
     // Restore saved theme before first paint to avoid flash
-    var saved = localStorage.getItem("theme");
-    if (saved) document.documentElement.setAttribute("data-theme", saved);
+    try {
+      var saved = localStorage.getItem("theme");
+      if (saved) document.documentElement.setAttribute("data-theme", saved);
+    } catch (e) {}
   </script>
 
   <title>Armaan Sandhu | Open source, merged upstream</title>
