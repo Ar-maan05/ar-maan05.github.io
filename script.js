@@ -5,6 +5,7 @@
   "use strict";
   var doc = document;
   var reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var activityData = null;
 
   // Mobile nav
   var toggle = doc.getElementById("nav-toggle");
@@ -234,6 +235,7 @@
 
   getJSON("data/activity.json").then(function (a) {
     if (!a) return;
+    activityData = a;
     /* hydrate baked curated states from live data */
     if (Array.isArray(a.curated)) {
       var merged = 0;
@@ -518,11 +520,77 @@
                          "  Git, GDB, Linux, Bash, Valgrind, IntelliJ IDEA, VS Code";
               break;
             case "merged":
-              response = "Contributions accepted upstream in reference implementations:\n" +
-                         " - <span class=\"text-merge\">python/cpython</span> : configure.ac CYGWIN port bugfix\n" +
-                         " - <span class=\"text-merge\">lancedb/lancedb</span> : DataFusion predicates and async executors\n" +
-                         " - <span class=\"text-merge\">BerriAI/litellm proxy</span> : budget reservation and route discovery\n" +
-                         " - <span class=\"text-merge\">lightpanda-io/browser</span> : W3C File API surface in Zig";
+              var mergedPRs = [];
+              
+              // 1. Try parsing from the DOM first (covers curated ledger and recent activity)
+              var rows = doc.querySelectorAll("#ledger-body tr, #recent-body tr");
+              rows.forEach(function (row) {
+                var stateCell = row.querySelector(".col-state");
+                var isMerged = stateCell && stateCell.textContent.trim().toLowerCase() === "merged";
+                if (isMerged) {
+                  var repoCell = row.querySelector(".col-repo");
+                  var titleCell = row.querySelector(".col-title a");
+                  var repo = repoCell ? repoCell.textContent.trim() : "";
+                  var title = titleCell ? titleCell.textContent.trim() : "";
+                  var prNum = "";
+                  
+                  var dataPr = row.getAttribute("data-pr");
+                  if (dataPr && dataPr.indexOf("#") !== -1) {
+                    prNum = dataPr.split("#")[1];
+                  } else if (titleCell) {
+                    var href = titleCell.getAttribute("href") || "";
+                    var match = href.match(/\/pull\/(\d+)/);
+                    if (match) prNum = match[1];
+                  }
+                  
+                  if (repo && prNum && title) {
+                    var exists = mergedPRs.some(function (p) {
+                      return p.repo === repo && p.pr === prNum;
+                    });
+                    if (!exists) {
+                      mergedPRs.push({ repo: repo, pr: prNum, title: title });
+                    }
+                  }
+                }
+              });
+
+              // 2. If DOM is not yet populated/accessible, check activityData
+              if (mergedPRs.length === 0 && activityData) {
+                if (Array.isArray(activityData.curated)) {
+                  activityData.curated.forEach(function (c) {
+                    if (c.state === "merged") {
+                      mergedPRs.push({ repo: c.repo, pr: c.number, title: c.title });
+                    }
+                  });
+                }
+                if (Array.isArray(activityData.recent)) {
+                  activityData.recent.forEach(function (r) {
+                    if (r.state === "merged") {
+                      mergedPRs.push({ repo: r.repo, pr: r.number, title: r.title });
+                    }
+                  });
+                }
+              }
+
+              // 3. Fallback to the complete actual list of merged PRs if all else fails
+              if (mergedPRs.length === 0) {
+                mergedPRs = [
+                  { repo: "python/cpython", pr: "150328", title: "gh-150311: Fix minor issues in configure.ac for the CYGWIN port" },
+                  { repo: "lance-format/lance", pr: "6934", title: "feat(rust): support datafusion expressions for merge insert predicates" },
+                  { repo: "lancedb/lancedb", pr: "3444", title: "feat(rust): support datafusion expressions for merge insert predicates" },
+                  { repo: "lancedb/lancedb", pr: "3459", title: "fix(python): run AsyncTable.search embeddings on a dedicated executor" },
+                  { repo: "lightpanda-io/browser", pr: "2537", title: "feat(webapi): implement W3C File API" },
+                  { repo: "lightpanda-io/browser", pr: "2635", title: "Implement input type=file support (FileList, input.files/value, DOM.setFileInputFiles)" },
+                  { repo: "BerriAI/litellm", pr: "29493", title: "feat(proxy): add disable_budget_reservation general setting" },
+                  { repo: "BerriAI/litellm", pr: "29483", title: "fix(proxy): don't enforce budgets on model-discovery / info routes" }
+                ];
+              }
+
+              response = "Upstream merged pull requests:\n";
+              mergedPRs.forEach(function (pr) {
+                response += " - <span class=\"text-merge\">" + escHtml(pr.repo) + "#" + pr.pr + "</span>: " + escHtml(pr.title) + "\n";
+              });
+              response = response.trim();
               break;
             case "downloads":
               var bakedDl = doc.querySelector("[data-downloads]");
