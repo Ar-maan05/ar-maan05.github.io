@@ -51,16 +51,29 @@
 
   // Hero entrance is pure CSS (§10.1); no JS needed for it.
   // Scroll reveals (§10.3)
-  var revealTargets = doc.querySelectorAll("main > section:not(.hero)");
+  var revealTargets = doc.querySelectorAll("main > section:not(.hero), .arch");
   if ("IntersectionObserver" in window && !reduce) {
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (en) {
         if (en.isIntersecting) { en.target.classList.add("in"); io.unobserve(en.target); }
       });
-    }, { threshold: 0.15 });
+    }, { threshold: 0.4 });
     revealTargets.forEach(function (s) { io.observe(s); });
   } else {
     revealTargets.forEach(function (s) { s.classList.add("in"); });
+  }
+
+  // Global cursor-aware ambient layer (§18.3)
+  if (window.matchMedia('(pointer: fine)').matches && !reduce) {
+    var raf = null;
+    window.addEventListener('pointermove', function (e) {
+      if (raf) return;
+      raf = requestAnimationFrame(function () {
+        doc.body.style.setProperty('--cx', e.clientX + 'px');
+        doc.body.style.setProperty('--cy', e.clientY + 'px');
+        raf = null;
+      });
+    }, { passive: true });
   }
 
   // Same-origin fetch with timeout

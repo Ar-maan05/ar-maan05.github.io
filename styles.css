@@ -1215,6 +1215,7 @@ a.diff:hover {
 .js .ledger tbody tr:nth-child(6) { transition-delay: 180ms; }
 .js .ledger tbody tr:nth-child(7) { transition-delay: 210ms; }
 .js .ledger tbody tr:nth-child(8) { transition-delay: 240ms; }
+.js .ledger tbody tr:nth-child(9) { transition-delay: 270ms; }
 
 @media (prefers-reduced-motion: reduce) {
   .js main > section:not(.hero),
@@ -1319,4 +1320,137 @@ a.diff:hover {
 .terminal-status.error {
   color: #ff5f56; /* red */
 }
+
+/* ===========================================================================
+   §18 v1.4 — Texture and motion pass (body sections)
+   =========================================================================== */
+
+/* §18.1 Architecture diagram comes alive on scroll */
+.arch .replay {
+  stroke-dasharray: 5 4;
+  stroke-dashoffset: 400;
+  transition: stroke-dashoffset 1.1s var(--ease-out);
+}
+.arch.in .replay { stroke-dashoffset: 0; }
+
+.arch .store {
+  transition: fill 0.4s var(--ease-out);
+}
+.arch.in .store {
+  animation: archpulse 1.8s var(--ease-out) 1.1s;
+}
+@keyframes archpulse {
+  0%   { fill: #F3EEFC; }
+  35%  { fill: var(--merge-tint, #E4D6FB); filter: drop-shadow(0 0 6px var(--merge-glow)); }
+  100% { fill: #F3EEFC; }
+}
+
+/* The flow lines draw in first, sequentially */
+.arch .flow {
+  stroke-dasharray: 80;
+  stroke-dashoffset: 80;
+  transition: stroke-dashoffset 0.5s var(--ease-out);
+}
+.arch.in .flow:nth-of-type(1) { stroke-dashoffset: 0; transition-delay: 0.1s; }
+.arch.in .flow:nth-of-type(2) { stroke-dashoffset: 0; transition-delay: 0.4s; }
+
+@media (prefers-reduced-motion: reduce) {
+  .arch .replay, .arch .flow { stroke-dashoffset: 0; transition: none; }
+  .arch.in .store { animation: none; }
+}
+
+/* §18.2 Chip merge-pulse on ledger reveal */
+.chip-merged { position: relative; }
+.js .in .chip-merged::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border: 1.5px solid var(--merge);
+  border-radius: var(--r-chip);
+  opacity: 0;
+  animation: chipring 0.7s var(--ease-out) forwards;
+}
+/* stagger to match the row's own delay, §17.8 nth-child delays + 200ms */
+.js .in .ledger tbody tr:nth-child(1) .chip-merged::after { animation-delay: 230ms; }
+.js .in .ledger tbody tr:nth-child(2) .chip-merged::after { animation-delay: 260ms; }
+.js .in .ledger tbody tr:nth-child(3) .chip-merged::after { animation-delay: 290ms; }
+.js .in .ledger tbody tr:nth-child(4) .chip-merged::after { animation-delay: 320ms; }
+.js .in .ledger tbody tr:nth-child(5) .chip-merged::after { animation-delay: 350ms; }
+.js .in .ledger tbody tr:nth-child(6) .chip-merged::after { animation-delay: 380ms; }
+.js .in .ledger tbody tr:nth-child(7) .chip-merged::after { animation-delay: 410ms; }
+.js .in .ledger tbody tr:nth-child(8) .chip-merged::after { animation-delay: 440ms; }
+.js .in .ledger tbody tr:nth-child(9) .chip-merged::after { animation-delay: 470ms; }
+
+@keyframes chipring {
+  0%   { opacity: 0.9; transform: scale(0.85); }
+  70%  { opacity: 0; transform: scale(1.4); }
+  100% { opacity: 0; transform: scale(1.4); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .js .in .chip-merged::after { display: none; }
+}
+
+/* §18.3 Global cursor-aware ambient layer */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(
+    600px circle at var(--cx, 50%) var(--cy, 0%),
+    var(--merge-glow-lg) 0%,
+    transparent 60%
+  );
+  opacity: 0.5;
+  transition: opacity 0.3s;
+}
+@media (prefers-reduced-motion: reduce) { body::before { display: none; } }
+@media (pointer: coarse) { body::before { display: none; } } /* touch: skip */
+
+/* §18.4 Foundations: numbered index marks */
+.foundation {
+  position: relative;
+  padding-left: 64px;
+}
+.foundation::before {
+  content: attr(data-index);
+  position: absolute;
+  left: 0; top: -4px;
+  font-family: var(--mono);
+  font-size: 40px;
+  font-weight: 500;
+  line-height: 1;
+  color: var(--rule-strong);
+  transition: color 0.3s var(--ease-out);
+}
+.foundation:hover::before { color: var(--merge); }
+@media (max-width: 600px) {
+  .foundation { padding-left: 48px; }
+  .foundation::before { font-size: 28px; }
+}
+
+/* §18.5 "Now" section: status-light eyebrow */
+.now-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink-muted);
+  margin-bottom: var(--s-2);
+}
+.now-status .dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--open);
+  box-shadow: 0 0 0 0 var(--open-tint);
+  animation: statusring 2.5s ease-out infinite;
+}
+@keyframes statusring {
+  0%   { box-shadow: 0 0 0 0 var(--open-tint); }
+  70%  { box-shadow: 0 0 0 6px transparent; }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
+@media (prefers-reduced-motion: reduce) { .now-status .dot { animation: none; } }
 
