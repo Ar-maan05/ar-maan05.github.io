@@ -55,9 +55,16 @@
   if ("IntersectionObserver" in window && !reduce) {
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (en) {
-        if (en.isIntersecting) { en.target.classList.add("in"); io.unobserve(en.target); }
+        if (en.isIntersecting) {
+          var isArch = en.target.classList.contains("arch");
+          var thresh = isArch ? 0.4 : 0.15;
+          if (en.intersectionRatio >= thresh) {
+            en.target.classList.add("in");
+            io.unobserve(en.target);
+          }
+        }
       });
-    }, { threshold: 0.4 });
+    }, { threshold: [0.15, 0.4] });
     revealTargets.forEach(function (s) { io.observe(s); });
   } else {
     revealTargets.forEach(function (s) { s.classList.add("in"); });
