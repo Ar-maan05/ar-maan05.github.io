@@ -499,7 +499,7 @@
                 break;
               case "about":
                 response = "Armaan Sandhu · CS @ WPI\n" +
-                           "Sophomore student developing open-source AI infrastructure.\n" +
+                           "Student developing open-source AI infrastructure.\n" +
                            "Wrote and maintained mcp-persist. WPI systems tutor and peer advisor.";
                 break;
               case "skills":
