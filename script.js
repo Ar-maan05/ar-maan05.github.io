@@ -388,7 +388,30 @@
     var cmdHistory = [];
     var historyIdx = -1;
     var tempInput = "";
-    var COMMANDS = ["help", "about", "skills", "merged", "downloads", "debug", "clear", "git log", "uptime", "ls projects", "contact", "sudo hire-me"];
+    var COMMANDS = ["help", "about", "skills", "merged", "downloads", "debug", "clear", "git log", "uptime", "ls", "ls projects", "cd", "contact", "sudo hire-me"];
+
+    // Navigable page sections, in document order. `ls` lists these and
+    // `cd <name>` scrolls the page to the matching <section> id.
+    var PAGE_SECTIONS = [
+      { name: "work",        id: "work",        desc: "Case study: mcp-persist" },
+      { name: "ledger",      id: "ledger",      desc: "Upstream merged pull requests" },
+      { name: "foundations", id: "foundations", desc: "Systems groundwork" },
+      { name: "about",       id: "about",       desc: "Off the clock, sort of" },
+      { name: "console",     id: "console",     desc: "This terminal" },
+      { name: "contact",     id: "contact",     desc: "Get in touch" },
+      { name: "colophon",    id: "colophon",    desc: "How this site is built" }
+    ];
+    // Aliases that resolve to a section name above (or the page top).
+    var SECTION_ALIASES = { "top": "top", "home": "top", "hero": "top", "terminal": "console" };
+    function resolveSection(query) {
+      query = query.trim().toLowerCase();
+      if (query === "top" || SECTION_ALIASES[query] === "top") return { id: "top" };
+      if (SECTION_ALIASES[query]) query = SECTION_ALIASES[query];
+      for (var i = 0; i < PAGE_SECTIONS.length; i++) {
+        if (PAGE_SECTIONS[i].name === query) return PAGE_SECTIONS[i];
+      }
+      return null;
+    }
 
     termInput.addEventListener("keydown", function (e) {
       cursorTyping();                                          // any key keeps it solid
@@ -411,6 +434,22 @@
               matchLine.innerHTML = prMatches.map(function(p) { return "debug " + p; }).join("   ");
               var inputLine = termInput.parentElement;
               termBody.insertBefore(matchLine, inputLine);
+              termBody.scrollTop = termBody.scrollHeight;
+            }
+          } else if (val.indexOf("cd ") === 0) {
+            var csub = val.slice(3).trim();
+            var secMatches = PAGE_SECTIONS.map(function (s) { return s.name; }).filter(function (n) {
+              return n.indexOf(csub) === 0;
+            });
+            if (secMatches.length === 1) {
+              termInput.value = "cd " + secMatches[0];
+              if (termEcho) termEcho.textContent = termInput.value;
+            } else if (secMatches.length > 1) {
+              var secLine = doc.createElement("div");
+              secLine.className = "term-line";
+              secLine.innerHTML = secMatches.map(function (n) { return "cd " + n; }).join("   ");
+              var inputLine = termInput.parentElement;
+              termBody.insertBefore(secLine, inputLine);
               termBody.scrollTop = termBody.scrollHeight;
             }
           } else {
@@ -486,6 +525,28 @@
               response = "No matching pull request found for '" + escHtml(query) + "'. Type <span class=\"text-merge\">merged</span> to see a list.";
               triggerStatusError();
             }
+          } else if (cmd === "cd") {
+            response = "Usage: <span class=\"text-merge\">cd &lt;section&gt;</span>\n" +
+                       "Type <span class=\"text-merge\">ls</span> to see the sections you can jump to.";
+          } else if (cmd.indexOf("cd ") === 0) {
+            var dest = resolveSection(cmd.slice(3));
+            if (dest) {
+              var target = dest.id === "top" ? doc.body : doc.getElementById(dest.id);
+              if (target) {
+                if (dest.id === "top") {
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                } else {
+                  target.scrollIntoView({ behavior: "smooth", block: "start" });
+                }
+                response = "→ " + escHtml(dest.id === "top" ? "top" : dest.name);
+              } else {
+                response = "No such section: '" + escHtml(cmd.slice(3).trim()) + "'.";
+                triggerStatusError();
+              }
+            } else {
+              response = "No such section: '" + escHtml(cmd.slice(3).trim()) + "'. Type <span class=\"text-merge\">ls</span> to list sections.";
+              triggerStatusError();
+            }
           } else {
             switch (cmd) {
               case "help":
@@ -495,6 +556,8 @@
                            "  <span class=\"text-merge\">merged</span>      View statistics on upstream contributions\n" +
                            "  <span class=\"text-merge\">downloads</span>   Show total downloads of mcp-persist\n" +
                            "  <span class=\"text-merge\">debug</span>       Run debugging simulation for a PR (e.g. debug cpython)\n" +
+                           "  <span class=\"text-merge\">ls</span>          List the sections of this page\n" +
+                           "  <span class=\"text-merge\">cd</span>          Jump to a section (e.g. cd ledger)\n" +
                            "  <span class=\"text-merge\">clear</span>       Clear the screen";
                 break;
               case "about":
@@ -604,6 +667,16 @@
                 var upDl = doc.querySelector("[data-downloads]");
                 var upText = upDl ? upDl.textContent.trim() : "8,000+";
                 response = "up " + escHtml(upText) + " PyPI installations · 8 upstream merges · 0 regrets";
+                break;
+              case "ls":
+                // Sections of the page; `cd <name>` scrolls to each.
+                response = "Sections — use <span class=\"text-merge\">cd &lt;name&gt;</span> to jump:\n";
+                PAGE_SECTIONS.forEach(function (s) {
+                  var pad = (s.name + "             ").slice(0, 13);
+                  response += "  <span class=\"text-merge\">" + escHtml(s.name) + "</span>" +
+                              pad.slice(s.name.length) + escHtml(s.desc) + "\n";
+                });
+                response = response.trim();
                 break;
               case "ls projects":
                 // Live download + version values, so this listing never goes stale
