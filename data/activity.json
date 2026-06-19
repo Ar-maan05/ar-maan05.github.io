@@ -1,5 +1,5 @@
 {
-  "generated": "2026-06-18T10:04:43.917Z",
+  "generated": "2026-06-19T10:12:02.547Z",
   "curated": [
     {
       "repo": "python/cpython",
@@ -85,31 +85,13 @@
   ],
   "recent": [
     {
-      "repo": "lancedb/lancedb",
-      "number": 3512,
-      "title": "fix(rust): return typed errors instead of panicking in Bedrock embedding path",
-      "state": "merged",
-      "url": "https://github.com/lancedb/lancedb/pull/3512",
-      "updated_at": "2026-06-17T22:06:45Z",
-      "merged_at": "2026-06-17T22:06:45Z"
-    },
-    {
-      "repo": "lancedb/lancedb",
-      "number": 3511,
-      "title": "fix(python): raise clear TypeError for bare List/Tuple in pydantic schema conversion",
-      "state": "merged",
-      "url": "https://github.com/lancedb/lancedb/pull/3511",
-      "updated_at": "2026-06-17T18:58:49Z",
-      "merged_at": "2026-06-17T18:58:48Z"
-    },
-    {
       "repo": "BerriAI/litellm",
-      "number": 30273,
-      "title": "feat(proxy): serve Anthropic-native /v1/models for Claude Code gateway discovery",
+      "number": 30272,
+      "title": "feat(proxy): surface max_input_tokens/max_output_tokens on /v1/models",
       "state": "merged",
-      "url": "https://github.com/BerriAI/litellm/pull/30273",
-      "updated_at": "2026-06-17T11:23:22Z",
-      "merged_at": "2026-06-17T11:23:21Z"
+      "url": "https://github.com/BerriAI/litellm/pull/30272",
+      "updated_at": "2026-06-19T09:58:19Z",
+      "merged_at": "2026-06-17T10:59:23Z"
     },
     {
       "repo": "BerriAI/litellm",
@@ -117,26 +99,44 @@
       "title": "fix(openai): preserve cache_control for openai-compatible custom endpoints",
       "state": "merged",
       "url": "https://github.com/BerriAI/litellm/pull/30387",
-      "updated_at": "2026-06-17T11:03:48Z",
+      "updated_at": "2026-06-19T09:58:11Z",
       "merged_at": "2026-06-17T11:03:48Z"
     },
     {
       "repo": "BerriAI/litellm",
-      "number": 30272,
-      "title": "feat(proxy): surface max_input_tokens/max_output_tokens on /v1/models",
+      "number": 30273,
+      "title": "feat(proxy): serve Anthropic-native /v1/models for Claude Code gateway discovery",
       "state": "merged",
-      "url": "https://github.com/BerriAI/litellm/pull/30272",
-      "updated_at": "2026-06-17T10:59:23Z",
-      "merged_at": "2026-06-17T10:59:23Z"
+      "url": "https://github.com/BerriAI/litellm/pull/30273",
+      "updated_at": "2026-06-19T09:58:03Z",
+      "merged_at": "2026-06-17T11:23:21Z"
+    },
+    {
+      "repo": "lancedb/lancedb",
+      "number": 3511,
+      "title": "fix(python): raise clear TypeError for bare List/Tuple in pydantic schema conversion",
+      "state": "merged",
+      "url": "https://github.com/lancedb/lancedb/pull/3511",
+      "updated_at": "2026-06-19T09:57:52Z",
+      "merged_at": "2026-06-17T18:58:48Z"
+    },
+    {
+      "repo": "lancedb/lancedb",
+      "number": 3512,
+      "title": "fix(rust): return typed errors instead of panicking in Bedrock embedding path",
+      "state": "merged",
+      "url": "https://github.com/lancedb/lancedb/pull/3512",
+      "updated_at": "2026-06-19T09:57:42Z",
+      "merged_at": "2026-06-17T22:06:45Z"
     },
     {
       "repo": "lance-format/lance",
-      "number": 7251,
-      "title": "fix: merge_insert silently drops matches when a leading payload column is all-null",
+      "number": 7246,
+      "title": "fix: evaluate all list-element docs in FTS prefilter walk-the-allowlist branch",
       "state": "merged",
-      "url": "https://github.com/lance-format/lance/pull/7251",
-      "updated_at": "2026-06-16T20:03:22Z",
-      "merged_at": "2026-06-16T19:14:59Z"
+      "url": "https://github.com/lance-format/lance/pull/7246",
+      "updated_at": "2026-06-19T08:01:26Z",
+      "merged_at": "2026-06-19T07:56:18Z"
     }
   ]
 }
