@@ -1,5 +1,5 @@
 {
-  "generated": "2026-06-19T10:12:02.547Z",
+  "generated": "2026-06-20T08:40:06.310Z",
   "curated": [
     {
       "repo": "python/cpython",
@@ -85,6 +85,24 @@
   ],
   "recent": [
     {
+      "repo": "systemd/systemd",
+      "number": 42578,
+      "title": "sysupdate: refuse reboot/pending logic when --component= is used",
+      "state": "merged",
+      "url": "https://github.com/systemd/systemd/pull/42578",
+      "updated_at": "2026-06-19T21:34:59Z",
+      "merged_at": "2026-06-19T20:11:28Z"
+    },
+    {
+      "repo": "lightpanda-io/browser",
+      "number": 2722,
+      "title": "feat(cdp): implement Browser.setDownloadBehavior file downloads",
+      "state": "merged",
+      "url": "https://github.com/lightpanda-io/browser/pull/2722",
+      "updated_at": "2026-06-19T12:57:52Z",
+      "merged_at": "2026-06-19T12:57:42Z"
+    },
+    {
       "repo": "BerriAI/litellm",
       "number": 30272,
       "title": "feat(proxy): surface max_input_tokens/max_output_tokens on /v1/models",
@@ -119,24 +137,6 @@
       "url": "https://github.com/lancedb/lancedb/pull/3511",
       "updated_at": "2026-06-19T09:57:52Z",
       "merged_at": "2026-06-17T18:58:48Z"
-    },
-    {
-      "repo": "lancedb/lancedb",
-      "number": 3512,
-      "title": "fix(rust): return typed errors instead of panicking in Bedrock embedding path",
-      "state": "merged",
-      "url": "https://github.com/lancedb/lancedb/pull/3512",
-      "updated_at": "2026-06-19T09:57:42Z",
-      "merged_at": "2026-06-17T22:06:45Z"
-    },
-    {
-      "repo": "lance-format/lance",
-      "number": 7246,
-      "title": "fix: evaluate all list-element docs in FTS prefilter walk-the-allowlist branch",
-      "state": "merged",
-      "url": "https://github.com/lance-format/lance/pull/7246",
-      "updated_at": "2026-06-19T08:01:26Z",
-      "merged_at": "2026-06-19T07:56:18Z"
     }
   ]
 }
