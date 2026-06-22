@@ -361,7 +361,16 @@
         "lightpanda-io/browser#2635",
         "BerriAI/litellm#29493",
         "BerriAI/litellm#29483",
-        "BerriAI/litellm#30020"
+        "BerriAI/litellm#30020",
+        "lancedb/lancedb#3511",
+        "lancedb/lancedb#3512",
+        "BerriAI/litellm#30272",
+        "BerriAI/litellm#30273",
+        "lightpanda-io/browser#2722",
+        "lance-format/lance#7246",
+        "lance-format/lance#7251",
+        "systemd/systemd#42578",
+        "BerriAI/litellm#30387"
       ];
       for (var i = 0; i < keys.length; i++) {
         if (keys[i].toLowerCase().indexOf(term) !== -1) {
@@ -421,7 +430,7 @@
         if (val) {
           if (val.indexOf("debug ") === 0) {
             var sub = val.slice(6).trim();
-            var prs = ["cpython", "lance", "lancedb", "browser", "lightpanda", "litellm", "150328", "6934", "3444", "3459", "2537", "2635", "29493", "29483", "30020"];
+            var prs = ["cpython", "lance", "lancedb", "browser", "lightpanda", "litellm", "systemd", "150328", "6934", "3444", "3459", "2537", "2635", "29493", "29483", "30020", "3511", "3512", "30272", "30273", "2722", "7246", "7251", "42578", "30387"];
             var prMatches = prs.filter(function (p) {
               return p.indexOf(sub) === 0;
             });
@@ -639,7 +648,16 @@
                     { repo: "lightpanda-io/browser", pr: "2635", title: "Implement input type=file support (FileList, input.files/value, DOM.setFileInputFiles)" },
                     { repo: "BerriAI/litellm", pr: "29493", title: "feat(proxy): add disable_budget_reservation general setting" },
                     { repo: "BerriAI/litellm", pr: "29483", title: "fix(proxy): don't enforce budgets on model-discovery / info routes" },
-                    { repo: "BerriAI/litellm", pr: "30020", title: "fix(proxy): release max_parallel_requests slot when a stream is cancelled mid-flight" }
+                    { repo: "BerriAI/litellm", pr: "30020", title: "fix(proxy): release max_parallel_requests slot when a stream is cancelled mid-flight" },
+                    { repo: "lancedb/lancedb", pr: "3511", title: "fix(python): raise clear TypeError for bare List/Tuple in pydantic schema conversion" },
+                    { repo: "lancedb/lancedb", pr: "3512", title: "fix(rust): return typed errors instead of panicking in Bedrock embedding path" },
+                    { repo: "BerriAI/litellm", pr: "30272", title: "feat(proxy): surface max_input_tokens/max_output_tokens on /v1/models" },
+                    { repo: "BerriAI/litellm", pr: "30273", title: "feat(proxy): serve Anthropic-native /v1/models for Claude Code gateway discovery" },
+                    { repo: "lightpanda-io/browser", pr: "2722", title: "feat(cdp): implement Browser.setDownloadBehavior file downloads" },
+                    { repo: "lance-format/lance", pr: "7246", title: "fix: evaluate all list-element docs in FTS prefilter walk-the-allowlist branch" },
+                    { repo: "lance-format/lance", pr: "7251", title: "fix: merge_insert silently drops matches when a leading payload column is all-null" },
+                    { repo: "systemd/systemd", pr: "42578", title: "sysupdate: refuse reboot/pending logic when --component= is used" },
+                    { repo: "BerriAI/litellm", pr: "30387", title: "fix(openai): preserve cache_control for openai-compatible custom endpoints" }
                   ];
                 }
 
@@ -1113,6 +1131,311 @@
                     });
                   }, 1000);
                 }, 1200);
+              });
+            }, 800);
+          });
+        }, 800);
+      });
+    } else if (simKey === "lancedb/lancedb#3511") {
+      typeCommand("asandhu@wpi:~$", "gdb python3", function() {
+        printLine("GNU gdb (GDB) 14.1");
+        printLine("Reading symbols from python3...");
+        setTimeout(function() {
+          typeCommand("(gdb)", "run -m pytest tests/test_pydantic.py", function() {
+            printLine("Starting program: /usr/bin/python3 -m pytest tests/test_pydantic.py");
+            printLine("[Thread debugging using libthread_db enabled]");
+            printLine("Executing schema conversion with bare List/Tuple generic...");
+            setTimeout(function() {
+              typeCommand("(gdb)", "break lancedb/pydantic.py:84", function() {
+                printLine("Breakpoint 1 at 0x3f511: file lancedb/pydantic.py, line 84.");
+                setTimeout(function() {
+                  typeCommand("(gdb)", "continue", function() {
+                    printLine("Continuing.");
+                    printLine("Breakpoint 1, py_to_schema (field_type=List) at lancedb/pydantic.py:84");
+                    printLine("84\t    if hasattr(field_type, '__args__') and not field_type.__args__:");
+                    setTimeout(function() {
+                      typeCommand("(gdb)", "print field_type", function() {
+                        printLine("$1 = &lt;class 'typing.List'&gt; <span class=\"text-merge\">(bare generic list detected!)</span>");
+                        setTimeout(function() {
+                          typeCommand("(gdb)", "continue", function() {
+                            printLine("Continuing.");
+                            printLine("<span class=\"text-merge\">Raised TypeError: Bare List/Tuple generics are not supported. Specify element types.</span>");
+                            printLine("Verification complete: TypeError successfully raised for bare generics.");
+                            finishSim();
+                          });
+                        }, 1000);
+                      });
+                    }, 1000);
+                  });
+                }, 800);
+              });
+            }, 800);
+          });
+        }, 800);
+      });
+    } else if (simKey === "lancedb/lancedb#3512") {
+      typeCommand("asandhu@wpi:~$", "rust-gdb target/debug/deps/lancedb_core", function() {
+        printLine("GNU gdb (GDB) 14.1");
+        printLine("Reading symbols from target/debug/deps/lancedb_core...");
+        setTimeout(function() {
+          typeCommand("(gdb)", "break embeddings::bedrock::BedrockProvider::embed", function() {
+            printLine("Breakpoint 1 at 0x3f512: file src/embeddings/bedrock.rs, line 112.");
+            setTimeout(function() {
+              typeCommand("(gdb)", "run", function() {
+                printLine("Starting program: target/debug/deps/lancedb_core");
+                printLine("Breakpoint 1, BedrockProvider::embed (self=..., input=...) at src/embeddings/bedrock.rs:112");
+                printLine("112\t    let res = self.client.invoke_model(...);");
+                setTimeout(function() {
+                  typeCommand("(gdb)", "next", function() {
+                    printLine("113\t    match res {");
+                    printLine("114\t        Err(err) => return Err(Error::Bedrock(err.to_string())),");
+                    setTimeout(function() {
+                      typeCommand("(gdb)", "print res", function() {
+                        printLine("$1 = Err(AwsServiceError { message: \"AccessDeniedException\" })");
+                        printLine("<span class=\"text-merge\">Safe error boundary crossed, returning Result instead of panic!</span>");
+                        setTimeout(function() {
+                          typeCommand("(gdb)", "continue", function() {
+                            printLine("Continuing.");
+                            printLine("test result: ok. Bedrock failure handled gracefully.");
+                            finishSim();
+                          });
+                        }, 1000);
+                      });
+                    }, 1000);
+                  });
+                }, 1000);
+              });
+            }, 800);
+          });
+        }, 800);
+      });
+    } else if (simKey === "BerriAI/litellm#30272") {
+      typeCommand("asandhu@wpi:~$", "gdb python3", function() {
+        printLine("GNU gdb (GDB) 14.1");
+        printLine("Reading symbols from python3...");
+        setTimeout(function() {
+          typeCommand("(gdb)", "break litellm.proxy.proxy_server.models_handler", function() {
+            printLine("Breakpoint 1 at 0x30272: file proxy_server.py, line 1405.");
+            setTimeout(function() {
+              typeCommand("(gdb)", "run litellm_proxy.py", function() {
+                printLine("Starting program: /usr/bin/python3 litellm_proxy.py");
+                printLine("Proxy running on port 8000...");
+                printLine("[Client] GET /v1/models");
+                printLine("Breakpoint 1, models_handler () at proxy_server.py:1405");
+                setTimeout(function() {
+                  typeCommand("(gdb)", "print response_data['data'][0]['max_input_tokens']", function() {
+                    printLine("$1 = 200000");
+                    setTimeout(function() {
+                      typeCommand("(gdb)", "print response_data['data'][0]['max_output_tokens']", function() {
+                        printLine("$2 = 4096 <span class=\"text-merge\">(Model capacities correctly surfaced!)</span>");
+                        setTimeout(function() {
+                          typeCommand("(gdb)", "continue", function() {
+                            printLine("Continuing.");
+                            printLine("Response successfully returned with token limits.");
+                            finishSim();
+                          });
+                        }, 1000);
+                      });
+                    }, 1000);
+                  });
+                }, 1000);
+              });
+            }, 800);
+          });
+        }, 800);
+      });
+    } else if (simKey === "BerriAI/litellm#30273") {
+      typeCommand("asandhu@wpi:~$", "gdb python3", function() {
+        printLine("GNU gdb (GDB) 14.1");
+        printLine("Reading symbols from python3...");
+        setTimeout(function() {
+          typeCommand("(gdb)", "break litellm.proxy.proxy_server.get_anthropic_models", function() {
+            printLine("Breakpoint 1 at 0x30273: file proxy_server.py, line 1420.");
+            setTimeout(function() {
+              typeCommand("(gdb)", "run litellm_proxy.py", function() {
+                printLine("Starting program: /usr/bin/python3 litellm_proxy.py");
+                printLine("Proxy running on port 8000...");
+                printLine("[Client: Claude Code Gateway] GET /v1/models (Anthropic header present)");
+                printLine("Breakpoint 1, get_anthropic_models () at proxy_server.py:1420");
+                setTimeout(function() {
+                  typeCommand("(gdb)", "print anthropic_format", function() {
+                    printLine("$1 = True <span class=\"text-merge\">(Claude Code gateway signature matched!)</span>");
+                    setTimeout(function() {
+                      typeCommand("(gdb)", "continue", function() {
+                        printLine("Continuing.");
+                        printLine("Returned model list in native Anthropic-compatible JSON layout.");
+                        finishSim();
+                      });
+                    }, 1000);
+                  });
+                }, 1000);
+              });
+            }, 800);
+          });
+        }, 800);
+      });
+    } else if (simKey === "lightpanda-io/browser#2722") {
+      typeCommand("asandhu@wpi:~$", "gdb zig-out/bin/test", function() {
+        printLine("GNU gdb (GDB) 14.1");
+        printLine("Reading symbols from zig-out/bin/test...");
+        setTimeout(function() {
+          typeCommand("(gdb)", "break browser.Browser.setDownloadBehavior", function() {
+            printLine("Breakpoint 1 at 0x92722: file src/Browser.zig, line 310.");
+            setTimeout(function() {
+              typeCommand("(gdb)", "run", function() {
+                printLine("Starting program: zig-out/bin/test");
+                printLine("Breakpoint 1, Browser.setDownloadBehavior (self=..., behavior=..., path=...) at src/Browser.zig:310");
+                printLine("310\t    self.download_behavior = behavior;");
+                setTimeout(function() {
+                  typeCommand("(gdb)", "print behavior", function() {
+                    printLine("$1 = DownloadBehavior.allow");
+                    setTimeout(function() {
+                      typeCommand("(gdb)", "print path", function() {
+                        printLine("$2 = { .ptr = 0x7fffffffe100 \"/downloads\", .len = 10 }");
+                        printLine("<span class=\"text-merge\">CDP download automation behavior configuration matches allow state!</span>");
+                        setTimeout(function() {
+                          typeCommand("(gdb)", "continue", function() {
+                            printLine("Continuing.");
+                            printLine("Browser.setDownloadBehavior test passed.");
+                            finishSim();
+                          });
+                        }, 1000);
+                      });
+                    }, 1000);
+                  });
+                }, 1000);
+              });
+            }, 800);
+          });
+        }, 800);
+      });
+    } else if (simKey === "lance-format/lance#7246") {
+      typeCommand("asandhu@wpi:~$", "rust-gdb target/debug/deps/lance_core", function() {
+        printLine("GNU gdb (GDB) 14.1");
+        printLine("Reading symbols from target/debug/deps/lance_core...");
+        setTimeout(function() {
+          typeCommand("(gdb)", "break fts::prefilter::walk_the_allowlist", function() {
+            printLine("Breakpoint 1 at 0x7246c: file src/fts/prefilter.rs, line 144.");
+            setTimeout(function() {
+              typeCommand("(gdb)", "run", function() {
+                printLine("Starting program: target/debug/deps/lance_core");
+                printLine("Breakpoint 1, fts::prefilter::walk_the_allowlist (self=..., doc_ids=...) at src/fts/prefilter.rs:144");
+                printLine("144\t    for doc_id in doc_ids {");
+                setTimeout(function() {
+                  typeCommand("(gdb)", "print doc_ids.len()", function() {
+                    printLine("$1 = 105 <span class=\"text-merge\">(All 105 elements inside allowlist prefilter loaded)</span>");
+                    setTimeout(function() {
+                      typeCommand("(gdb)", "next", function() {
+                        printLine("145\t        self.evaluate_doc(doc_id);");
+                        printLine("<span class=\"text-merge\">Successfully verifying list-element iteration covers all allowlisted IDs</span>");
+                        setTimeout(function() {
+                          typeCommand("(gdb)", "continue", function() {
+                            printLine("Continuing.");
+                            printLine("fts prefilter tests passed.");
+                            finishSim();
+                          });
+                        }, 1000);
+                      });
+                    }, 1000);
+                  });
+                }, 1000);
+              });
+            }, 800);
+          });
+        }, 800);
+      });
+    } else if (simKey === "lance-format/lance#7251") {
+      typeCommand("asandhu@wpi:~$", "rust-gdb target/debug/deps/lance_core", function() {
+        printLine("GNU gdb (GDB) 14.1");
+        printLine("Reading symbols from target/debug/deps/lance_core...");
+        setTimeout(function() {
+          typeCommand("(gdb)", "break merge_insert::compare_payload_columns", function() {
+            printLine("Breakpoint 1 at 0x7251d: file src/merge_insert.rs, line 290.");
+            setTimeout(function() {
+              typeCommand("(gdb)", "run", function() {
+                printLine("Starting program: target/debug/deps/lance_core");
+                printLine("Breakpoint 1, compare_payload_columns (col1=..., col2=...) at src/merge_insert.rs:290");
+                printLine("290\t    if col1.is_null() && col2.is_null() {");
+                setTimeout(function() {
+                  typeCommand("(gdb)", "print col1.is_null()", function() {
+                    printLine("$1 = true");
+                    setTimeout(function() {
+                      typeCommand("(gdb)", "next", function() {
+                        printLine("291\t        return CompareResult::Match;");
+                        printLine("<span class=\"text-merge\">Leading null payload columns successfully matched (no silent drops!)</span>");
+                        setTimeout(function() {
+                          typeCommand("(gdb)", "continue", function() {
+                            printLine("Continuing.");
+                            printLine("merge_insert tests passed.");
+                            finishSim();
+                          });
+                        }, 1000);
+                      });
+                    }, 1000);
+                  });
+                }, 1000);
+              });
+            }, 800);
+          });
+        }, 800);
+      });
+    } else if (simKey === "systemd/systemd#42578") {
+      typeCommand("asandhu@wpi:~$", "gdb sysupdate", function() {
+        printLine("GNU gdb (GDB) 14.1");
+        printLine("Reading symbols from sysupdate...");
+        setTimeout(function() {
+          typeCommand("(gdb)", "break sysupdate.c:check_reboot_pending", function() {
+            printLine("Breakpoint 1 at 0x42578: file src/sysupdate/sysupdate.c, line 482.");
+            setTimeout(function() {
+              typeCommand("(gdb)", "run --component=kernel update", function() {
+                printLine("Starting program: /usr/bin/sysupdate --component=kernel update");
+                printLine("Breakpoint 1, check_reboot_pending (component=...) at src/sysupdate/sysupdate.c:482");
+                printLine("482\t    if (component) {");
+                setTimeout(function() {
+                  typeCommand("(gdb)", "next", function() {
+                    printLine("483\t        log_error(\"Refusing reboot/pending update logic when --component= is specified.\");");
+                    printLine("484\t        return -EINVAL;");
+                    setTimeout(function() {
+                      typeCommand("(gdb)", "continue", function() {
+                        printLine("Continuing.");
+                        printLine("<span class=\"text-danger\">Refusing reboot/pending update logic when --component= is specified.</span>");
+                        printLine("[Inferior 1 (process 40300) exited with code 0377]");
+                        printLine("Verification complete: sysupdate correctly rejected reboot checks with --component.");
+                        finishSim();
+                      });
+                    }, 1000);
+                  });
+                }, 1000);
+              });
+            }, 800);
+          });
+        }, 800);
+      });
+    } else if (simKey === "BerriAI/litellm#30387") {
+      typeCommand("asandhu@wpi:~$", "gdb python3", function() {
+        printLine("GNU gdb (GDB) 14.1");
+        printLine("Reading symbols from python3...");
+        setTimeout(function() {
+          typeCommand("(gdb)", "break litellm.proxy.proxy_server.custom_openai_endpoint", function() {
+            printLine("Breakpoint 1 at 0x30387: file proxy_server.py, line 910.");
+            setTimeout(function() {
+              typeCommand("(gdb)", "run litellm_proxy.py", function() {
+                printLine("Starting program: /usr/bin/python3 litellm_proxy.py");
+                printLine("Proxy running on port 8000...");
+                printLine("[Client] POST /v1/chat/completions (custom endpoint with Cache-Control: no-cache)");
+                printLine("Breakpoint 1, custom_openai_endpoint (headers=...) at proxy_server.py:910");
+                setTimeout(function() {
+                  typeCommand("(gdb)", "print headers['Cache-Control']", function() {
+                    printLine("$1 = \"no-cache\" <span class=\"text-merge\">(Cache-Control header successfully preserved!)</span>");
+                    setTimeout(function() {
+                      typeCommand("(gdb)", "continue", function() {
+                        printLine("Continuing.");
+                        printLine("Forwarded request with headers intact. Custom endpoint cache bypass working.");
+                        finishSim();
+                      });
+                    }, 1000);
+                  });
+                }, 1000);
               });
             }, 800);
           });
