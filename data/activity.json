@@ -1,6 +1,15 @@
 {
-  "generated": "2026-06-21T09:35:07.094Z",
+  "generated": "2026-06-22T07:32:11.293Z",
   "curated": [
+    {
+      "repo": "lightpanda-io/browser",
+      "number": 2537,
+      "title": "feat(webapi): implement W3C File API",
+      "state": "merged",
+      "merged_at": "2026-05-25T04:10:43Z",
+      "url": "https://github.com/lightpanda-io/browser/pull/2537",
+      "note": "W3C File API surface implemented in Zig for an AI-agent headless browser."
+    },
     {
       "repo": "python/cpython",
       "number": 150328,
@@ -18,6 +27,15 @@
       "merged_at": "2026-05-28T04:13:33Z",
       "url": "https://github.com/lance-format/lance/pull/6934",
       "note": "DataFusion expressions for merge-insert predicates in a production columnar format."
+    },
+    {
+      "repo": "BerriAI/litellm",
+      "number": 29483,
+      "title": "fix(proxy): don't enforce budgets on model-discovery / info routes (#27923)",
+      "state": "merged",
+      "merged_at": "2026-06-02T11:18:50Z",
+      "url": "https://github.com/BerriAI/litellm/pull/29483",
+      "note": "Stopped budget enforcement on model-discovery and info routes."
     },
     {
       "repo": "lancedb/lancedb",
@@ -39,15 +57,6 @@
     },
     {
       "repo": "lightpanda-io/browser",
-      "number": 2537,
-      "title": "feat(webapi): implement W3C File API",
-      "state": "merged",
-      "merged_at": "2026-05-25T04:10:43Z",
-      "url": "https://github.com/lightpanda-io/browser/pull/2537",
-      "note": "W3C File API surface implemented in Zig for an AI-agent headless browser."
-    },
-    {
-      "repo": "lightpanda-io/browser",
       "number": 2635,
       "title": "Implement input type=file support (FileList, input.files/value, DOM.setFileInputFiles)",
       "state": "merged",
@@ -65,13 +74,22 @@
       "note": "Added a proxy-wide setting to disable budget reservation."
     },
     {
-      "repo": "BerriAI/litellm",
-      "number": 29483,
-      "title": "fix(proxy): don't enforce budgets on model-discovery / info routes (#27923)",
+      "repo": "lancedb/lancedb",
+      "number": 3511,
+      "title": "fix(python): raise clear TypeError for bare List/Tuple in pydantic schema conversion",
       "state": "merged",
-      "merged_at": "2026-06-02T11:18:50Z",
-      "url": "https://github.com/BerriAI/litellm/pull/29483",
-      "note": "Stopped budget enforcement on model-discovery and info routes."
+      "merged_at": "2026-06-17T18:58:48Z",
+      "url": "https://github.com/lancedb/lancedb/pull/3511",
+      "note": "Fixed opaque AttributeError for bare List/Tuple generics in Pydantic schema conversion, raising a clear TypeError instead."
+    },
+    {
+      "repo": "lancedb/lancedb",
+      "number": 3512,
+      "title": "fix(rust): return typed errors instead of panicking in Bedrock embedding path",
+      "state": "merged",
+      "merged_at": "2026-06-17T22:06:45Z",
+      "url": "https://github.com/lancedb/lancedb/pull/3512",
+      "note": "Replaced panic paths in the Bedrock embedding provider with typed error returns across serialization, API, and runtime failure modes."
     },
     {
       "repo": "BerriAI/litellm",
@@ -81,62 +99,70 @@
       "merged_at": "2026-06-11T10:37:31Z",
       "url": "https://github.com/BerriAI/litellm/pull/30020",
       "note": "Stopped a cancelled stream from stranding its max_parallel_requests slot, which had been pinning capped keys at their limit."
-    }
-  ],
-  "recent": [
-    {
-      "repo": "systemd/systemd",
-      "number": 42578,
-      "title": "sysupdate: refuse reboot/pending logic when --component= is used",
-      "state": "merged",
-      "url": "https://github.com/systemd/systemd/pull/42578",
-      "updated_at": "2026-06-19T21:34:59Z",
-      "merged_at": "2026-06-19T20:11:28Z"
-    },
-    {
-      "repo": "lightpanda-io/browser",
-      "number": 2722,
-      "title": "feat(cdp): implement Browser.setDownloadBehavior file downloads",
-      "state": "merged",
-      "url": "https://github.com/lightpanda-io/browser/pull/2722",
-      "updated_at": "2026-06-19T12:57:52Z",
-      "merged_at": "2026-06-19T12:57:42Z"
     },
     {
       "repo": "BerriAI/litellm",
       "number": 30272,
       "title": "feat(proxy): surface max_input_tokens/max_output_tokens on /v1/models",
       "state": "merged",
+      "merged_at": "2026-06-17T10:59:23Z",
       "url": "https://github.com/BerriAI/litellm/pull/30272",
-      "updated_at": "2026-06-19T09:58:19Z",
-      "merged_at": "2026-06-17T10:59:23Z"
-    },
-    {
-      "repo": "BerriAI/litellm",
-      "number": 30387,
-      "title": "fix(openai): preserve cache_control for openai-compatible custom endpoints",
-      "state": "merged",
-      "url": "https://github.com/BerriAI/litellm/pull/30387",
-      "updated_at": "2026-06-19T09:58:11Z",
-      "merged_at": "2026-06-17T11:03:48Z"
+      "note": "Surfaced max_input_tokens and max_output_tokens on /v1/models for accurate client-side capacity planning."
     },
     {
       "repo": "BerriAI/litellm",
       "number": 30273,
       "title": "feat(proxy): serve Anthropic-native /v1/models for Claude Code gateway discovery",
       "state": "merged",
+      "merged_at": "2026-06-17T11:23:21Z",
       "url": "https://github.com/BerriAI/litellm/pull/30273",
-      "updated_at": "2026-06-19T09:58:03Z",
-      "merged_at": "2026-06-17T11:23:21Z"
+      "note": "Enabled Anthropic-native model discovery for Claude Code gateway deployments."
     },
     {
-      "repo": "lancedb/lancedb",
-      "number": 3511,
-      "title": "fix(python): raise clear TypeError for bare List/Tuple in pydantic schema conversion",
+      "repo": "lightpanda-io/browser",
+      "number": 2722,
+      "title": "feat(cdp): implement Browser.setDownloadBehavior file downloads",
       "state": "merged",
-      "url": "https://github.com/lancedb/lancedb/pull/3511",
-      "updated_at": "2026-06-19T09:57:52Z",
-      "merged_at": "2026-06-17T18:58:48Z"
+      "merged_at": "2026-06-19T12:57:42Z",
+      "url": "https://github.com/lightpanda-io/browser/pull/2722",
+      "note": "Implemented Browser.setDownloadBehavior for CDP-driven file download automation."
+    },
+    {
+      "repo": "lance-format/lance",
+      "number": 7246,
+      "title": "fix: evaluate all list-element docs in FTS prefilter walk-the-allowlist branch",
+      "state": "merged",
+      "merged_at": "2026-06-19T07:56:18Z",
+      "url": "https://github.com/lance-format/lance/pull/7246",
+      "note": "Fixed incorrect evaluation of list-element docs in the FTS prefilter walk-the-allowlist branch."
+    },
+    {
+      "repo": "lance-format/lance",
+      "number": 7251,
+      "title": "fix: merge_insert silently drops matches when a leading payload column is all-null",
+      "state": "merged",
+      "merged_at": "2026-06-16T19:14:59Z",
+      "url": "https://github.com/lance-format/lance/pull/7251",
+      "note": "Critical fix: merge_insert silently dropped matched rows when the leading payload column was all-null."
+    },
+    {
+      "repo": "systemd/systemd",
+      "number": 42578,
+      "title": "sysupdate: refuse reboot/pending logic when --component= is used",
+      "state": "merged",
+      "merged_at": "2026-06-19T20:11:28Z",
+      "url": "https://github.com/systemd/systemd/pull/42578",
+      "note": "Fixed incorrect reboot/pending logic in sysupdate when --component= is used. First PR merged into systemd."
+    },
+    {
+      "repo": "BerriAI/litellm",
+      "number": 30387,
+      "title": "fix(openai): preserve cache_control for openai-compatible custom endpoints",
+      "state": "merged",
+      "merged_at": "2026-06-17T11:03:48Z",
+      "url": "https://github.com/BerriAI/litellm/pull/30387",
+      "note": "Preserved cache_control headers for OpenAI-compatible custom endpoints, fixing silent cache bypass."
     }
-  ]
+  ],
+  "recent": []
 }

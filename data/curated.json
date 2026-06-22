@@ -1,14 +1,23 @@
 {
   "comment": "MERGED upstream work only, in display order (§6.3). Open PRs flow through Recent Activity automatically with live states, so they never go stale. The pipeline re-verifies every state on each run.",
   "curated": [
+    { "repo": "lightpanda-io/browser", "number": 2537, "note": "W3C File API surface implemented in Zig for an AI-agent headless browser." },
     { "repo": "python/cpython", "number": 150328, "note": "Build-system fix accepted into the reference Python implementation." },
     { "repo": "lance-format/lance", "number": 6934, "note": "DataFusion expressions for merge-insert predicates in a production columnar format." },
+    { "repo": "BerriAI/litellm", "number": 29483, "note": "Stopped budget enforcement on model-discovery and info routes." },
     { "repo": "lancedb/lancedb", "number": 3444, "note": "The same DataFusion capability carried into LanceDB's Rust core." },
     { "repo": "lancedb/lancedb", "number": 3459, "note": "Moved embedding search onto a dedicated executor to stop event-loop stalls." },
-    { "repo": "lightpanda-io/browser", "number": 2537, "note": "W3C File API surface implemented in Zig for an AI-agent headless browser." },
     { "repo": "lightpanda-io/browser", "number": 2635, "note": "Completed file-input support, from FileList through DOM.setFileInputFiles." },
     { "repo": "BerriAI/litellm", "number": 29493, "note": "Added a proxy-wide setting to disable budget reservation." },
-    { "repo": "BerriAI/litellm", "number": 29483, "note": "Stopped budget enforcement on model-discovery and info routes." },
-    { "repo": "BerriAI/litellm", "number": 30020, "note": "Stopped a cancelled stream from stranding its max_parallel_requests slot, which had been pinning capped keys at their limit." }
+    { "repo": "lancedb/lancedb", "number": 3511, "note": "Fixed opaque AttributeError for bare List/Tuple generics in Pydantic schema conversion, raising a clear TypeError instead." },
+    { "repo": "lancedb/lancedb", "number": 3512, "note": "Replaced panic paths in the Bedrock embedding provider with typed error returns across serialization, API, and runtime failure modes." },
+    { "repo": "BerriAI/litellm", "number": 30020, "note": "Stopped a cancelled stream from stranding its max_parallel_requests slot, which had been pinning capped keys at their limit." },
+    { "repo": "BerriAI/litellm", "number": 30272, "note": "Surfaced max_input_tokens and max_output_tokens on /v1/models for accurate client-side capacity planning." },
+    { "repo": "BerriAI/litellm", "number": 30273, "note": "Enabled Anthropic-native model discovery for Claude Code gateway deployments." },
+    { "repo": "lightpanda-io/browser", "number": 2722, "note": "Implemented Browser.setDownloadBehavior for CDP-driven file download automation." },
+    { "repo": "lance-format/lance", "number": 7246, "note": "Fixed incorrect evaluation of list-element docs in the FTS prefilter walk-the-allowlist branch." },
+    { "repo": "lance-format/lance", "number": 7251, "note": "Critical fix: merge_insert silently dropped matched rows when the leading payload column was all-null." },
+    { "repo": "systemd/systemd", "number": 42578, "note": "Fixed incorrect reboot/pending logic in sysupdate when --component= is used. First PR merged into systemd." },
+    { "repo": "BerriAI/litellm", "number": 30387, "note": "Preserved cache_control headers for OpenAI-compatible custom endpoints, fixing silent cache bypass." }
   ]
 }
