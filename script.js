@@ -403,8 +403,10 @@
     // `cd <name>` scrolls the page to the matching <section> id.
     var PAGE_SECTIONS = [
       { name: "work",        id: "work",        desc: "Case study: mcp-persist" },
+      { name: "shipped",     id: "shipped",     desc: "Other shipped packages" },
       { name: "ledger",      id: "ledger",      desc: "Upstream merged pull requests" },
       { name: "foundations", id: "foundations", desc: "Systems groundwork" },
+      { name: "runixos",     id: "runixos",     desc: "Research OS microkernel" },
       { name: "about",       id: "about",       desc: "Off the clock, sort of" },
       { name: "console",     id: "console",     desc: "This terminal" },
       { name: "contact",     id: "contact",     desc: "Get in touch" },

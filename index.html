@@ -343,6 +343,47 @@ app = with_persistence(mcp, backend=<span class="s">"redis"</span>, url=<span cl
       </div>
     </section>
 
+    <!-- ===================== ALSO SHIPPED ===================== -->
+    <section id="shipped" aria-labelledby="shipped-h2">
+      <div class="shell">
+        <div class="section-head">
+          <p class="eyebrow">Shipped</p>
+          <h2 id="shipped-h2">Also shipped.</h2>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--s-4); margin-top: var(--s-6);">
+          
+          <div style="background: var(--paper-raised); border: 1px solid var(--rule); border-radius: var(--r-md); padding: var(--s-4); display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 1px 2px rgb(27 27 26 / 4%), 0 8px 24px rgb(27 27 26 / 6%);">
+            <div>
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--s-3);">
+                <h3 style="font-family: var(--sans); font-size: 20px; font-weight: 600; margin: 0; color: var(--ink);">rag-timetravel</h3>
+                <span class="chip chip-draft" style="text-transform: none; letter-spacing: normal;">v1.1.0</span>
+              </div>
+              <p style="font-family: var(--serif); font-size: 16px; line-height: 1.6; color: var(--ink-soft); margin: 0 0 var(--s-4) 0;">Time-travel debugger for RAG retrieval pipelines. Pin any past query to the exact index version it ran against, replay retrieval, and diff what changed.</p>
+            </div>
+            <div class="case-links" style="margin-top: auto; display: flex; gap: var(--s-3);">
+              <a class="receipt" href="https://pypi.org/project/rag-timetravel/" target="_blank" rel="noopener">PyPI <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></a>
+              <a class="receipt" href="https://github.com/Ar-maan05/rag-timetravel" target="_blank" rel="noopener">GitHub <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></a>
+            </div>
+          </div>
+
+          <div style="background: var(--paper-raised); border: 1px solid var(--rule); border-radius: var(--r-md); padding: var(--s-4); display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 1px 2px rgb(27 27 26 / 4%), 0 8px 24px rgb(27 27 26 / 6%);">
+            <div>
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--s-3);">
+                <h3 style="font-family: var(--sans); font-size: 20px; font-weight: 600; margin: 0; color: var(--ink);">TokenDrift</h3>
+                <span class="chip chip-draft" style="text-transform: none; letter-spacing: normal;">v1.0.0</span>
+              </div>
+              <p style="font-family: var(--serif); font-size: 16px; line-height: 1.6; color: var(--ink-soft); margin: 0 0 var(--s-4) 0;">Tokenizer diffing for LLM upgrades. Measures token count shifts, cost deltas, vocabulary changes, and remapped IDs before they hit production.</p>
+            </div>
+            <div class="case-links" style="margin-top: auto; display: flex; gap: var(--s-3);">
+              <a class="receipt" href="https://pypi.org/project/tokendrift/" target="_blank" rel="noopener">PyPI <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></a>
+              <a class="receipt" href="https://github.com/Ar-maan05/tokendrift" target="_blank" rel="noopener">GitHub <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
     <!-- ===================== 3. LEDGER ===================== -->
     <section id="ledger" aria-labelledby="ledger-h2">
       <div class="shell">
@@ -550,6 +591,22 @@ app = with_persistence(mcp, backend=<span class="s">"redis"</span>, url=<span cl
         <div class="foundation" data-index="02">
           <h4>Memory systems</h4>
           <p>Wrote an N-way set-associative cache simulator in C with LRU eviction, then used it to drive a cache-conscious matrix transpose. Valgrind traces guided the access patterns.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== RUNIXOS ===================== -->
+    <section id="runixos" aria-labelledby="runixos-h2">
+      <div class="shell">
+        <div class="section-head">
+          <p class="eyebrow">Research</p>
+          <h2 id="runixos-h2">RunixOS.</h2>
+        </div>
+        <div class="prose" style="margin-top: var(--s-6);">
+          <p>A capability-based microkernel OS written in Rust for x86_64, booting via UEFI on QEMU. The kernel implements memory management, scheduling, IPC, and capability enforcement. All other services run in user space behind capability-gated IPC interfaces. The design explores whether capabilities can replace traditional access control, whether IPC-first systems remain practical at scale, and whether OS state can become a persistent object. The research maps to WPI operating systems, distributed systems, and computer architecture coursework.</p>
+        </div>
+        <div class="case-links">
+          <a class="receipt" href="https://github.com/Ar-maan05/RunixOS" target="_blank" rel="noopener">GitHub <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></a>
         </div>
       </div>
     </section>
