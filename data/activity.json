@@ -1,5 +1,5 @@
 {
-  "generated": "2026-07-01T09:28:54.912Z",
+  "generated": "2026-07-02T08:41:24.478Z",
   "curated": [
     {
       "repo": "lightpanda-io/browser",
@@ -164,5 +164,15 @@
       "note": "Preserved cache_control headers for OpenAI-compatible custom endpoints, fixing silent cache bypass."
     }
   ],
-  "recent": []
+  "recent": [
+    {
+      "repo": "lancedb/lancedb",
+      "number": 3599,
+      "title": "fix(python): average MRR reciprocal ranks over all rankings",
+      "state": "merged",
+      "url": "https://github.com/lancedb/lancedb/pull/3599",
+      "updated_at": "2026-07-01T22:36:56Z",
+      "merged_at": "2026-07-01T22:36:56Z"
+    }
+  ]
 }
