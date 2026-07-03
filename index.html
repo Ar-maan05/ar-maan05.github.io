@@ -606,7 +606,7 @@ app = with_persistence(mcp, backend=<span class="s">"redis"</span>, url=<span cl
           <h2 id="runixos-h2">RunixOS.</h2>
         </div>
         <div class="prose" style="margin-top: var(--s-6);">
-          <p>A capability-based microkernel OS written in Rust for x86_64, booting via UEFI on QEMU. The kernel implements memory management, scheduling, IPC, and capability enforcement. All other services run in user space behind capability-gated IPC interfaces. The design explores whether capabilities can replace traditional access control, whether IPC-first systems remain practical at scale, and whether OS state can become a persistent object. The research maps to WPI operating systems, distributed systems, and computer architecture coursework.</p>
+          <p>A capability-based, IPC-first microkernel OS written in Rust for x86_64, booting via UEFI on QEMU. The kernel implements capabilities with attenuation and revocation, a preemptible scheduler, synchronous and asynchronous IPC, and a capability-gated filesystem, all backing an interactive console with tracing and profiling tools. A companion research paper examines what preemption does to capability atomicity, tracing a real TOCTOU vulnerability from discovery through a working fix. The project is now the basis of an Operating Systems Independent Study, adapting classic process and thread coursework to a kernel with no shared memory and no ambient authority.</p>
         </div>
         <div class="case-links">
           <a class="receipt" href="https://github.com/Ar-maan05/RunixOS" target="_blank" rel="noopener">GitHub <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></a>
