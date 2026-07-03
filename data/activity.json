@@ -1,5 +1,5 @@
 {
-  "generated": "2026-07-02T08:41:24.478Z",
+  "generated": "2026-07-03T08:48:23.921Z",
   "curated": [
     {
       "repo": "lightpanda-io/browser",
@@ -171,7 +171,7 @@
       "title": "fix(python): average MRR reciprocal ranks over all rankings",
       "state": "merged",
       "url": "https://github.com/lancedb/lancedb/pull/3599",
-      "updated_at": "2026-07-01T22:36:56Z",
+      "updated_at": "2026-07-02T09:34:23Z",
       "merged_at": "2026-07-01T22:36:56Z"
     }
   ]
