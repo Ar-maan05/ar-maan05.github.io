@@ -131,6 +131,17 @@ async function buildStats() {
   const floor100 = Math.floor(downloads / 100) * 100;
   const downloads_display = floor100.toLocaleString("en-US") + "+";
 
+  // Count of merged upstream PRs by the author, excluding every repo the author
+  // owns (`-user:` filters by repo owner, so this covers all own repos, not just
+  // mcp-persist). Resilient: a failure here leaves merged_prs null so the baked
+  // value is kept.
+  let merged_prs = null;
+  try {
+    const q = `author:${AUTHOR} type:pr is:merged -user:${AUTHOR}`;
+    const res = await ghJSON(`search/issues?q=${encodeURIComponent(q)}&per_page=1`);
+    if (typeof res.total_count === "number") merged_prs = res.total_count;
+  } catch (_) { /* keep null; will fall back to baked value */ }
+
   // Version from PyPI JSON API
   let version = null;
   try {
@@ -147,6 +158,7 @@ async function buildStats() {
     downloads,
     downloads_display,
     ...(version ? { version } : {}),
+    ...(merged_prs != null ? { merged_prs } : {}),
     generated: new Date().toISOString(),
   };
 }
@@ -237,6 +249,15 @@ function bakHTML(stats) {
     html = html.replace(
       /(content="[^"]*mcp-persist \()[\d,k]+\+( downloads[^"]*")/g,
       (_, before, after) => { changed = true; return before + dl + after; }
+    );
+  }
+
+  // Rewrite data-merged-count span (count of merged upstream PRs)
+  if (stats.merged_prs != null) {
+    const mc = String(stats.merged_prs);
+    html = html.replace(
+      /(<[^>]+data-merged-count[^>]*>)[^<]*(<\/[^>]+>)/g,
+      (_, open, close) => { changed = true; return open + mc + close; }
     );
   }
 
