@@ -5,17 +5,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <script>
     document.documentElement.className = "js";
-    // Restore saved theme before first paint to avoid flash
+    // The deck boots dark by default; restore an explicit saved theme before
+    // first paint to avoid a flash. An explicit attribute keeps the toggle and
+    // the sun/moon icon state consistent on first click.
     try {
       var saved = localStorage.getItem("theme");
-      if (saved) document.documentElement.setAttribute("data-theme", saved);
-    } catch (e) {}
+      document.documentElement.setAttribute("data-theme", saved === "light" ? "light" : "dark");
+    } catch (e) {
+      document.documentElement.setAttribute("data-theme", "dark");
+    }
   </script>
 
   <title>Armaan Sandhu | Open source, merged upstream</title>
   <meta name="description" content="CS student at WPI. Author of mcp-persist (13,000+ downloads, in production). Pull requests merged upstream in CPython and across AI infrastructure.">
   <link rel="canonical" href="https://ar-maan05.github.io/">
-  <meta name="theme-color" content="#FBFBF9">
+  <meta name="theme-color" content="#06070B" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#06070B">
 
   <meta property="og:title" content="Armaan Sandhu | Open source, merged upstream">
   <meta property="og:description" content="CS student at WPI. Author of mcp-persist (13,000+ downloads, in production). Pull requests merged upstream in CPython and across AI infrastructure.">
@@ -57,6 +62,20 @@
 <body>
   <div class="scroll-bar" aria-hidden="true"></div>
   <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- Channel rail: a mission-deck side index. Real section order, scrollspy-lit. -->
+  <nav class="deck-rail" aria-label="Sections">
+    <a href="#top"          class="rail-node" data-rail="top"><span class="rail-ch">00</span><span class="rail-name">Top</span></a>
+    <a href="#work"         class="rail-node" data-rail="work"><span class="rail-ch">01</span><span class="rail-name">Case study</span></a>
+    <a href="#mlrouter"     class="rail-node" data-rail="mlrouter"><span class="rail-ch">02</span><span class="rail-name">mlrouter</span></a>
+    <a href="#shipped"      class="rail-node" data-rail="shipped"><span class="rail-ch">03</span><span class="rail-name">Shipped</span></a>
+    <a href="#ledger"       class="rail-node" data-rail="ledger"><span class="rail-ch">04</span><span class="rail-name">Ledger</span></a>
+    <a href="#foundations"  class="rail-node" data-rail="foundations"><span class="rail-ch">05</span><span class="rail-name">Foundations</span></a>
+    <a href="#runixos"      class="rail-node" data-rail="runixos"><span class="rail-ch">06</span><span class="rail-name">RunixOS</span></a>
+    <a href="#about"        class="rail-node" data-rail="about"><span class="rail-ch">07</span><span class="rail-name">Now</span></a>
+    <a href="#console"      class="rail-node" data-rail="console"><span class="rail-ch">08</span><span class="rail-name">Terminal</span></a>
+    <a href="#contact"      class="rail-node" data-rail="contact"><span class="rail-ch">09</span><span class="rail-name">Contact</span></a>
+  </nav>
 
   <!-- Inline icon sprite (Lucide), stroked via .icon in CSS -->
   <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
@@ -104,115 +123,50 @@
   <main id="main">
     <span id="top"></span>
 
-    <!-- ===================== 1. HERO ===================== -->
-    <section class="hero shell" aria-labelledby="hero-h1">
+    <!-- ===================== 1. HERO (the deck) ===================== -->
+    <section class="hero" aria-labelledby="hero-h1">
+      <div class="hero-stage" aria-hidden="true">
+        <canvas id="fx-canvas"></canvas>
+        <div class="stage-grid"></div>
+        <div class="stage-scan"></div>
+      </div>
+      <div class="shell hero-shell">
       <div class="hero-grid">
         <div class="hero-text">
-          <p class="eyebrow" data-anim style="--d:0ms">Armaan Sandhu · CS @ WPI · BS/MS '29</p>
+          <p class="eyebrow status-eyebrow" data-anim style="--d:0ms">
+            <span class="sig-dot" aria-hidden="true"></span>Systems online · CS @ WPI · 4.0 GPA · BS/MS '29
+          </p>
           <h1 id="hero-h1" data-anim style="--d:0ms">Merged upstream.</h1>
-          <p class="hero-lede" data-anim style="--d:80ms">I'm a computer science student who builds infrastructure for AI tooling. My package mcp-persist has <span class="tnum" data-bake="downloads" data-downloads>13,000+</span> downloads on PyPI and runs in production. My pull requests are merged upstream in CPython and across the AI data stack.</p>
+          <p class="hero-lede" data-anim style="--d:80ms">I'm a computer science student who builds infrastructure for AI tooling. My package mcp-persist has <span class="tnum" data-bake="downloads" data-downloads>13,000+</span> downloads on PyPI and runs in production, including inside mlrouter, the multi-model LLM gateway I'm shipping at mlrouter.com. My pull requests are merged upstream in CPython and across the AI data stack.</p>
           <div class="hero-cta" data-anim style="--d:80ms">
-            <a class="btn btn-primary" href="#work">Read the case study</a>
-            <a class="btn btn-ghost" href="#ledger">See the ledger</a>
+            <a class="btn btn-primary" href="#work" data-magnetic>Read the case study</a>
+            <a class="btn btn-ghost" href="#ledger" data-magnetic>See the ledger</a>
           </div>
+          <p class="hero-availability" data-anim style="--d:160ms">
+            <span class="avail-dot" aria-hidden="true"></span>
+            Open to <b>Summer 2027</b> Software Engineering internships
+          </p>
         </div>
 
-        <div class="hero-figure" data-anim style="--d:200ms">
-          <!-- Hero diff: tab switcher across 4 repos (§7.1 v1.1). Default: lightpanda (baked). -->
-          <div class="diff-tabs">
-            <div class="diff-tablist" role="tablist" aria-label="Merged pull requests by repository">
-              <button role="tab" id="dtab-lightpanda" aria-selected="true"  aria-controls="dpanel-lightpanda" class="diff-tab" data-repo="lightpanda-io/browser">lightpanda-io/browser</button>
-              <button role="tab" id="dtab-cpython"    aria-selected="false" aria-controls="dpanel-cpython"    class="diff-tab" data-repo="python/cpython">python/cpython</button>
-              <button role="tab" id="dtab-litellm"    aria-selected="false" aria-controls="dpanel-litellm"    class="diff-tab" data-repo="BerriAI/litellm">BerriAI/litellm</button>
-              <button role="tab" id="dtab-lance"      aria-selected="false" aria-controls="dpanel-lance"      class="diff-tab" data-repo="lance-format/lance">lance-format/lance</button>
+        <div class="hero-figure" data-tilt>
+          <span class="figure-tag" aria-hidden="true">MERGE LOG</span>
+          <div class="mergefeed glow-card">
+            <div class="mergefeed-head">
+              <span class="mf-live"><span class="mf-live-dot" aria-hidden="true"></span>LIVE FEED</span>
+              <span class="mf-count"><b data-mf-count data-countup>20</b>&nbsp;merged upstream</span>
             </div>
-
-            <!-- Default panel: lightpanda #2537 — baked into HTML for no-JS + first paint -->
-            <a id="dpanel-lightpanda" role="tabpanel" aria-labelledby="dtab-lightpanda"
-               class="diff glow-card" href="https://github.com/lightpanda-io/browser/pull/2537"
-               target="_blank" rel="noopener"
-               aria-label="Merged pull request lightpanda-io/browser #2537, opens on GitHub">
-              <div class="diff-head">
-                <span class="diff-repo"><b>lightpanda-io/browser</b> · #2537</span>
-                <span class="chip chip-merged">merged</span>
-              </div>
-              <div class="diff-body" id="dbody-lightpanda">
-                <span class="diff-line add" data-anim style="--d:320ms"><span class="g">+</span><span class="c">pub fn init(</span></span>
-                <span class="diff-line add" data-anim style="--d:390ms"><span class="g">+</span><span class="c">    parts_: ?[]const js.Value,</span></span>
-                <span class="diff-line add" data-anim style="--d:460ms"><span class="g">+</span><span class="c">    name_: []const u8,</span></span>
-                <span class="diff-line add" data-anim style="--d:530ms"><span class="g">+</span><span class="c">    opts_: ?InitOptions,</span></span>
-                <span class="diff-line add" data-anim style="--d:600ms"><span class="g">+</span><span class="c">    page: *Page,</span></span>
-                <span class="diff-line add" data-anim style="--d:670ms"><span class="g">+</span><span class="c">) !*File {</span></span>
-              </div>
-            </a>
-
-            <!-- python/cpython #150328 — baked -->
-            <a id="dpanel-cpython" role="tabpanel" aria-labelledby="dtab-cpython"
-               class="diff glow-card" href="https://github.com/python/cpython/pull/150328"
-               hidden target="_blank" rel="noopener"
-               aria-label="Merged pull request python/cpython #150328, opens on GitHub">
-              <div class="diff-head">
-                <span class="diff-repo"><b>python/cpython</b> · #150328</span>
-                <span class="chip chip-merged">merged</span>
-              </div>
-              <div class="diff-body" id="dbody-cpython">
-                <span class="diff-line del" data-anim style="--d:0ms"><span class="g">-</span><span class="c">		ac_sys_system=Cygwin</span></span>
-                <span class="diff-line add" data-anim style="--d:70ms"><span class="g">+</span><span class="c">		ac_sys_system=CYGWIN</span></span>
-                <span class="diff-line del" data-anim style="--d:140ms"><span class="g">-</span><span class="c">  LDLIBRARY='libpython$(LDVERSION).dll.a'</span></span>
-                <span class="diff-line add" data-anim style="--d:210ms"><span class="g">+</span><span class="c">  LDLIBRARY='libpython$(LDVERSION).a'</span></span>
-                <span class="diff-line del" data-anim style="--d:280ms"><span class="g">-</span><span class="c">		LDSHARED="gcc -shared -Wl,--enable-auto…</span></span>
-                <span class="diff-line add" data-anim style="--d:350ms"><span class="g">+</span><span class="c">		LDSHARED='$(CC) -shared -Wl,--enable-au…</span></span>
-                <span class="diff-line del" data-anim style="--d:420ms"><span class="g">-</span><span class="c">		LDCXXSHARED="g++ -shared -Wl,--enable-a…</span></span>
-                <span class="diff-line add" data-anim style="--d:490ms"><span class="g">+</span><span class="c">		LDCXXSHARED='$(CXX) -shared -Wl,--enabl…</span></span>
-              </div>
-            </a>
-
-            <!-- BerriAI/litellm #29483 — baked -->
-            <a id="dpanel-litellm" role="tabpanel" aria-labelledby="dtab-litellm"
-               class="diff glow-card" href="https://github.com/BerriAI/litellm/pull/29483"
-               hidden target="_blank" rel="noopener"
-               aria-label="Merged pull request BerriAI/litellm #29483, opens on GitHub">
-              <div class="diff-head">
-                <span class="diff-repo"><b>BerriAI/litellm</b> · #29483</span>
-                <span class="chip chip-merged">merged</span>
-              </div>
-              <div class="diff-body" id="dbody-litellm">
-                <span class="diff-line add" data-anim style="--d:0ms"><span class="g">+</span><span class="c">MODEL_DISCOVERY_ROUTES = frozenset(</span></span>
-                <span class="diff-line add" data-anim style="--d:70ms"><span class="g">+</span><span class="c">    {</span></span>
-                <span class="diff-line add" data-anim style="--d:140ms"><span class="g">+</span><span class="c">        "/v1/models",</span></span>
-                <span class="diff-line add" data-anim style="--d:210ms"><span class="g">+</span><span class="c">        "/models",</span></span>
-                <span class="diff-line add" data-anim style="--d:280ms"><span class="g">+</span><span class="c">        "/model/info",</span></span>
-                <span class="diff-line add" data-anim style="--d:350ms"><span class="g">+</span><span class="c">        "/v1/model/info",</span></span>
-                <span class="diff-line add" data-anim style="--d:420ms"><span class="g">+</span><span class="c">        "/model_group/info",</span></span>
-                <span class="diff-line add" data-anim style="--d:490ms"><span class="g">+</span><span class="c">    }</span></span>
-                <span class="diff-line add" data-anim style="--d:560ms"><span class="g">+</span><span class="c">)</span></span>
-              </div>
-            </a>
-
-            <!-- lance-format/lance #6934 — baked -->
-            <a id="dpanel-lance" role="tabpanel" aria-labelledby="dtab-lance"
-               class="diff glow-card" href="https://github.com/lance-format/lance/pull/6934"
-               hidden target="_blank" rel="noopener"
-               aria-label="Merged pull request lance-format/lance #6934, opens on GitHub">
-              <div class="diff-head">
-                <span class="diff-repo"><b>lance-format/lance</b> · #6934</span>
-                <span class="chip chip-merged">merged</span>
-              </div>
-              <div class="diff-body" id="dbody-lance">
-                <span class="diff-line add" data-anim style="--d:0ms"><span class="g">+</span><span class="c">    /// The row is updated only for rows where</span></span>
-                <span class="diff-line add" data-anim style="--d:70ms"><span class="g">+</span><span class="c">    /// the DataFusion expression evaluates to true.</span></span>
-                <span class="diff-line add" data-anim style="--d:140ms"><span class="g">+</span><span class="c">    UpdateIfExpr(Expr),</span></span>
-                <span class="diff-line add" data-anim style="--d:210ms"><span class="g">+</span><span class="c"></span></span>
-                <span class="diff-line add" data-anim style="--d:280ms"><span class="g">+</span><span class="c">    pub fn update_if_expr(expr: Expr) -> Self {</span></span>
-                <span class="diff-line add" data-anim style="--d:350ms"><span class="g">+</span><span class="c">        Self::UpdateIfExpr(expr)</span></span>
-                <span class="diff-line add" data-anim style="--d:420ms"><span class="g">+</span><span class="c">    }</span></span>
-              </div>
-            </a>
-
-
-            <noscript>
-              <!-- No-JS: only the baked lightpanda diff shows; tab row hidden by .diff-tablist via noscript -->
-            </noscript>
+            <div class="mergefeed-viewport">
+              <ol class="mergefeed-track" data-mergefeed>
+                <li><a class="mf-row" href="https://github.com/python/cpython/pull/150328" target="_blank" rel="noopener"><span class="mf-dot" aria-hidden="true"></span><span class="mf-repo">python/cpython</span><span class="mf-num">#150328</span><span class="mf-msg">Fix configure.ac for the CYGWIN port</span></a></li>
+                <li><a class="mf-row" href="https://github.com/systemd/systemd/pull/42578" target="_blank" rel="noopener"><span class="mf-dot" aria-hidden="true"></span><span class="mf-repo">systemd/systemd</span><span class="mf-num">#42578</span><span class="mf-msg">sysupdate: refuse reboot/pending with --component</span></a></li>
+                <li><a class="mf-row" href="https://github.com/lightpanda-io/browser/pull/2537" target="_blank" rel="noopener"><span class="mf-dot" aria-hidden="true"></span><span class="mf-repo">lightpanda-io/browser</span><span class="mf-num">#2537</span><span class="mf-msg">Implement the W3C File API</span></a></li>
+                <li><a class="mf-row" href="https://github.com/BerriAI/litellm/pull/30020" target="_blank" rel="noopener"><span class="mf-dot" aria-hidden="true"></span><span class="mf-repo">BerriAI/litellm</span><span class="mf-num">#30020</span><span class="mf-msg">Release max_parallel_requests slot on cancel</span></a></li>
+                <li><a class="mf-row" href="https://github.com/lance-format/lance/pull/7251" target="_blank" rel="noopener"><span class="mf-dot" aria-hidden="true"></span><span class="mf-repo">lance-format/lance</span><span class="mf-num">#7251</span><span class="mf-msg">Fix merge_insert dropping all-null-leading rows</span></a></li>
+                <li><a class="mf-row" href="https://github.com/lancedb/lancedb/pull/3512" target="_blank" rel="noopener"><span class="mf-dot" aria-hidden="true"></span><span class="mf-repo">lancedb/lancedb</span><span class="mf-num">#3512</span><span class="mf-msg">Typed errors in the Bedrock embedding path</span></a></li>
+                <li><a class="mf-row" href="https://github.com/lightpanda-io/browser/pull/2722" target="_blank" rel="noopener"><span class="mf-dot" aria-hidden="true"></span><span class="mf-repo">lightpanda-io/browser</span><span class="mf-num">#2722</span><span class="mf-msg">CDP Browser.setDownloadBehavior downloads</span></a></li>
+                <li><a class="mf-row" href="https://github.com/BerriAI/litellm/pull/30273" target="_blank" rel="noopener"><span class="mf-dot" aria-hidden="true"></span><span class="mf-repo">BerriAI/litellm</span><span class="mf-num">#30273</span><span class="mf-msg">Anthropic-native /v1/models discovery</span></a></li>
+              </ol>
+            </div>
           </div>
         </div>
 
@@ -223,18 +177,32 @@
           <span class="live-dot" aria-hidden="true"></span>
           <b class="tnum" data-bake="downloads" data-downloads>13,000+</b>&nbsp;downloads <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg>
         </a>
-        <a class="receipt" href="https://github.com/python/cpython/pull/150328" target="_blank" rel="noopener" data-anim style="--d:660ms">
+        <a class="receipt" href="https://github.com/python/cpython/pulls?q=is%3Apr+author%3AAr-maan05+is%3Amerged" target="_blank" rel="noopener" data-anim style="--d:660ms">
           Merged: CPython <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg>
         </a>
-        <a class="receipt" href="https://github.com/systemd/systemd/pull/42578" target="_blank" rel="noopener" data-anim style="--d:720ms">
-          Merged: systemd <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg>
+        <a class="receipt" href="https://github.com/systemd/systemd/pulls?q=is%3Apr+author%3AAr-maan05+is%3Amerged" target="_blank" rel="noopener" data-anim style="--d:720ms">
+          Merged: systemd <b class="tnum">×2</b> <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg>
         </a>
         <a class="receipt" href="#ledger" data-anim style="--d:780ms">
-          <b class="tnum" data-merged-count>20</b>&nbsp;PRs merged upstream
+          <b class="tnum" data-merged-count data-countup>20</b>&nbsp;PRs merged upstream
         </a>
         <a class="receipt" href="#adoption" data-anim style="--d:840ms">
           In production
         </a>
+      </div>
+      </div><!-- /.hero-shell -->
+
+      <!-- Deploy ticker: a continuous readout of the repos merged into.
+           fx.js repopulates it from the ledger; this baked set is the fallback. -->
+      <div class="ticker" aria-hidden="true">
+        <div class="ticker-track" data-ticker>
+          <span class="ticker-item"><i>merged</i> python/cpython</span>
+          <span class="ticker-item"><i>merged</i> systemd/systemd</span>
+          <span class="ticker-item"><i>merged</i> BerriAI/litellm</span>
+          <span class="ticker-item"><i>merged</i> lancedb/lancedb</span>
+          <span class="ticker-item"><i>merged</i> lance-format/lance</span>
+          <span class="ticker-item"><i>merged</i> lightpanda-io/browser</span>
+        </div>
       </div>
     </section>
 
@@ -346,6 +314,68 @@ app = with_persistence(mcp, backend=<span class="s">"redis"</span>, url=<span cl
       </div>
     </section>
 
+    <!-- ===================== FLAGSHIP: MLROUTER ===================== -->
+    <section id="mlrouter" aria-labelledby="mlrouter-h2">
+      <div class="shell">
+        <div class="section-head">
+          <p class="eyebrow">Flagship · Platform</p>
+          <h2 id="mlrouter-h2">mlrouter</h2>
+          <p class="case-sub">One OpenAI-compatible API across every model provider ·
+            <a href="https://mlrouter.com" target="_blank" rel="noopener">mlrouter.com</a>
+            <span class="status-chip">Live · entering production</span></p>
+        </div>
+
+        <div class="prose" style="margin-top: var(--s-5);">
+          <p>mlrouter is a multi-model LLM gateway: a single OpenAI-compatible endpoint that routes requests across OpenAI, Anthropic, Google, Mistral, HuggingFace, XAI, OpenRouter, Deepseek, and many others. It picks a backend by cost or latency, scores each provider's health, and fails over through circuit breakers and fallback chains when one degrades. Virtual keys carry spend caps; every request is logged. It's live at <a href="https://mlrouter.com" target="_blank" rel="noopener">mlrouter.com</a> and going into production with its first customers. It's also the platform where my open-source packages run as first-class services.</p>
+        </div>
+
+        <div class="feature-grid">
+          <div class="feature glow-card" data-tilt>
+            <span class="feature-k">01</span>
+            <h4>Unified gateway</h4>
+            <p>One <code>/v1/chat/completions</code> across every major provider. The model prefix selects the backend; <code>auto</code> routes on cost.</p>
+          </div>
+          <div class="feature glow-card" data-tilt>
+            <span class="feature-k">02</span>
+            <h4>Cost &amp; latency routing</h4>
+            <p>Strategies score providers on price and p50/p95 latency, with automatic context-window escalation when a prompt outgrows a model.</p>
+          </div>
+          <div class="feature glow-card" data-tilt>
+            <span class="feature-k">03</span>
+            <h4>Health &amp; failover</h4>
+            <p>Per-provider health scores, circuit breakers, and fallback chains keep the endpoint answering when an upstream goes bad.</p>
+          </div>
+          <div class="feature glow-card" data-tilt>
+            <span class="feature-k">04</span>
+            <h4>Virtual keys</h4>
+            <p>Hashed virtual keys resolve to real provider keys server-side, never exposed, with per-key spend caps enforced in Redis.</p>
+          </div>
+          <div class="feature glow-card" data-tilt>
+            <span class="feature-k">05</span>
+            <h4>Durable sessions <span class="feature-by">mcp-persist</span></h4>
+            <p>Streaming sessions survive a restart and resume mid-stream, powered by my own <a href="#work">mcp-persist</a>.</p>
+          </div>
+          <div class="feature glow-card" data-tilt>
+            <span class="feature-k">06</span>
+            <h4>Tokenizer safety <span class="feature-by">TokenDrift</span></h4>
+            <p>Token counts and migration-safety checks run before a model swap reaches production, powered by <a href="https://pypi.org/project/tokendrift/" target="_blank" rel="noopener">TokenDrift</a>.</p>
+          </div>
+        </div>
+
+        <div class="flagship-note">
+          <p><span class="runin">The parts and the whole.</span> mlrouter ships my open source as production services: <a href="#work">mcp-persist</a> for durable sessions, <a href="https://pypi.org/project/tokendrift/" target="_blank" rel="noopener">TokenDrift</a> for tokenizer safety, a prompt compressor, and a no-code MCP server builder. The packages are the parts; the platform is the whole.</p>
+        </div>
+
+        <p class="stack-line meta">Next.js 15 · Hono · FastAPI · Neon / Drizzle · Upstash Redis · Clerk · Stripe · BullMQ · Docker MCP runtime</p>
+
+        <div class="case-links">
+          <a class="btn btn-primary" href="https://mlrouter.com" target="_blank" rel="noopener" data-magnetic>
+            Visit mlrouter.com <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg>
+          </a>
+        </div>
+      </div>
+    </section>
+
     <!-- ===================== ALSO SHIPPED ===================== -->
     <section id="shipped" aria-labelledby="shipped-h2">
       <div class="shell">
@@ -353,35 +383,43 @@ app = with_persistence(mcp, backend=<span class="s">"redis"</span>, url=<span cl
           <p class="eyebrow">Shipped</p>
           <h2 id="shipped-h2">Also shipped.</h2>
         </div>
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--s-4); margin-top: var(--s-6);">
-          
-          <div style="background: var(--paper-raised); border: 1px solid var(--rule); border-radius: var(--r-md); padding: var(--s-4); display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 1px 2px rgb(27 27 26 / 4%), 0 8px 24px rgb(27 27 26 / 6%);">
-            <div>
-              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--s-3);">
-                <h3 style="font-family: var(--sans); font-size: 20px; font-weight: 600; margin: 0; color: var(--ink);">rag-timetravel</h3>
-                <span class="chip chip-draft" style="text-transform: none; letter-spacing: normal;">v1.1.0</span>
-              </div>
-              <p style="font-family: var(--serif); font-size: 16px; line-height: 1.6; color: var(--ink-soft); margin: 0 0 var(--s-4) 0;">Time-travel debugger for RAG retrieval pipelines. Pin any past query to the exact index version it ran against, replay retrieval, and diff what changed.</p>
+        <div class="ship-grid">
+
+          <article class="ship-card glow-card" data-tilt>
+            <div class="ship-top">
+              <h3>codebase-rag</h3>
+              <span class="chip chip-draft">v1.0.1</span>
             </div>
-            <div class="case-links" style="margin-top: auto; display: flex; gap: var(--s-3);">
+            <p class="ship-desc">A symbol-aware, self-updating vector index <em>and</em> reference graph over a whole repo, served over MCP, so an agent answers "who calls this / what breaks if I change it" in one call instead of a pile of greps. Built on rag-timetravel; keeps itself fresh with a git pre-push hook.</p>
+            <div class="case-links ship-links">
+              <a class="receipt" href="https://pypi.org/project/codebase-rag/" target="_blank" rel="noopener">PyPI <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></a>
+              <a class="receipt" href="https://github.com/Ar-maan05/codebase-rag" target="_blank" rel="noopener">GitHub <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></a>
+            </div>
+          </article>
+
+          <article class="ship-card glow-card" data-tilt>
+            <div class="ship-top">
+              <h3>rag-timetravel</h3>
+              <span class="chip chip-draft">v1.1.0</span>
+            </div>
+            <p class="ship-desc">Time-travel debugger for RAG retrieval pipelines. Pin any past query to the exact index version it ran against, replay retrieval, and diff what changed. Now the indexing core that codebase-rag builds on.</p>
+            <div class="case-links ship-links">
               <a class="receipt" href="https://pypi.org/project/rag-timetravel/" target="_blank" rel="noopener">PyPI <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></a>
               <a class="receipt" href="https://github.com/Ar-maan05/rag-timetravel" target="_blank" rel="noopener">GitHub <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></a>
             </div>
-          </div>
+          </article>
 
-          <div style="background: var(--paper-raised); border: 1px solid var(--rule); border-radius: var(--r-md); padding: var(--s-4); display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 1px 2px rgb(27 27 26 / 4%), 0 8px 24px rgb(27 27 26 / 6%);">
-            <div>
-              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--s-3);">
-                <h3 style="font-family: var(--sans); font-size: 20px; font-weight: 600; margin: 0; color: var(--ink);">TokenDrift</h3>
-                <span class="chip chip-draft" style="text-transform: none; letter-spacing: normal;">v1.0.0</span>
-              </div>
-              <p style="font-family: var(--serif); font-size: 16px; line-height: 1.6; color: var(--ink-soft); margin: 0 0 var(--s-4) 0;">Tokenizer diffing for LLM upgrades. Measures token count shifts, cost deltas, vocabulary changes, and remapped IDs before they hit production.</p>
+          <article class="ship-card glow-card" data-tilt>
+            <div class="ship-top">
+              <h3>TokenDrift</h3>
+              <span class="chip chip-draft">v1.0.0</span>
             </div>
-            <div class="case-links" style="margin-top: auto; display: flex; gap: var(--s-3);">
+            <p class="ship-desc">Tokenizer diffing for LLM upgrades. Measures token count shifts, cost deltas, vocabulary changes, and remapped IDs before they hit production.</p>
+            <div class="case-links ship-links">
               <a class="receipt" href="https://pypi.org/project/tokendrift/" target="_blank" rel="noopener">PyPI <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></a>
               <a class="receipt" href="https://github.com/Ar-maan05/tokendrift" target="_blank" rel="noopener">GitHub <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></a>
             </div>
-          </div>
+          </article>
 
         </div>
       </div>
@@ -394,6 +432,12 @@ app = with_persistence(mcp, backend=<span class="s">"redis"</span>, url=<span cl
           <p class="eyebrow">Upstream</p>
           <h2 id="ledger-h2">The ledger.</h2>
           <p class="lead">Selected pull requests into projects other people depend on. States are fetched from GitHub daily; the receipts link to the source.</p>
+        </div>
+
+        <div class="ledger-stats" data-ledger-stats>
+          <div class="lstat"><span class="num" data-countup>20</span><span class="lbl">Merged upstream</span></div>
+          <div class="lstat"><span class="num">6</span><span class="lbl">Repositories</span></div>
+          <div class="lstat"><span class="num">4</span><span class="lbl">Languages · Zig / Rust / Python / C</span></div>
         </div>
 
         <div class="ledger-wrap">
@@ -602,11 +646,13 @@ app = with_persistence(mcp, backend=<span class="s">"redis"</span>, url=<span cl
     <section id="runixos" aria-labelledby="runixos-h2">
       <div class="shell">
         <div class="section-head">
-          <p class="eyebrow">Research</p>
+          <p class="eyebrow">Independent study · WPI</p>
           <h2 id="runixos-h2">RunixOS.</h2>
+          <p class="case-sub">A capability-based microkernel. CS3013 Operating Systems independent study, advised by Prof. Craig Wills</p>
         </div>
-        <div class="prose" style="margin-top: var(--s-6);">
-          <p>A capability-based, IPC-first microkernel OS written in Rust for x86_64, booting via UEFI on QEMU. The kernel implements capabilities with attenuation and revocation, a preemptible scheduler, synchronous and asynchronous IPC, and a capability-gated filesystem, all backing an interactive console with tracing and profiling tools. A companion research paper examines what preemption does to capability atomicity, tracing a real TOCTOU vulnerability from discovery through a working fix. The project is now the basis of an Operating Systems Independent Study, adapting classic process and thread coursework to a kernel with no shared memory and no ambient authority.</p>
+        <div class="prose" style="margin-top: var(--s-5);">
+          <p>RunixOS started as a from-scratch microkernel and is now my formal CS3013 Operating Systems independent study at WPI, advised by Prof. Craig Wills. It re-derives classic process, thread, and synchronization coursework on a kernel with no shared memory and no ambient authority, where every right is an explicit capability.</p>
+          <p>It's a capability-based, IPC-first microkernel written in Rust for x86_64, booting via UEFI on QEMU. The kernel implements capabilities with attenuation and revocation, a preemptible scheduler, synchronous and asynchronous IPC, and a capability-gated filesystem, all backing an interactive console with tracing and profiling tools. A companion research paper examines what preemption does to capability atomicity, tracing a real TOCTOU vulnerability from discovery through a working fix.</p>
         </div>
         <div class="case-links">
           <a class="receipt" href="https://github.com/Ar-maan05/RunixOS" target="_blank" rel="noopener">GitHub <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></a>
@@ -621,9 +667,9 @@ app = with_persistence(mcp, backend=<span class="s">"redis"</span>, url=<span cl
           <p class="eyebrow">Now</p>
           <h2 id="now-h2">Off the clock, sort of.</h2>
         </div>
-        <p class="now-body">Home for the summer, building in the open: maintaining mcp-persist and landing pull requests across the AI data stack. This summer I'm interning remotely at a startup building an OpenRouter-style agentic platform, which runs mcp-persist in production. The lab next to my desk is a Fedora laptop running a 26B mixture-of-experts model through llama.cpp, wired to a filesystem MCP server, because the fastest way to find what breaks in MCP infrastructure is to live on it. In the fall I'm back at WPI teaching intro systems as a Peer Learning Assistant and serving as a Community Advisor in residence life. Before any of this I spent a decade teaching Shotokan karate as a second-degree black belt, which is where I learned to explain hard things patiently. I'm open to Summer 2027 internships in infrastructure and developer tooling.</p>
+        <p class="now-body">Home for the summer, building in the open: maintaining mcp-persist and landing pull requests across the AI data stack. This summer I'm interning remotely at a startup building an OpenRouter-style agentic platform, which runs mcp-persist in production. The lab next to my desk is a Fedora laptop running a 26B mixture-of-experts model through llama.cpp, wired to a filesystem MCP server, because the fastest way to find what breaks in MCP infrastructure is to live on it. In the fall I'm back at WPI teaching intro systems as a Peer Learning Assistant and serving as a Community Advisor in residence life. Before any of this I spent a decade teaching Shotokan karate as a second-degree black belt, which is where I learned to explain hard things patiently. I'm open to Summer 2027 Software Engineering internships.</p>
         <!-- NOTE FOR ARMAAN (decide later): one optional human line that is genuinely memorable: "I once built a five-game puzzle suite for an audience of one." Include only if you are comfortable and your partner is too. -->
-        <p class="now-meta meta">Worcester, MA · EST · asandhu@wpi.edu</p>
+        <p class="now-meta meta">BS/MS Computer Science, WPI · 4.0 GPA · Worcester, MA · EST · asandhu@wpi.edu</p>
       </div>
     </section>
 
@@ -646,13 +692,23 @@ app = with_persistence(mcp, backend=<span class="s">"redis"</span>, url=<span cl
             <span class="terminal-status"><span class="status-dot"></span><span class="status-text">CONNECTED</span></span>
           </div>
           <div class="terminal-body" id="term-body">
-            <div class="term-line">WPI systems terminal v1.0.0. Type <span class="text-merge">help</span> to begin.</div>
+            <div class="term-line term-banner">┌─ <span class="text-merge">WPI SYSTEMS TERMINAL</span> · v1.0.0 ─────────────┐
+│ 20 merged upstream · mcp-persist live · 13k+ installs │
+└─ type <span class="text-merge">help</span> · or tap a command below ──────────┘</div>
             <div class="term-line prompt-line">
               <span class="term-prompt">asandhu@wpi:~$</span>
               <span class="term-render"><span class="term-echo" id="term-echo"></span><span class="term-cursor" aria-hidden="true">█</span></span>
               <input type="text" id="term-input" autocomplete="off" spellcheck="false" aria-label="Terminal Input">
             </div>
           </div>
+        </div>
+        <div class="term-hints" aria-label="Try a command">
+          <span class="term-hints-label">try</span>
+          <button class="term-chip" type="button" data-cmd="help">help</button>
+          <button class="term-chip" type="button" data-cmd="merged">merged</button>
+          <button class="term-chip" type="button" data-cmd="debug cpython">debug cpython</button>
+          <button class="term-chip" type="button" data-cmd="ls">ls</button>
+          <button class="term-chip term-chip-accent" type="button" data-cmd="sudo hire-me">sudo hire-me</button>
         </div>
       </div>
     </section>
@@ -696,5 +752,6 @@ app = with_persistence(mcp, backend=<span class="s">"redis"</span>, url=<span cl
 
   <script src="script.js" defer></script>
   <script src="demo.js" defer></script>
+  <script src="fx.js" defer></script>
 </body>
 </html>

@@ -43,82 +43,101 @@
     U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
-/* ---- Tokens (§3) -------------------------------------------------------- */
+/* ---- Tokens (§3) — Mission Control: dark is the default deck ------------- */
+/* v2 overhaul: the site now boots dark ("systems online"). :root carries the
+   dark deck palette; [data-theme="light"] is the explicit daylight override.
+   All legacy token names are preserved so every component rule keeps working. */
 :root {
-  --paper: #FBFBF9;
-  --paper-raised: #FFFFFF;
-  --paper-sunken: #F4F4F0;
+  /* Surfaces — deep space with a cold blue undertone */
+  --void: #06070B;                 /* the stage / deepest black */
+  --paper: #0A0C12;                /* page background */
+  --paper-raised: #10131C;         /* panels, cards */
+  --paper-sunken: #0C0E15;         /* insets, headers, code */
 
-  --ink: #1B1B1A;
-  --ink-soft: #4A4A46;
-  --ink-muted: #6E6E68;
-  --rule: #E5E5E0;
-  --rule-strong: #C9C9C2;
+  --ink: #EEF2FB;
+  --ink-soft: #A6B0C6;
+  --ink-muted: #6B7488;
+  --rule: #1B2130;
+  --rule-strong: #2A3242;
 
-  --merge: #8250DF;
-  --merge-deep: #6639BA;
-  --merge-tint: #F3EEFC;
+  /* Signature: electric violet (his real merge color) */
+  --merge: #A371F7;
+  --merge-deep: #C4A5FF;           /* brighter on hover in the dark */
+  --merge-tint: rgba(163, 113, 247, 0.13);
 
-  --open: #1A7F37;
-  --open-tint: #DAFBE1;
-  --del: #CF222E;
-  --del-tint: #FFEBE9;
-  --draft: #6E6E68;
+  /* Semantic states */
+  --open: #3FB950;
+  --open-tint: rgba(63, 185, 80, 0.15);
+  --del: #F85149;
+  --del-tint: rgba(248, 81, 73, 0.15);
+  --draft: #6B7488;
+
+  /* Second accent: a live "signal" teal for streaming / telemetry only */
+  --signal: #35E0CB;
+  --signal-tint: rgba(53, 224, 203, 0.13);
 
   --s-1: 4px;  --s-2: 8px;  --s-3: 16px; --s-4: 24px;
   --s-5: 32px; --s-6: 48px; --s-7: 64px; --s-8: 96px; --s-9: 144px;
 
-  --max-content: 1080px;
+  --max-content: 1120px;
   --max-prose: 68ch;
 
-  --r-sm: 4px; --r-md: 6px; --r-chip: 999px;
+  --r-sm: 4px; --r-md: 8px; --r-lg: 14px; --r-chip: 999px;
 
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-  --t-fast: 160ms; --t-med: 240ms;
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --t-fast: 160ms; --t-med: 240ms; --t-slow: 440ms;
 
   --sans: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
   --serif: "IBM Plex Serif", Georgia, serif;
   --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, monospace;
 
-  --nav-h: 64px;
+  --nav-h: 66px;
 
-  /* v1.3 visual-impact tokens (§17.1) */
-  --merge-glow:    rgba(130, 80, 223, 0.12);   /* hero ambient aura, light */
-  --merge-glow-lg: rgba(130, 80, 223, 0.06);   /* wider falloff */
-  --h1-grad-start: #1B1B1A;                    /* ink, gradient from */
-  --h1-grad-end:   #8250DF;                    /* merge, gradient to */
-  --shimmer:       rgba(255, 255, 255, 0.55);  /* button shimmer overlay */
+  /* Deck materials */
+  --glass: rgba(16, 19, 28, 0.62);
+  --glass-line: rgba(255, 255, 255, 0.08);
+  --grid: rgba(255, 255, 255, 0.028);   /* faint HUD grid */
+
+  /* v1.3 visual-impact tokens (§17.1) — dark deck values */
+  --merge-glow:    rgba(163, 113, 247, 0.22);
+  --merge-glow-lg: rgba(163, 113, 247, 0.08);
+  --h1-grad-start: #EEF2FB;
+  --h1-grad-end:   #B98CFF;
+  --shimmer:       rgba(255, 255, 255, 0.16);
 }
 
-/* ---- Dark mode tokens ---------------------------------------------------- */
-/* Two paths:
-   1. System preference (no JS needed, no flash).
-   2. [data-theme="dark"] on <html> — set by the toggle button, persisted in
-      localStorage. [data-theme="light"] is an explicit "stay light" override.   */
-/* System color scheme overrides removed to default to light mode */
-[data-theme="dark"] {
-  --paper: #0D1117;
-  --paper-raised: #161B22;
-  --paper-sunken: #090C10;
-  --ink: #E6EDF3;
-  --ink-soft: #B0BAC6;
-  --ink-muted: #7D8590;
-  --rule: #21262D;
-  --rule-strong: #30363D;
-  --merge: #A371F7;
-  --merge-deep: #BF91FF;
-  --merge-tint: #1F1535;
-  --open: #3FB950;
-  --open-tint: #0A2D15;
-  --del: #F85149;
-  --del-tint: #2C0B0D;
-  --draft: #7D8590;
-  /* v1.3 visual-impact tokens (§17.1) — dark */
-  --merge-glow:    rgba(163, 113, 247, 0.15);
-  --merge-glow-lg: rgba(163, 113, 247, 0.07);
-  --h1-grad-start: #E6EDF3;
-  --h1-grad-end:   #BF91FF;
-  --shimmer:       rgba(255, 255, 255, 0.12);
+/* ---- Daylight override -------------------------------------------------- */
+/* [data-theme="light"] on <html> — set by the toggle, persisted in
+   localStorage. A refined paper deck; the hero stage stays dark regardless. */
+[data-theme="light"] {
+  --void: #06070B;
+  --paper: #FBFBF9;
+  --paper-raised: #FFFFFF;
+  --paper-sunken: #F4F4F0;
+  --ink: #14161C;
+  --ink-soft: #45484F;
+  --ink-muted: #6B6F79;
+  --rule: #E6E6E1;
+  --rule-strong: #C9C9C2;
+  --merge: #6E3ED6;
+  --merge-deep: #5A2FBE;
+  --merge-tint: rgba(110, 62, 214, 0.09);
+  --open: #1A7F37;
+  --open-tint: rgba(26, 127, 55, 0.12);
+  --del: #CF222E;
+  --del-tint: rgba(207, 34, 46, 0.10);
+  --draft: #6B6F79;
+  --signal: #0C9C8B;
+  --signal-tint: rgba(12, 156, 139, 0.10);
+  --glass: rgba(255, 255, 255, 0.72);
+  --glass-line: rgba(0, 0, 0, 0.06);
+  --grid: rgba(20, 22, 28, 0.03);
+  --merge-glow:    rgba(110, 62, 214, 0.14);
+  --merge-glow-lg: rgba(110, 62, 214, 0.06);
+  --h1-grad-start: #14161C;
+  --h1-grad-end:   #6E3ED6;
+  --shimmer:       rgba(255, 255, 255, 0.6);
 }
 
 /* Theme toggle button: moon in light mode, sun in dark mode */
@@ -1453,4 +1472,725 @@ body::before {
   100% { box-shadow: 0 0 0 0 transparent; }
 }
 @media (prefers-reduced-motion: reduce) { .now-status .dot { animation: none; } }
+
+/* ===========================================================================
+   ███  v2 OVERHAUL — "Mission Control / Observability Deck"  ███
+   Dark-first cinematic deck: full-bleed hero stage with a live data-stream
+   canvas + HUD, a channel-rail scrollspy, deck panels, and richer motion.
+   Layered last so it wins the cascade; every rule rides the existing tokens.
+   =========================================================================== */
+
+/* Elevation tokens (theme-aware; declared here so they merge into :root) */
+:root {
+  --elev-1: 0 1px 0 var(--glass-line) inset, 0 2px 6px rgba(0,0,0,0.45);
+  --elev-2: 0 1px 0 var(--glass-line) inset, 0 18px 48px -12px rgba(0,0,0,0.7);
+  --glow-violet: 0 0 0 1px rgba(163,113,247,0.35), 0 12px 40px -8px rgba(124,77,255,0.45);
+}
+[data-theme="light"] {
+  --elev-1: 0 1px 0 rgba(255,255,255,0.9) inset, 0 1px 2px rgba(20,22,28,0.06), 0 8px 24px rgba(20,22,28,0.07);
+  --elev-2: 0 1px 0 rgba(255,255,255,0.9) inset, 0 12px 36px -8px rgba(20,22,28,0.16);
+  --glow-violet: 0 0 0 1px rgba(110,62,214,0.25), 0 12px 32px -8px rgba(110,62,214,0.25);
+}
+
+/* ---- Base deck polish --------------------------------------------------- */
+body {
+  background:
+    radial-gradient(1200px 700px at 82% -8%, var(--merge-glow-lg), transparent 60%),
+    var(--paper);
+  background-attachment: fixed;
+}
+::selection { background: rgba(163,113,247,0.32); color: #fff; }
+[data-theme="light"] ::selection { background: rgba(110,62,214,0.22); color: #14161c; }
+
+/* Custom scrollbar on the deck */
+* { scrollbar-color: var(--rule-strong) transparent; }
+::-webkit-scrollbar { width: 11px; height: 11px; }
+::-webkit-scrollbar-thumb { background: var(--rule-strong); border-radius: 99px; border: 3px solid transparent; background-clip: content-box; }
+::-webkit-scrollbar-thumb:hover { background: var(--merge); background-clip: content-box; }
+
+/* Raised panels get a consistent top-sheen + elevation in both themes */
+.diff, .ship-card, .terminal-box, .code, .demo {
+  box-shadow: var(--elev-2);
+}
+
+/* ===========================================================================
+   Channel rail — fixed side index with scrollspy
+   =========================================================================== */
+.deck-rail {
+  position: fixed;
+  left: max(14px, calc((100vw - var(--max-content)) / 2 - 128px));
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 90;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 6px 4px;
+}
+.rail-node {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 6px;
+  color: var(--ink-muted);
+  font-family: var(--mono);
+  border-radius: var(--r-sm);
+  transition: color var(--t-fast) var(--ease-out);
+}
+.rail-node .rail-ch {
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  opacity: 0.6;
+  width: 16px;
+}
+.rail-node .rail-name {
+  font-size: 12px;
+  max-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateX(-4px);
+  transition: max-width var(--t-med) var(--ease-out), opacity var(--t-med) var(--ease-out), transform var(--t-med) var(--ease-out);
+}
+/* a tick mark that fills when active */
+.rail-node::after {
+  content: "";
+  order: -1;
+  width: 18px; height: 2px;
+  border-radius: 2px;
+  background: var(--rule-strong);
+  transition: width var(--t-med) var(--ease-spring), background-color var(--t-fast) var(--ease-out);
+  flex: none;
+}
+.deck-rail:hover .rail-name { max-width: 120px; opacity: 1; transform: none; }
+.rail-node:hover { color: var(--ink); }
+.rail-node:hover::after { background: var(--ink-muted); }
+.rail-node.active { color: var(--ink); }
+.rail-node.active::after { width: 30px; background: var(--merge); box-shadow: 0 0 10px var(--merge-glow); }
+.rail-node.active .rail-ch { opacity: 1; color: var(--merge); }
+@media (max-width: 1360px) { .deck-rail { display: none; } }
+
+/* ===========================================================================
+   Nav — glass command bar
+   =========================================================================== */
+.nav {
+  height: var(--nav-h);
+  background: color-mix(in srgb, var(--paper) 72%, transparent);
+  -webkit-backdrop-filter: blur(14px) saturate(1.4);
+  backdrop-filter: blur(14px) saturate(1.4);
+  border-bottom: 1px solid var(--rule);
+}
+.wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--mono);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+.wordmark::before {
+  content: "";
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--merge);
+  box-shadow: 0 0 0 0 var(--merge-glow);
+  animation: railpulse 2.6s ease-out infinite;
+}
+@keyframes railpulse {
+  0% { box-shadow: 0 0 0 0 rgba(163,113,247,0.5); }
+  70% { box-shadow: 0 0 0 7px transparent; }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
+.nav-links a { font-family: var(--mono); font-size: 13px; position: relative; }
+.nav-links a::after {
+  content: ""; position: absolute; left: 0; right: 100%; bottom: -4px; height: 1.5px;
+  background: var(--merge); transition: right var(--t-med) var(--ease-out);
+}
+.nav-links a:hover::after { right: 0; }
+
+/* ===========================================================================
+   HERO STAGE — always dark; the console is always on
+   =========================================================================== */
+.hero {
+  position: relative;
+  padding: calc(var(--s-8) + 8px) 0 0;
+  overflow: hidden;
+  border-top: 0;
+  --stage-hair: rgba(20,22,40,0.08);
+}
+/* Dark stage — the console at night */
+[data-theme="dark"] .hero {
+  --paper-raised: #0E121B;
+  --paper-sunken: #0A0D14;
+  --ink: #EEF2FB;
+  --ink-soft: #AEB8CD;
+  --ink-muted: #7A8398;
+  --rule: rgba(255,255,255,0.10);
+  --rule-strong: rgba(255,255,255,0.18);
+  --open: #3FB950; --open-tint: rgba(63,185,80,0.16);
+  --del: #F85149;  --del-tint: rgba(248,81,73,0.16);
+  --merge: #A371F7; --merge-deep: #C4A5FF; --merge-tint: rgba(163,113,247,0.18);
+  --h1-grad-start: #FFFFFF; --h1-grad-end: #B98CFF;
+  --stage-hair: rgba(255,255,255,0.09);
+  background: var(--void);
+}
+/* Light stage — the console by day: an airy lavender deck, not a black slab.
+   Uses the normal light tokens so text, diff and ticker all adapt. */
+[data-theme="light"] .hero {
+  background:
+    radial-gradient(120% 92% at 80% -12%, rgba(130,80,223,0.16), transparent 58%),
+    linear-gradient(180deg, #F1EEFB 0%, #F6F5FA 46%, var(--paper) 82%);
+}
+.hero::before { display: none; }   /* replaced by the stage layers */
+
+.hero-stage { position: absolute; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+#fx-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; opacity: 0.9; }
+.stage-grid {
+  position: absolute; inset: -2px;
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 46px 46px;
+  -webkit-mask: radial-gradient(120% 100% at 70% 0%, #000 30%, transparent 78%);
+  mask: radial-gradient(120% 100% at 70% 0%, #000 30%, transparent 78%);
+}
+/* Soft violet aura + a sweeping scan beam */
+.hero-stage::before {
+  content: ""; position: absolute;
+  width: 1100px; height: 1100px; top: -520px; right: -240px;
+  background: radial-gradient(circle at center, rgba(124,77,255,0.28), rgba(124,77,255,0.08) 34%, transparent 68%);
+}
+.stage-scan {
+  position: absolute; left: 0; right: 0; height: 40%;
+  top: -40%;
+  background: linear-gradient(180deg, transparent, rgba(163,113,247,0.06) 60%, rgba(163,113,247,0.14));
+  border-bottom: 1px solid rgba(163,113,247,0.22);
+  animation: scanbeam 7s linear infinite;
+}
+@keyframes scanbeam { 0% { top: -40%; } 100% { top: 100%; } }
+/* Vignette that melts the stage into the page */
+.hero-stage::after {
+  content: ""; position: absolute; inset: 0;
+  box-shadow:
+    inset 0 -140px 120px -70px var(--paper),
+    inset 0 0 240px rgba(0,0,0,0.55);
+}
+.hero-shell { position: relative; z-index: 2; }
+
+.hero-grid { grid-template-columns: 1.05fr 1.25fr; align-items: center; }
+
+/* Status eyebrow with a live signal dot */
+.eyebrow.status-eyebrow {
+  background: rgba(53,224,203,0.08);
+  color: var(--signal);
+  gap: 8px;
+}
+.status-eyebrow .sig-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--signal);
+  box-shadow: 0 0 8px var(--signal);
+  animation: livepulse 2.2s ease-in-out infinite;
+}
+
+.hero h1 { letter-spacing: -0.03em; }
+[data-theme="dark"] .hero h1 { text-shadow: 0 0 60px rgba(124,77,255,0.25); }
+.hero-lede { color: var(--ink-soft); max-width: 42ch; }
+
+/* Availability — the recruiter's line, made unmissable */
+.hero-availability {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: var(--s-4);
+  padding: 9px 15px;
+  border: 1px solid rgba(53,224,203,0.28);
+  border-radius: var(--r-chip);
+  background: rgba(53,224,203,0.06);
+  font-family: var(--mono);
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+[data-theme="light"] .hero-availability { border-color: rgba(12,156,139,0.35); background: rgba(12,156,139,0.07); }
+.hero-availability b { color: var(--signal); font-weight: 600; }
+.hero-availability .avail-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--signal); box-shadow: 0 0 0 0 rgba(53,224,203,0.5);
+  animation: statusring 2.4s ease-out infinite;
+}
+
+/* Hero figure = signature HUD frame with corner ticks + a tag */
+.hero-figure { position: relative; }
+.hero-figure::before, .hero-figure::after {
+  content: ""; position: absolute; width: 16px; height: 16px; pointer-events: none; z-index: 3;
+  border: 2px solid var(--merge);
+  opacity: 0.7;
+}
+.hero-figure::before { top: -8px; left: -8px; border-right: 0; border-bottom: 0; }
+.hero-figure::after { bottom: -8px; right: -8px; border-left: 0; border-top: 0; }
+.figure-tag {
+  position: absolute; top: -10px; right: 14px; z-index: 3;
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em;
+  color: var(--signal);
+  background: var(--void);
+  padding: 2px 8px; border-radius: 99px;
+  border: 1px solid rgba(53,224,203,0.3);
+}
+.hero-figure .diff {
+  box-shadow: var(--elev-2), 0 0 60px -20px rgba(124,77,255,0.5);
+  background: rgba(14,18,27,0.86);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+[data-theme="light"] .hero-figure .diff { background: rgba(255,255,255,0.94); }
+.diff-tab[aria-selected="true"] { border-bottom-color: var(--merge); text-shadow: 0 0 12px var(--merge-glow); }
+
+/* Proof bar → telemetry readout */
+.proofbar { border-top-color: var(--stage-hair); gap: var(--s-2) var(--s-6); }
+.proofbar .receipt { color: var(--ink-soft); }
+.proofbar b { color: var(--merge-deep); text-shadow: 0 0 20px var(--merge-glow); }
+[data-theme="light"] .proofbar b { color: var(--merge); }
+
+/* ===========================================================================
+   Deploy ticker — continuous merge readout
+   =========================================================================== */
+.ticker {
+  position: relative;
+  margin-top: var(--s-7);
+  border-top: 1px solid var(--stage-hair);
+  border-bottom: 1px solid var(--stage-hair);
+  background: rgba(0,0,0,0.25);
+  overflow: hidden;
+  -webkit-mask: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  mask: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+.ticker-track {
+  display: flex;
+  gap: var(--s-6);
+  width: max-content;
+  padding: 11px 0;
+  animation: tickerscroll 34s linear infinite;
+}
+.ticker:hover .ticker-track { animation-play-state: paused; }
+[data-theme="light"] .ticker { background: rgba(130,80,223,0.05); }
+.ticker-item {
+  display: inline-flex; align-items: center; gap: 9px;
+  font-family: var(--mono); font-size: 13px; color: var(--ink-soft); white-space: nowrap;
+}
+.ticker-item i {
+  font-style: normal; font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--merge-deep);
+  border: 1px solid rgba(163,113,247,0.4); border-radius: 99px; padding: 1px 7px;
+}
+.ticker-item::after { content: "→"; color: var(--merge); opacity: 0.5; margin-left: -2px; }
+@keyframes tickerscroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+/* ===========================================================================
+   Section framing — deck headers + panels
+   =========================================================================== */
+main > section { border-top-color: var(--rule); position: relative; }
+/* Faint channel coordinate at the top-left of each section head */
+.section-head { position: relative; }
+
+.eyebrow {
+  background: var(--merge-tint);
+  color: var(--merge-deep);
+  border: 1px solid rgba(163,113,247,0.22);
+  letter-spacing: 0.14em;
+}
+[data-theme="light"] .eyebrow { color: var(--merge); border-color: rgba(110,62,214,0.2); }
+[data-theme="dark"] .eyebrow { color: var(--merge-deep); }
+
+h2 { letter-spacing: -0.02em; }
+h2::after { box-shadow: 0 0 14px var(--merge-glow); height: 3px; }
+
+/* Case study code / arch / demo — deck surfaces */
+.code { background: var(--paper-sunken); }
+.case-figure .code { position: relative; }
+
+/* Architecture SVG re-themed for the dark deck (overrides the SVG's inline
+   <style> via higher specificity — .arch .lane beats the internal .lane). */
+.arch .lane { fill: var(--paper-raised); stroke: var(--rule-strong); }
+.arch .store { fill: rgba(163,113,247,0.14); stroke: var(--merge); }
+.arch .lbl { fill: var(--ink); }
+.arch .sub { fill: var(--ink-muted); }
+.arch .flow { stroke: var(--rule-strong); }
+.arch .replay { stroke: var(--merge); }
+.arch .rlbl { fill: var(--merge-deep); }
+.arch marker path { fill: var(--rule-strong); }
+.arch text.f { fill: var(--ink-soft); }
+.arch text.t { fill: var(--ink-muted); }
+/* keep archpulse readable on dark */
+@keyframes archpulse {
+  0%   { fill: rgba(163,113,247,0.14); }
+  35%  { fill: rgba(163,113,247,0.42); filter: drop-shadow(0 0 8px var(--merge-glow)); }
+  100% { fill: rgba(163,113,247,0.14); }
+}
+/* Center the arch diagram inside its section so it stops leaving dead space */
+figure.arch { margin-inline: auto; }
+.arch svg { max-width: 720px; margin-inline: auto; }
+
+.demo { background: var(--paper-raised); }
+.demo-controls, .demo-flow, .demo-caption { background: var(--paper-sunken); }
+.demo-flow, .demo-caption { background: transparent; }
+
+/* ===========================================================================
+   Shipped cards — deck tiles
+   =========================================================================== */
+.ship-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: var(--s-4);
+  margin-top: var(--s-6);
+}
+.ship-card {
+  display: flex;
+  flex-direction: column;
+  padding: var(--s-4);
+  border-radius: var(--r-lg);
+  background: var(--paper-raised);
+  border: 1px solid var(--rule);
+  overflow: hidden;
+}
+.ship-top { display: flex; align-items: center; justify-content: space-between; gap: var(--s-3); margin-bottom: var(--s-3); }
+.ship-top h3 { font-size: 20px; }
+.ship-card .chip-draft { text-transform: none; letter-spacing: 0; }
+.ship-desc { font-family: var(--serif); font-size: 16px; line-height: 1.6; color: var(--ink-soft); margin: 0 0 var(--s-4); }
+.ship-links { margin-top: auto; gap: var(--s-3); }
+
+/* ===========================================================================
+   Ledger — deck table refinements
+   =========================================================================== */
+.ledger thead th { border-bottom-color: var(--rule-strong); }
+.ledger tbody tr:hover { background: color-mix(in srgb, var(--merge) 7%, transparent); }
+.btn-verify { border-color: rgba(163,113,247,0.25); }
+
+/* ===========================================================================
+   Terminal — the deck's command console
+   =========================================================================== */
+.terminal-box { border: 1px solid var(--rule); border-radius: var(--r-lg); }
+.terminal-header { background: var(--paper-sunken); }
+/* Terminal follows the theme: deep black by night, soft paper by day. */
+[data-theme="dark"] .terminal-body { background: var(--void); }
+[data-theme="light"] .terminal-body { background: var(--paper-sunken); color: var(--ink-soft); }
+/* Base token rules already give the right prompt/echo/merge colors in light. */
+
+/* ===========================================================================
+   Buttons — deck controls
+   =========================================================================== */
+.btn { border-radius: var(--r-md); }
+.btn-primary { box-shadow: var(--glow-violet); }
+.btn-primary:hover { box-shadow: var(--glow-violet), 0 0 24px rgba(124,77,255,0.4); }
+.btn-ghost { background: color-mix(in srgb, var(--paper-raised) 70%, transparent); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+[data-magnetic] { will-change: transform; }
+
+/* ===========================================================================
+   Contact + footer glow
+   =========================================================================== */
+#contact { position: relative; overflow: hidden; }
+#contact::before {
+  content: ""; position: absolute; z-index: 0; pointer-events: none;
+  width: 700px; height: 700px; left: 50%; bottom: -420px; transform: translateX(-50%);
+  background: radial-gradient(circle, var(--merge-glow), transparent 62%);
+}
+#contact .shell { position: relative; z-index: 1; }
+
+/* ===========================================================================
+   Motion — boot sequence + scroll choreography + tilt
+   =========================================================================== */
+/* Page-load boot: stage layers + shell rise together */
+@keyframes stageboot { from { opacity: 0; } to { opacity: 1; } }
+.js .hero-stage { animation: stageboot 900ms ease both; }
+
+/* Tilt base — fx.js writes --rx/--ry; CSS keeps a smooth spring home */
+[data-tilt] {
+  transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transform-style: preserve-3d;
+  transition: transform var(--t-med) var(--ease-out);
+}
+
+/* Reveal upgrade: a touch more travel + blur clearing for panels */
+.js .ship-card, .js .foundation { will-change: transform, opacity; }
+
+@media (prefers-reduced-motion: reduce) {
+  .stage-scan, .ticker-track, .wordmark::before, .status-eyebrow .sig-dot,
+  .hero-availability .avail-dot { animation: none !important; }
+  [data-tilt] { transform: none !important; }
+  .js .hero-stage { animation: none; }
+}
+@media (pointer: coarse) {
+  [data-tilt] { transform: none !important; }
+}
+
+/* ===========================================================================
+   Responsive — deck adapts
+   =========================================================================== */
+@media (max-width: 860px) {
+  .hero-grid { grid-template-columns: 1fr; }
+  .hero-availability { font-size: 12px; }
+}
+@media (max-width: 480px) {
+  .hero-figure::before, .hero-figure::after { display: none; }
+  .ticker-track { animation-duration: 22s; }
+  .figure-tag { right: 8px; }
+}
+
+/* ===========================================================================
+   ███  MAXIMAL LOOK PASS — section drama  ███
+   Ghost channel numerals, reveal divider sweeps, gradient-border cards,
+   window-chrome code, ledger telemetry. Every section gets a signature.
+   =========================================================================== */
+
+/* --- Ghost channel numerals behind each section head --------------------- */
+main { counter-reset: chan; }
+main > section:not(.hero) { counter-increment: chan; }
+.section-head > * { position: relative; z-index: 1; }
+.section-head::after {
+  content: counter(chan, decimal-leading-zero);
+  position: absolute; top: -0.42em; right: 0; z-index: 0;
+  font-family: var(--mono); font-weight: 600;
+  font-size: clamp(72px, 11vw, 150px);
+  line-height: 1; letter-spacing: -0.05em;
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--rule-strong);
+  opacity: 0.55; pointer-events: none;
+  transition: opacity var(--t-slow) var(--ease-out), transform var(--t-slow) var(--ease-out);
+  transform: translateY(8px);
+}
+.in .section-head::after { opacity: 0.7; transform: none; }
+.section-head:hover::after { -webkit-text-stroke-color: var(--merge); opacity: 0.9; }
+@media (max-width: 720px) { .section-head::after { display: none; } }
+
+/* --- Glowing divider sweep drawn on section reveal ----------------------- */
+main > section:not(.hero)::before {
+  content: ""; position: absolute; top: -1px; left: 0; height: 1px; width: 100%;
+  background: linear-gradient(90deg, transparent, var(--merge) 20%, var(--signal) 80%, transparent);
+  transform: scaleX(0); transform-origin: left center;
+  opacity: 0;
+  transition: transform 1000ms var(--ease-out), opacity 700ms var(--ease-out);
+  pointer-events: none; z-index: 2;
+}
+main > section:not(.hero).in::before { transform: scaleX(1); opacity: 0.8; }
+main > section:not(.hero).in::before { box-shadow: 0 0 12px var(--merge-glow); }
+@media (prefers-reduced-motion: reduce) {
+  main > section:not(.hero)::before { transition: none; transform: scaleX(1); opacity: 0.5; }
+  .in .section-head::after { transform: none; }
+}
+
+/* --- Gradient-border glow on deck cards ---------------------------------- */
+.ship-card::after, .diff::after {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1px;
+  background: linear-gradient(135deg, var(--merge), transparent 38%, transparent 62%, var(--signal));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+  opacity: 0; transition: opacity var(--t-med) var(--ease-out);
+  pointer-events: none; z-index: 1;
+}
+.ship-card:hover::after { opacity: 0.85; }
+.ship-card { position: relative; transition: transform var(--t-med) var(--ease-out), box-shadow var(--t-med) var(--ease-out); }
+.ship-card:hover { box-shadow: var(--elev-2), 0 0 40px -12px var(--merge-glow); }
+.ship-top h3 { transition: color var(--t-fast); }
+.ship-card:hover .ship-top h3 { color: var(--merge-deep); }
+
+/* --- Case-study code as a window ----------------------------------------- */
+.code {
+  position: relative;
+  padding-top: calc(38px + var(--s-3));
+}
+.code::before {
+  content: "server.py";
+  position: absolute; top: 0; left: 0; right: 0; height: 38px;
+  display: flex; align-items: center; padding-left: 62px;
+  font-family: var(--mono); font-size: 12px; color: var(--ink-muted);
+  background: var(--paper-sunken);
+  border-bottom: 1px solid var(--rule);
+  border-radius: var(--r-md) var(--r-md) 0 0;
+}
+.code::after {
+  content: ""; position: absolute; top: 14px; left: 18px;
+  width: 10px; height: 10px; border-radius: 50%;
+  background: #ff5f56; box-shadow: 18px 0 0 #ffbd2e, 36px 0 0 #27c93f;
+}
+
+/* --- Ledger telemetry bar (fx.js fills [data-ledger-stats]) --------------- */
+.ledger-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--s-3);
+  margin: var(--s-5) 0 var(--s-6);
+}
+.lstat {
+  position: relative;
+  padding: var(--s-3) var(--s-4);
+  border: 1px solid var(--rule);
+  border-radius: var(--r-md);
+  background: color-mix(in srgb, var(--paper-raised) 70%, transparent);
+  overflow: hidden;
+}
+.lstat::before {
+  content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 2px;
+  background: linear-gradient(var(--merge), var(--signal));
+}
+.lstat .num {
+  display: block;
+  font-family: var(--mono); font-weight: 600;
+  font-size: clamp(26px, 3vw, 34px); line-height: 1;
+  color: var(--ink); letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+.lstat .lbl {
+  display: block; margin-top: 8px;
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--ink-muted);
+}
+@media (max-width: 720px) { .ledger-stats { grid-template-columns: 1fr 1fr; } }
+
+/* --- Terminal: banner, boot log, clickable command chips ----------------- */
+.term-banner { color: var(--ink-muted); line-height: 1.35; margin-bottom: 6px; }
+.term-line.boot { color: var(--ink-muted); }
+.term-line.boot .ok { color: var(--open); }
+.term-hints {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 9px;
+  margin-top: var(--s-3);
+}
+.term-hints-label {
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--ink-muted);
+}
+.term-chip {
+  font-family: var(--mono); font-size: 12.5px;
+  color: var(--ink-soft);
+  background: color-mix(in srgb, var(--paper-raised) 70%, transparent);
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--r-sm);
+  padding: 5px 11px;
+  transition: color var(--t-fast) var(--ease-out), border-color var(--t-fast) var(--ease-out),
+    box-shadow var(--t-fast) var(--ease-out), transform var(--t-fast) var(--ease-out);
+}
+.term-chip::before { content: "$ "; color: var(--merge); }
+.term-chip:hover { color: var(--ink); border-color: var(--merge); box-shadow: 0 0 14px var(--merge-glow); transform: translateY(-1px); }
+.term-chip:active { transform: translateY(0); }
+.term-chip-accent { color: var(--merge-deep); border-color: rgba(163,113,247,0.45); }
+.term-chip-accent::before { content: "# "; }
+@media (max-width: 480px) {
+  .term-banner { font-size: 11px; }
+}
+
+/* --- Flagship: mlrouter feature grid + connective note ------------------- */
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--s-4);
+  margin-top: var(--s-6);
+}
+.feature {
+  position: relative;
+  padding: var(--s-4);
+  border-radius: var(--r-lg);
+  background: var(--paper-raised);
+  border: 1px solid var(--rule);
+  overflow: hidden;
+  transition: transform var(--t-med) var(--ease-out), box-shadow var(--t-med) var(--ease-out);
+}
+.feature:hover { box-shadow: var(--elev-2), 0 0 40px -14px var(--merge-glow); }
+.feature-k {
+  font-family: var(--mono); font-size: 12px; font-weight: 600;
+  color: var(--merge); letter-spacing: 0.08em;
+}
+.feature h4 {
+  margin: var(--s-2) 0 var(--s-2);
+  display: flex; align-items: center; flex-wrap: wrap; gap: 8px;
+}
+.feature-by {
+  font-family: var(--mono); font-size: 10px; font-weight: 500;
+  text-transform: none; letter-spacing: 0.02em;
+  color: var(--signal);
+  border: 1px solid rgba(53,224,203,0.35);
+  border-radius: var(--r-chip); padding: 1px 8px;
+}
+[data-theme="light"] .feature-by { color: var(--signal); border-color: rgba(12,156,139,0.4); }
+.feature p { color: var(--ink-soft); font-size: 14.5px; line-height: 1.6; }
+.feature code, .flagship-note code {
+  font-family: var(--mono); font-size: 0.86em;
+  background: var(--paper-sunken); border: 1px solid var(--rule);
+  border-radius: var(--r-sm); padding: 1px 5px; color: var(--ink);
+}
+.flagship-note {
+  margin-top: var(--s-5);
+  padding: var(--s-4) var(--s-5);
+  border: 1px solid var(--rule);
+  border-left: 3px solid var(--merge);
+  border-radius: 0 var(--r-md) var(--r-md) 0;
+  background: linear-gradient(90deg, var(--merge-tint), transparent 70%);
+}
+.flagship-note p { color: var(--ink-soft); max-width: var(--max-prose); }
+.stack-line { margin-top: var(--s-4); color: var(--ink-muted); }
+
+.status-chip {
+  display: inline-flex; align-items: center; gap: 7px;
+  margin-left: 8px; vertical-align: middle;
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.04em;
+  color: var(--signal);
+  border: 1px solid rgba(53,224,203,0.4); border-radius: var(--r-chip);
+  padding: 2px 10px;
+}
+[data-theme="light"] .status-chip { color: var(--signal); border-color: rgba(12,156,139,0.45); }
+.status-chip::before {
+  content: ""; width: 7px; height: 7px; border-radius: 50%;
+  background: var(--signal); box-shadow: 0 0 8px var(--signal);
+  animation: livepulse 2.2s ease-in-out infinite;
+}
+
+/* --- Hero centerpiece: streaming merge log ------------------------------- */
+.mergefeed {
+  border-radius: var(--r-md);
+  background: rgba(14,18,27,0.86);
+  border: 1px solid var(--rule);
+  overflow: hidden;
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  box-shadow: var(--elev-2), 0 0 60px -20px rgba(124,77,255,0.5);
+}
+[data-theme="light"] .mergefeed { background: rgba(255,255,255,0.95); }
+.mergefeed-head {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: var(--s-3); padding: 11px 14px;
+  border-bottom: 1px solid var(--rule);
+  background: var(--paper-sunken);
+  font-family: var(--mono); font-size: 12px;
+}
+.mf-live { display: inline-flex; align-items: center; gap: 7px; color: var(--signal); letter-spacing: 0.08em; }
+.mf-live-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--signal); box-shadow: 0 0 8px var(--signal); animation: livepulse 2s ease-in-out infinite; }
+.mf-count { color: var(--ink-soft); }
+.mf-count b { color: var(--merge-deep); font-weight: 600; }
+.mergefeed-viewport {
+  height: 344px; overflow: hidden; position: relative;
+  -webkit-mask: linear-gradient(180deg, transparent, #000 7%, #000 90%, transparent);
+  mask: linear-gradient(180deg, transparent, #000 7%, #000 90%, transparent);
+}
+.mergefeed-track { list-style: none; margin: 0; padding: 0; animation: mfscroll 42s linear infinite; }
+.mergefeed:hover .mergefeed-track { animation-play-state: paused; }
+.mf-row {
+  display: grid;
+  grid-template-columns: 9px 148px 56px 1fr;
+  align-items: center; gap: 9px;
+  padding: 8px 14px;
+  font-family: var(--mono); font-size: 12.5px; line-height: 1.4;
+  border-bottom: 1px solid var(--rule);
+  color: var(--ink-soft);
+  transition: background-color var(--t-fast) var(--ease-out);
+}
+.mf-row:hover { background: var(--merge-tint); }
+.mf-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--merge); box-shadow: 0 0 7px var(--merge-glow); }
+.mf-repo { color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mf-num { color: var(--merge-deep); }
+.mf-msg { color: var(--ink-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mf-row:hover .mf-msg, .mf-row:hover .mf-repo { color: var(--ink); }
+@keyframes mfscroll { from { transform: translateY(0); } to { transform: translateY(-50%); } }
+@media (prefers-reduced-motion: reduce) {
+  .mergefeed-track { animation: none; }
+  .mergefeed-viewport { overflow-y: auto; }
+}
+@media (max-width: 480px) {
+  .mf-row { grid-template-columns: 8px 120px 48px 1fr; font-size: 11.5px; }
+  .mergefeed-viewport { height: 300px; }
+}
 

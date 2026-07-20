@@ -403,6 +403,7 @@
     // `cd <name>` scrolls the page to the matching <section> id.
     var PAGE_SECTIONS = [
       { name: "work",        id: "work",        desc: "Case study: mcp-persist" },
+      { name: "mlrouter",    id: "mlrouter",    desc: "Flagship: multi-model LLM gateway" },
       { name: "shipped",     id: "shipped",     desc: "Other shipped packages" },
       { name: "ledger",      id: "ledger",      desc: "Upstream merged pull requests" },
       { name: "foundations", id: "foundations", desc: "Systems groundwork" },
@@ -686,11 +687,11 @@
                 // Pulls the live download figure from the data-bake span when present.
                 var upDl = doc.querySelector("[data-downloads]");
                 var upText = upDl ? upDl.textContent.trim() : "8,000+";
-                response = "up " + escHtml(upText) + " PyPI installations · 8 upstream merges · 0 regrets";
+                response = "up " + escHtml(upText) + " PyPI installations · 20 upstream merges · 0 regrets";
                 break;
               case "ls":
                 // Sections of the page; `cd <name>` scrolls to each.
-                response = "Sections — use <span class=\"text-merge\">cd &lt;name&gt;</span> to jump:\n";
+                response = "Sections · use <span class=\"text-merge\">cd &lt;name&gt;</span> to jump:\n";
                 PAGE_SECTIONS.forEach(function (s) {
                   var pad = (s.name + "             ").slice(0, 13);
                   response += "  <span class=\"text-merge\">" + escHtml(s.name) + "</span>" +
