@@ -1,5 +1,5 @@
 {
-  "generated": "2026-07-19T07:57:58.460Z",
+  "generated": "2026-07-20T08:39:16.489Z",
   "curated": [
     {
       "repo": "lightpanda-io/browser",
@@ -165,6 +165,15 @@
     }
   ],
   "recent": [
+    {
+      "repo": "systemd/systemd",
+      "number": 43077,
+      "title": "hostname-util: strip all trailing separators in hostname_cleanup()",
+      "state": "merged",
+      "url": "https://github.com/systemd/systemd/pull/43077",
+      "updated_at": "2026-07-20T08:01:14Z",
+      "merged_at": "2026-07-20T07:35:13Z"
+    },
     {
       "repo": "lancedb/lancedb",
       "number": 3599,
