@@ -1731,10 +1731,11 @@ body {
   position: absolute; top: -10px; right: 14px; z-index: 3;
   font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em;
   color: var(--signal);
-  background: var(--void);
+  background: var(--paper-raised);
   padding: 2px 8px; border-radius: 99px;
   border: 1px solid rgba(53,224,203,0.3);
 }
+[data-theme="light"] .figure-tag { border-color: rgba(12,156,139,0.4); }
 .hero-figure .diff {
   box-shadow: var(--elev-2), 0 0 60px -20px rgba(124,77,255,0.5);
   background: rgba(14,18,27,0.86);
