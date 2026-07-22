@@ -1,5 +1,5 @@
 {
-  "generated": "2026-07-21T08:07:06.255Z",
+  "generated": "2026-07-22T08:07:51.338Z",
   "curated": [
     {
       "repo": "lightpanda-io/browser",
@@ -165,6 +165,15 @@
     }
   ],
   "recent": [
+    {
+      "repo": "systemd/systemd",
+      "number": 43079,
+      "title": "escape: reject UTF-16 surrogates in \\u escapes in cunescape_one()",
+      "state": "merged",
+      "url": "https://github.com/systemd/systemd/pull/43079",
+      "updated_at": "2026-07-21T14:40:36Z",
+      "merged_at": "2026-07-21T14:40:27Z"
+    },
     {
       "repo": "systemd/systemd",
       "number": 43077,
