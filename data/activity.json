@@ -1,5 +1,5 @@
 {
-  "generated": "2026-07-23T08:11:01.242Z",
+  "generated": "2026-07-24T08:06:36.005Z",
   "curated": [
     {
       "repo": "lightpanda-io/browser",
@@ -165,6 +165,24 @@
     }
   ],
   "recent": [
+    {
+      "repo": "systemd/systemd",
+      "number": 43102,
+      "title": "ask-password: reject oversized Plymouth prompts",
+      "state": "merged",
+      "url": "https://github.com/systemd/systemd/pull/43102",
+      "updated_at": "2026-07-23T10:18:36Z",
+      "merged_at": "2026-07-23T10:18:14Z"
+    },
+    {
+      "repo": "systemd/systemd",
+      "number": 43078,
+      "title": "strv: don't read past end of string on invalid UTF-8 in strv_rebreak_lines()",
+      "state": "merged",
+      "url": "https://github.com/systemd/systemd/pull/43078",
+      "updated_at": "2026-07-23T10:17:09Z",
+      "merged_at": "2026-07-23T10:17:00Z"
+    },
     {
       "repo": "systemd/systemd",
       "number": 43079,
