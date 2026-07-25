@@ -6,12 +6,12 @@
   "merged_prs": 23,
   "repos_merged": 6,
   "repo_merged": {
-    "BerriAI/litellm": 6,
-    "lancedb/lancedb": 5,
     "systemd/systemd": 5,
+    "lancedb/lancedb": 5,
+    "BerriAI/litellm": 6,
     "lance-format/lance": 3,
     "lightpanda-io/browser": 3,
     "python/cpython": 1
   },
-  "generated": "2026-07-25T13:51:45.638Z"
+  "generated": "2026-07-25T14:10:32.562Z"
 }
