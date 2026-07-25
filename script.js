@@ -6,6 +6,7 @@
   var doc = document;
   var reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
   var activityData = null;
+  var statsData = null;
 
   // Mobile nav
   var toggle = doc.getElementById("nav-toggle");
@@ -126,6 +127,108 @@
     return shown;
   }
 
+  // ---- Live merge inventory -----------------------------------------------
+  // Single source for every terminal command that quotes merge numbers, so none
+  // of them can drift: read the merged rows off the page (curated ledger plus
+  // the recent-activity rows hydrated from activity.json), fall back to
+  // activity.json itself, then to the baked list. De-duplicated by repo#number.
+  var MERGED_FALLBACK = [
+    { repo: "python/cpython", pr: "150328", title: "gh-150311: Fix minor issues in configure.ac for the CYGWIN port" },
+    { repo: "lance-format/lance", pr: "6934", title: "feat(rust): support datafusion expressions for merge insert predicates" },
+    { repo: "lancedb/lancedb", pr: "3444", title: "feat(rust): support datafusion expressions for merge insert predicates" },
+    { repo: "lancedb/lancedb", pr: "3459", title: "fix(python): run AsyncTable.search embeddings on a dedicated executor" },
+    { repo: "lightpanda-io/browser", pr: "2537", title: "feat(webapi): implement W3C File API" },
+    { repo: "lightpanda-io/browser", pr: "2635", title: "Implement input type=file support (FileList, input.files/value, DOM.setFileInputFiles)" },
+    { repo: "BerriAI/litellm", pr: "29493", title: "feat(proxy): add disable_budget_reservation general setting" },
+    { repo: "BerriAI/litellm", pr: "29483", title: "fix(proxy): don't enforce budgets on model-discovery / info routes" },
+    { repo: "BerriAI/litellm", pr: "30020", title: "fix(proxy): release max_parallel_requests slot when a stream is cancelled mid-flight" },
+    { repo: "lancedb/lancedb", pr: "3511", title: "fix(python): raise clear TypeError for bare List/Tuple in pydantic schema conversion" },
+    { repo: "lancedb/lancedb", pr: "3512", title: "fix(rust): return typed errors instead of panicking in Bedrock embedding path" },
+    { repo: "BerriAI/litellm", pr: "30272", title: "feat(proxy): surface max_input_tokens/max_output_tokens on /v1/models" },
+    { repo: "BerriAI/litellm", pr: "30273", title: "feat(proxy): serve Anthropic-native /v1/models for Claude Code gateway discovery" },
+    { repo: "lightpanda-io/browser", pr: "2722", title: "feat(cdp): implement Browser.setDownloadBehavior file downloads" },
+    { repo: "lance-format/lance", pr: "7246", title: "fix: evaluate all list-element docs in FTS prefilter walk-the-allowlist branch" },
+    { repo: "lance-format/lance", pr: "7251", title: "fix: merge_insert silently drops matches when a leading payload column is all-null" },
+    { repo: "systemd/systemd", pr: "42578", title: "sysupdate: refuse reboot/pending logic when --component= is used" },
+    { repo: "BerriAI/litellm", pr: "30387", title: "fix(openai): preserve cache_control for openai-compatible custom endpoints" }
+  ];
+
+  function collectMergedPRs() {
+    var out = [];
+    function add(repo, pr, title) {
+      if (!repo || !pr || !title) return;
+      var exists = out.some(function (p) { return p.repo === repo && p.pr === String(pr); });
+      if (!exists) out.push({ repo: repo, pr: String(pr), title: title });
+    }
+
+    // Recent activity first so the freshest merges lead, matching the hero feed.
+    // Two passes because a combined selector would return document order.
+    ["#recent-body tr", "#ledger-body tr"].forEach(function (sel) {
+      doc.querySelectorAll(sel).forEach(function (row) {
+        var stateCell = row.querySelector(".col-state");
+        if (!stateCell || stateCell.textContent.trim().toLowerCase() !== "merged") return;
+        var repoCell = row.querySelector(".col-repo");
+        var titleCell = row.querySelector(".col-title a");
+        var prNum = "";
+        var dataPr = row.getAttribute("data-pr");
+        if (dataPr && dataPr.indexOf("#") !== -1) {
+          prNum = dataPr.split("#")[1];
+        } else if (titleCell) {
+          var match = (titleCell.getAttribute("href") || "").match(/\/pull\/(\d+)/);
+          if (match) prNum = match[1];
+        }
+        add(repoCell ? repoCell.textContent.trim() : "", prNum, titleCell ? titleCell.textContent.trim() : "");
+      });
+    });
+
+    // The tables may not be hydrated yet when a command runs this early.
+    if (!out.length && activityData) {
+      ["recent", "curated"].forEach(function (k) {
+        if (!Array.isArray(activityData[k])) return;
+        activityData[k].forEach(function (p) {
+          if (p.state === "merged") add(p.repo, p.number, p.title);
+        });
+      });
+    }
+    if (!out.length) out = MERGED_FALLBACK.slice();
+    return out;
+  }
+
+  // Merged PRs per repo. The page is a sample; stats.json carries GitHub's own
+  // per-repo totals from the workflow, so take whichever is higher per repo and
+  // include repos that only the workflow knows about.
+  function mergedByRepo() {
+    var byRepo = {};
+    collectMergedPRs().forEach(function (p) {
+      byRepo[p.repo] = (byRepo[p.repo] || 0) + 1;
+    });
+    var live = statsData && statsData.repo_merged;
+    if (live) {
+      Object.keys(live).forEach(function (repo) {
+        if (typeof live[repo] === "number") {
+          byRepo[repo] = Math.max(byRepo[repo] || 0, live[repo]);
+        }
+      });
+    }
+    return byRepo;
+  }
+
+  // Column padding for the `ls projects` listing.
+  function lsPad(name) {
+    return (name + "                         ").slice(0, Math.max(24, name.length + 2));
+  }
+
+  // Total merged upstream. The receipt count is GitHub's own figure (baked by
+  // the workflow, hydrated from stats.json), so it outranks the page sample.
+  function mergedTotal() {
+    var sample = collectMergedPRs().length;
+    var el = doc.querySelector("[data-merged-count]");
+    var authoritative = el
+      ? parseInt(el.getAttribute("data-countup-target") || el.textContent, 10) || 0
+      : 0;
+    return Math.max(sample, authoritative);
+  }
+
   // Diff tab switcher (§7.1 v1.1) — keyboard nav, aria-selected, 120ms cross-fade
   var tablist = doc.querySelector(".diff-tablist");
   var tabs = tablist ? Array.from(tablist.querySelectorAll(".diff-tab")) : [];
@@ -235,9 +338,17 @@
   // Load stats.json: downloads + version
   getJSON("data/stats.json").then(function (s) {
     if (!s) return;
+    statsData = s;
     if (typeof s.downloads === "number") {
       var live = Math.max(FLOOR, s.downloads);
       if (live > FLOOR) animateDownloads(live);
+    }
+    // Compact downloads for the terminal banner (kept plain text: the banner is
+    // box-drawn, so it must not animate character by character)
+    if (s.downloads_short) {
+      doc.querySelectorAll("[data-bake='downloads-short']").forEach(function (el) {
+        el.textContent = s.downloads_short;
+      });
     }
     // Hydrate version data-bake spans
     if (s.version) {
@@ -251,6 +362,12 @@
     if (typeof s.merged_prs === "number") {
       doc.querySelectorAll("[data-merged-count], [data-mf-count]").forEach(function (el) {
         raiseCount(el, s.merged_prs);
+      });
+    }
+    // Distinct repositories merged into (ledger telemetry tile).
+    if (typeof s.repos_merged === "number") {
+      doc.querySelectorAll("[data-repos-count]").forEach(function (el) {
+        raiseCount(el, s.repos_merged);
       });
     }
     // Per-repo receipt counts ("Merged: systemd ×2"). Same floor rule; the ×
@@ -623,81 +740,7 @@
                            "  Git, GDB, Linux, Bash, Valgrind, IntelliJ IDEA, VS Code";
                 break;
               case "merged":
-                var mergedPRs = [];
-                
-                // 1. Try parsing from the DOM first (covers curated ledger and recent activity)
-                var rows = doc.querySelectorAll("#ledger-body tr, #recent-body tr");
-                rows.forEach(function (row) {
-                  var stateCell = row.querySelector(".col-state");
-                  var isMerged = stateCell && stateCell.textContent.trim().toLowerCase() === "merged";
-                  if (isMerged) {
-                    var repoCell = row.querySelector(".col-repo");
-                    var titleCell = row.querySelector(".col-title a");
-                    var repo = repoCell ? repoCell.textContent.trim() : "";
-                    var title = titleCell ? titleCell.textContent.trim() : "";
-                    var prNum = "";
-                    
-                    var dataPr = row.getAttribute("data-pr");
-                    if (dataPr && dataPr.indexOf("#") !== -1) {
-                      prNum = dataPr.split("#")[1];
-                    } else if (titleCell) {
-                      var href = titleCell.getAttribute("href") || "";
-                      var match = href.match(/\/pull\/(\d+)/);
-                      if (match) prNum = match[1];
-                    }
-                    
-                    if (repo && prNum && title) {
-                      var exists = mergedPRs.some(function (p) {
-                        return p.repo === repo && p.pr === prNum;
-                      });
-                      if (!exists) {
-                        mergedPRs.push({ repo: repo, pr: prNum, title: title });
-                      }
-                    }
-                  }
-                });
-
-                // 2. If DOM is not yet populated/accessible, check activityData
-                if (mergedPRs.length === 0 && activityData) {
-                  if (Array.isArray(activityData.curated)) {
-                    activityData.curated.forEach(function (c) {
-                      if (c.state === "merged") {
-                        mergedPRs.push({ repo: c.repo, pr: c.number, title: c.title });
-                      }
-                    });
-                  }
-                  if (Array.isArray(activityData.recent)) {
-                    activityData.recent.forEach(function (r) {
-                      if (r.state === "merged") {
-                        mergedPRs.push({ repo: r.repo, pr: r.number, title: r.title });
-                      }
-                    });
-                  }
-                }
-
-                // 3. Fallback to the complete actual list of merged PRs if all else fails
-                if (mergedPRs.length === 0) {
-                  mergedPRs = [
-                    { repo: "python/cpython", pr: "150328", title: "gh-150311: Fix minor issues in configure.ac for the CYGWIN port" },
-                    { repo: "lance-format/lance", pr: "6934", title: "feat(rust): support datafusion expressions for merge insert predicates" },
-                    { repo: "lancedb/lancedb", pr: "3444", title: "feat(rust): support datafusion expressions for merge insert predicates" },
-                    { repo: "lancedb/lancedb", pr: "3459", title: "fix(python): run AsyncTable.search embeddings on a dedicated executor" },
-                    { repo: "lightpanda-io/browser", pr: "2537", title: "feat(webapi): implement W3C File API" },
-                    { repo: "lightpanda-io/browser", pr: "2635", title: "Implement input type=file support (FileList, input.files/value, DOM.setFileInputFiles)" },
-                    { repo: "BerriAI/litellm", pr: "29493", title: "feat(proxy): add disable_budget_reservation general setting" },
-                    { repo: "BerriAI/litellm", pr: "29483", title: "fix(proxy): don't enforce budgets on model-discovery / info routes" },
-                    { repo: "BerriAI/litellm", pr: "30020", title: "fix(proxy): release max_parallel_requests slot when a stream is cancelled mid-flight" },
-                    { repo: "lancedb/lancedb", pr: "3511", title: "fix(python): raise clear TypeError for bare List/Tuple in pydantic schema conversion" },
-                    { repo: "lancedb/lancedb", pr: "3512", title: "fix(rust): return typed errors instead of panicking in Bedrock embedding path" },
-                    { repo: "BerriAI/litellm", pr: "30272", title: "feat(proxy): surface max_input_tokens/max_output_tokens on /v1/models" },
-                    { repo: "BerriAI/litellm", pr: "30273", title: "feat(proxy): serve Anthropic-native /v1/models for Claude Code gateway discovery" },
-                    { repo: "lightpanda-io/browser", pr: "2722", title: "feat(cdp): implement Browser.setDownloadBehavior file downloads" },
-                    { repo: "lance-format/lance", pr: "7246", title: "fix: evaluate all list-element docs in FTS prefilter walk-the-allowlist branch" },
-                    { repo: "lance-format/lance", pr: "7251", title: "fix: merge_insert silently drops matches when a leading payload column is all-null" },
-                    { repo: "systemd/systemd", pr: "42578", title: "sysupdate: refuse reboot/pending logic when --component= is used" },
-                    { repo: "BerriAI/litellm", pr: "30387", title: "fix(openai): preserve cache_control for openai-compatible custom endpoints" }
-                  ];
-                }
+                var mergedPRs = collectMergedPRs();
 
                 response = "Upstream merged pull requests:\n";
                 mergedPRs.forEach(function (pr) {
@@ -711,18 +754,20 @@
                 response = "mcp-persist downloads total on PyPI: <span class=\"text-merge\">" + dlText + "</span>";
                 break;
               case "git log":
-                // Decorative log that mirrors the real ledger (§17.9B). Hashes are
-                // hardcoded plausible hex; * and hash render in merge, message in ink.
-                response = "<span class=\"text-merge\">* a3f9c2e</span> (HEAD → main) feat(webapi): implement W3C File API\n" +
-                           "<span class=\"text-merge\">* 71bd44a</span> fix(python): run AsyncTable.search on dedicated executor\n" +
-                           "<span class=\"text-merge\">* c8e1f03</span> feat(rust): support datafusion expressions\n" +
-                           "<span class=\"text-merge\">* 2d8a991</span> gh-150311: Fix minor issues in configure.ac";
+                // Decorative log over the four freshest merges (§17.9B). Hashes are
+                // plausible hex; * and hash render in merge, message in ink.
+                var glHashes = ["a3f9c2e", "71bd44a", "c8e1f03", "2d8a991"];
+                response = collectMergedPRs().slice(0, 4).map(function (pr, i) {
+                  return "<span class=\"text-merge\">* " + glHashes[i] + "</span>" +
+                         (i === 0 ? " (HEAD → main)" : "") + " " + escHtml(pr.title);
+                }).join("\n");
                 break;
               case "uptime":
                 // Pulls the live download figure from the data-bake span when present.
                 var upDl = doc.querySelector("[data-downloads]");
                 var upText = upDl ? upDl.textContent.trim() : "8,000+";
-                response = "up " + escHtml(upText) + " PyPI installations · 20 upstream merges · 0 regrets";
+                response = "up " + escHtml(upText) + " PyPI installations · " +
+                           mergedTotal() + " upstream merges · 0 regrets";
                 break;
               case "ls":
                 // Sections of the page; `cd <name>` scrolls to each.
@@ -741,11 +786,19 @@
                 var lsDlText = lsDl ? lsDl.textContent.trim() : "8,000+";
                 var lsVer = doc.querySelector("[data-bake='version']");
                 var lsVerText = lsVer ? "v" + lsVer.textContent.trim() : "v1.8.x";
-                response = "drwxr-xr-x  mcp-persist/       " + escHtml(lsDlText) + " downloads · MIT · " + escHtml(lsVerText) + "\n" +
-                           "drwxr-xr-x  cpython/           merged upstream\n" +
-                           "drwxr-xr-x  lancedb/           2 PRs merged\n" +
-                           "drwxr-xr-x  lightpanda/        2 PRs merged · Zig\n" +
-                           "drwxr-xr-x  litellm/           2 PRs merged";
+                // Upstream repos and their PR counts come from the live merge
+                // inventory, so a merge into a new repo lists itself here.
+                var lsLines = ["drwxr-xr-x  " + lsPad("mcp-persist/") + escHtml(lsDlText) +
+                               " downloads · MIT · " + escHtml(lsVerText)];
+                var lsByRepo = mergedByRepo();
+                Object.keys(lsByRepo)
+                  .sort(function (a, b) { return lsByRepo[b] - lsByRepo[a] || a.localeCompare(b); })
+                  .forEach(function (repo) {
+                    var n = lsByRepo[repo];
+                    lsLines.push("drwxr-xr-x  " + lsPad(escHtml(repo) + "/") +
+                                 n + (n === 1 ? " PR merged" : " PRs merged"));
+                  });
+                response = lsLines.join("\n");
                 break;
               case "contact":
                 response = "email    asandhu@wpi.edu\n" +
@@ -753,8 +806,26 @@
                            "linkedin linkedin.com/in/asandhu05";
                 break;
               case "sudo hire-me":
-                response = "[sudo] password for recruiter: ••••••••\n" +
-                           "Permission granted. → asandhu@wpi.edu";
+                // The payoff command: the joke, then the actual case in one
+                // screen. Every figure is read live so it can never overstate.
+                var hmDl = doc.querySelector("[data-downloads]");
+                var hmVer = doc.querySelector("[data-bake='version']");
+                var hmAvail = doc.querySelector(".hero-availability b");
+                var hmRepos = Object.keys(mergedByRepo()).length;
+                response =
+                  "[sudo] password for recruiter: ••••••••\n" +
+                  "Verifying credentials ......... <span class=\"text-merge\">ok</span>\n" +
+                  "Elevating to hire/armaan ...... <span class=\"text-merge\">ok</span>\n\n" +
+                  "  candidate   Armaan Sandhu · CS @ WPI · BS/MS '29\n" +
+                  "  available   " + escHtml(hmAvail ? hmAvail.textContent.trim() : "Summer 2027") +
+                    " SWE internships\n" +
+                  "  upstream    <span class=\"text-merge\">" + mergedTotal() + "</span> PRs merged across " +
+                    hmRepos + " repositories\n" +
+                  "  shipping    mcp-persist " + escHtml(hmDl ? hmDl.textContent.trim() : "8,000+") +
+                    " downloads" + (hmVer ? " · v" + escHtml(hmVer.textContent.trim()) : "") + "\n" +
+                  "  building    mlrouter · multi-model LLM gateway · mlrouter.com\n" +
+                  "  stack       Zig · Rust · Python · C\n\n" +
+                  "Permission granted. → <span class=\"text-merge\">asandhu@wpi.edu</span>";
                 break;
               case "clear":
                 // Clear everything except the prompt line

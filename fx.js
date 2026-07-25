@@ -264,26 +264,35 @@
   (function ledgerStats() {
     var wrap = doc.querySelector("[data-ledger-stats]");
     if (!wrap) return;
-    var rows = doc.querySelectorAll("#ledger-body tr");
-    if (!rows.length) return;
-    var repos = {}, merged = 0;
-    rows.forEach(function (tr) {
-      var st = tr.querySelector(".col-state");
-      var repo = tr.querySelector(".col-repo");
-      if (st && st.textContent.trim().toLowerCase() === "merged") merged++;
-      if (repo) repos[repo.textContent.trim()] = 1;
-    });
-    var nums = wrap.querySelectorAll(".num");
-    // [0] merged upstream, [1] repos. The baked value is the authoritative
-    // GitHub floor; the ledger is a curated subset, so only ever raise it.
-    if (nums[0] && merged) {
-      var floor0 = parseInt(nums[0].textContent, 10) || 0;
-      nums[0].textContent = String(Math.max(floor0, merged));
+    function raise(el, live) {
+      if (!el || !live) return;
+      // data-countup-target when present: textContent may be a mid-tween value
+      // rather than the authoritative baked figure.
+      var floor = parseInt(el.getAttribute("data-countup-target") || el.textContent, 10) || 0;
+      var shown = Math.max(floor, live);
+      if (el.hasAttribute("data-countup")) el.setAttribute("data-countup-target", String(shown));
+      el.textContent = String(shown);
     }
-    if (nums[1]) {
-      var floor1 = parseInt(nums[1].textContent, 10) || 0;
-      nums[1].textContent = String(Math.max(floor1, Object.keys(repos).length));
+    function run() {
+      // Curated ledger plus the recent merges script.js appends, so a merge in a
+      // repo the ledger has never listed still counts here.
+      var rows = doc.querySelectorAll("#ledger-body tr, #recent-body tr");
+      if (!rows.length) return;
+      var repos = {}, merged = 0;
+      rows.forEach(function (tr) {
+        var st = tr.querySelector(".col-state");
+        var repo = tr.querySelector(".col-repo");
+        if (st && st.textContent.trim().toLowerCase() === "merged") merged++;
+        if (repo) repos[repo.textContent.trim()] = 1;
+      });
+      var nums = wrap.querySelectorAll(".num");
+      // [0] merged upstream, [1] repos. The baked value is the authoritative
+      // GitHub floor; these tables are a subset, so only ever raise it.
+      raise(nums[0], merged);
+      raise(nums[1], Object.keys(repos).length);
     }
+    run();
+    doc.addEventListener("deck:activity", run);
   })();
 
   /* ======================================================================
@@ -314,14 +323,24 @@
     var banner = body.querySelector(".term-banner");
     if (!banner) return;
     var booted = false;
-    var lines = [
-      "mounting /dev/wpi",
-      "loading module mcp-persist.ko",
-      "syncing upstream ledger · 20 merged",
-      "link established · latency 0ms"
-    ];
+    // The merge figure comes off the live receipt count, not a literal. Read at
+    // boot time (first view of the console), by which point stats.json has
+    // usually hydrated it.
+    function bootLines() {
+      var el = doc.querySelector("[data-merged-count]");
+      var n = el
+        ? parseInt(el.getAttribute("data-countup-target") || el.textContent, 10) || 0
+        : 0;
+      return [
+        "mounting /dev/wpi",
+        "loading module mcp-persist.ko",
+        "syncing upstream ledger" + (n ? " · " + n + " merged" : ""),
+        "link established · latency 0ms"
+      ];
+    }
     function boot() {
       if (booted) return; booted = true;
+      var lines = bootLines();
       lines.forEach(function (txt, i) {
         setTimeout(function () {
           var d = doc.createElement("div");

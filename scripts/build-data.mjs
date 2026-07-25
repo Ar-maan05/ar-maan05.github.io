@@ -134,27 +134,41 @@ async function buildStats() {
   // Round DOWN to nearest hundred for display (e.g. 7,900+)
   const floor100 = Math.floor(downloads / 100) * 100;
   const downloads_display = floor100.toLocaleString("en-US") + "+";
+  // Compact form for the fixed-width terminal banner ("14k+").
+  const downloads_short = Math.floor(downloads / 1000) + "k+";
 
   // Count of merged upstream PRs by the author, excluding every repo the author
   // owns (`-user:` filters by repo owner, so this covers all own repos, not just
   // mcp-persist). Resilient: a failure here leaves merged_prs null so the baked
   // value is kept.
+  // The same walk also yields the per-repo breakdown (proofbar receipts, the
+  // terminal's `ls projects`) and the number of distinct repositories, so every
+  // merge figure on the page comes from one query rather than drifting apart.
   let merged_prs = null;
+  let repos_merged = null;
+  const repo_merged = {};
   try {
     const q = `author:${AUTHOR} type:pr is:merged -user:${AUTHOR}`;
-    const res = await ghJSON(`search/issues?q=${encodeURIComponent(q)}&per_page=1`);
-    if (typeof res.total_count === "number") merged_prs = res.total_count;
-  } catch (_) { /* keep null; will fall back to baked value */ }
+    for (let page = 1; page <= 5; page++) {
+      const res = await ghJSON(
+        `search/issues?q=${encodeURIComponent(q)}&per_page=100&page=${page}`
+      );
+      if (page === 1 && typeof res.total_count === "number") merged_prs = res.total_count;
+      const items = res.items || [];
+      for (const it of items) repo_merged[repoFromUrl(it.repository_url)] = (repo_merged[repoFromUrl(it.repository_url)] || 0) + 1;
+      if (items.length < 100) break;   // last page
+    }
+    repos_merged = Object.keys(repo_merged).length || null;
+  } catch (_) { /* keep nulls; the baked values are kept */ }
 
-  // Per-repo merged counts for the proofbar receipts. Same resilience rule: a
-  // failure for one repo just omits it, so the baked value survives.
-  const repo_merged = {};
+  // A repo listed as a receipt but missing from the walk would silently lose its
+  // count, so confirm those directly. Cheap: one query per receipt repo.
   for (const repo of RECEIPT_REPOS) {
     try {
       const q = `author:${AUTHOR} type:pr is:merged repo:${repo}`;
       const res = await ghJSON(`search/issues?q=${encodeURIComponent(q)}&per_page=1`);
       if (typeof res.total_count === "number") repo_merged[repo] = res.total_count;
-    } catch (_) { /* omit; baked value is kept */ }
+    } catch (_) { /* keep whatever the walk found */ }
   }
 
   // Version from PyPI JSON API
@@ -172,8 +186,10 @@ async function buildStats() {
   return {
     downloads,
     downloads_display,
+    downloads_short,
     ...(version ? { version } : {}),
     ...(merged_prs != null ? { merged_prs } : {}),
+    ...(repos_merged != null ? { repos_merged } : {}),
     ...(Object.keys(repo_merged).length ? { repo_merged } : {}),
     generated: new Date().toISOString(),
   };
@@ -268,6 +284,14 @@ function bakHTML(stats) {
     );
   }
 
+  // Compact downloads for the terminal banner
+  if (stats.downloads_short) {
+    html = html.replace(
+      /(<[^>]+data-bake="downloads-short"[^>]*>)[^<]*(<\/[^>]+>)/g,
+      (_, open, close) => { changed = true; return open + stats.downloads_short + close; }
+    );
+  }
+
   // Rewrite the total merged-upstream count wherever it appears: the proofbar
   // receipt (data-merged-count) and the hero merge-log header (data-mf-count).
   if (stats.merged_prs != null) {
@@ -278,6 +302,15 @@ function bakHTML(stats) {
         (_, open, close) => { changed = true; return open + mc + close; }
       );
     }
+  }
+
+  // Distinct repositories merged into (ledger telemetry tile)
+  if (stats.repos_merged != null) {
+    const rc = String(stats.repos_merged);
+    html = html.replace(
+      /(<[^>]+data-repos-count[^>]*>)[^<]*(<\/[^>]+>)/g,
+      (_, open, close) => { changed = true; return open + rc + close; }
+    );
   }
 
   // Rewrite per-repo receipt counts (e.g. "Merged: systemd ×2"). The multiplier
