@@ -201,11 +201,21 @@
   (function countUp() {
     var els = Array.prototype.slice.call(doc.querySelectorAll("[data-countup]"));
     if (!els.length) return;
+    // The target is re-read every frame from data-countup-target so live
+    // hydration (script.js, stats.json) landing mid-animation raises the
+    // figure instead of being overwritten by the tail of the tween.
+    function targetOf(el) {
+      var attr = parseInt(el.getAttribute("data-countup-target") || "", 10);
+      if (attr) return attr;
+      return parseInt((el.textContent || "").replace(/[^0-9]/g, ""), 10);
+    }
     function run(el) {
-      var target = parseInt((el.textContent || "").replace(/[^0-9]/g, ""), 10);
+      var target = targetOf(el);
       if (!target || reduce) return;
+      el.setAttribute("data-countup-target", String(target));
       var start = performance.now(), dur = 1100;
       function tick(now) {
+        target = targetOf(el);
         var p = Math.min(1, (now - start) / dur);
         var eased = 1 - Math.pow(1 - p, 3);
         el.textContent = String(Math.round(target * eased));
@@ -334,8 +344,10 @@
 
   /* ======================================================================
      9. Hero merge log — the streaming centerpiece.
-     Rebuilds from the full ledger (single source of truth), then duplicates
-     the track so the vertical scroll loops with no seam.
+     Rebuilds from every merged row on the page: the curated ledger plus the
+     recent-activity rows script.js appends from activity.json, so a fresh
+     upstream merge shows up here the same day it lands. Then duplicates the
+     track so the vertical scroll loops with no seam.
      ====================================================================== */
   (function mergeFeed() {
     var track = doc.querySelector("[data-mergefeed]");
@@ -343,37 +355,62 @@
     function esc(s) {
       return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
     }
-    var items = [];
-    doc.querySelectorAll("#ledger-body tr").forEach(function (tr) {
-      var st = tr.querySelector(".col-state");
-      if (!st || st.textContent.trim().toLowerCase() !== "merged") return;
-      var repoEl = tr.querySelector(".col-repo");
-      var a = tr.querySelector(".col-title a");
-      if (!repoEl || !a) return;
-      var dp = tr.getAttribute("data-pr") || "";
-      items.push({
-        repo: repoEl.textContent.trim(),
-        num: dp.indexOf("#") > -1 ? dp.split("#")[1] : "",
-        title: a.textContent.trim(),
-        url: a.href
+
+    // Recent activity first — it is the freshest — then the curated ledger.
+    // Keyed by repo#number so a PR listed in both places appears once.
+    function collect() {
+      var items = [], seen = {};
+      // Two passes, not one selector list: querySelectorAll returns document
+      // order, which would bury the fresh rows below the ledger.
+      ["#recent-body tr", "#ledger-body tr"].forEach(function (sel) {
+        doc.querySelectorAll(sel).forEach(function (tr) {
+          var st = tr.querySelector(".col-state");
+          if (!st || st.textContent.trim().toLowerCase() !== "merged") return;
+          var repoEl = tr.querySelector(".col-repo");
+          var a = tr.querySelector(".col-title a");
+          if (!repoEl || !a) return;
+          var dp = tr.getAttribute("data-pr") || "";
+          var repo = repoEl.textContent.trim();
+          var num = dp.indexOf("#") > -1 ? dp.split("#")[1] : "";
+          var key = repo + "#" + num;
+          if (num && seen[key]) return;
+          seen[key] = true;
+          items.push({ repo: repo, num: num, title: a.textContent.trim(), url: a.href });
+        });
       });
-    });
-    if (items.length) {
+      return items;
+    }
+
+    function render() {
+      var items = collect();
+      if (!items.length) return;
       track.innerHTML = items.map(function (it) {
         return '<li><a class="mf-row" href="' + esc(it.url) + '" target="_blank" rel="noopener">' +
           '<span class="mf-dot" aria-hidden="true"></span>' +
           '<span class="mf-repo">' + esc(it.repo) + '</span>' +
-          '<span class="mf-num">#' + esc(it.num) + '</span>' +
+          (it.num ? '<span class="mf-num">#' + esc(it.num) + '</span>' : "") +
           '<span class="mf-msg">' + esc(it.title) + '</span></a></li>';
       }).join("");
       // Keep the authoritative baked GitHub count if it exceeds the sample.
       var count = doc.querySelector("[data-mf-count]");
       if (count) {
-        var floor = parseInt(count.textContent, 10) || 0;
-        count.textContent = String(Math.max(floor, items.length));
+        // Read the count-up target when present: textContent may be a mid-tween
+        // value rather than the authoritative baked figure.
+        var floor = parseInt(count.getAttribute("data-countup-target") || count.textContent, 10) || 0;
+        var shown = Math.max(floor, items.length);
+        count.textContent = String(shown);
+        if (count.hasAttribute("data-countup")) count.setAttribute("data-countup-target", String(shown));
       }
+      // The CSS duration is tuned for the baked set; scale it with the row count
+      // so the scroll keeps the same pace as the feed grows (42s / 18 rows).
+      track.style.animationDuration = (items.length * 2.33).toFixed(1) + "s";
+      // Duplicate the set so the -50% keyframe loops seamlessly.
+      if (!reduce) track.innerHTML += track.innerHTML;
     }
-    // Duplicate the set so the -50% keyframe loops seamlessly.
-    if (!reduce) track.innerHTML += track.innerHTML;
+
+    render();
+    // script.js fires this once activity.json has hydrated the tables; the fetch
+    // may land either side of this file's own load, so rebuild on both paths.
+    doc.addEventListener("deck:activity", render);
   })();
 })();

@@ -675,6 +675,20 @@ a.diff:hover {
   font-variant-numeric: tabular-nums;
   letter-spacing: -0.02em;
 }
+/* "×2" multiplier on a per-repo receipt: the × sits outside the <b> so the
+   count alone stays machine-writable (data-repo-merged), but both read as one
+   figure. Hidden entirely when the repo has a single merged PR. */
+.proofbar .mult {
+  display: inline-flex;
+  align-items: baseline;
+  color: var(--merge);
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+.proofbar .mult[hidden] { display: none; }
+
 .tnum { font-variant-numeric: tabular-nums; }
 
 /* ===========================================================================

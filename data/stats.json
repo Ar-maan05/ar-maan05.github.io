@@ -3,5 +3,8 @@
   "downloads_display": "14,000+",
   "version": "1.12.1",
   "merged_prs": 23,
+  "repo_merged": {
+    "systemd/systemd": 5
+  },
   "generated": "2026-07-25T07:49:45.944Z"
 }

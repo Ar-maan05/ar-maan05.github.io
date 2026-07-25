@@ -32,6 +32,10 @@ const HERO_DIFF_PRS = [
 // Line truncation limit per spec §7.1
 const LINE_MAX = 52;
 
+// Per-repo merged counts surfaced as proofbar receipts ("Merged: systemd ×2").
+// Each entry is baked into the element carrying data-repo-merged="<repo>".
+const RECEIPT_REPOS = ["systemd/systemd"];
+
 const token = process.env.GITHUB_TOKEN || process.env.GH_TOKEN || "";
 const ghHeaders = {
   "Accept": "application/vnd.github+json",
@@ -142,6 +146,17 @@ async function buildStats() {
     if (typeof res.total_count === "number") merged_prs = res.total_count;
   } catch (_) { /* keep null; will fall back to baked value */ }
 
+  // Per-repo merged counts for the proofbar receipts. Same resilience rule: a
+  // failure for one repo just omits it, so the baked value survives.
+  const repo_merged = {};
+  for (const repo of RECEIPT_REPOS) {
+    try {
+      const q = `author:${AUTHOR} type:pr is:merged repo:${repo}`;
+      const res = await ghJSON(`search/issues?q=${encodeURIComponent(q)}&per_page=1`);
+      if (typeof res.total_count === "number") repo_merged[repo] = res.total_count;
+    } catch (_) { /* omit; baked value is kept */ }
+  }
+
   // Version from PyPI JSON API
   let version = null;
   try {
@@ -159,6 +174,7 @@ async function buildStats() {
     downloads_display,
     ...(version ? { version } : {}),
     ...(merged_prs != null ? { merged_prs } : {}),
+    ...(Object.keys(repo_merged).length ? { repo_merged } : {}),
     generated: new Date().toISOString(),
   };
 }
@@ -252,13 +268,26 @@ function bakHTML(stats) {
     );
   }
 
-  // Rewrite data-merged-count span (count of merged upstream PRs)
+  // Rewrite the total merged-upstream count wherever it appears: the proofbar
+  // receipt (data-merged-count) and the hero merge-log header (data-mf-count).
   if (stats.merged_prs != null) {
     const mc = String(stats.merged_prs);
-    html = html.replace(
-      /(<[^>]+data-merged-count[^>]*>)[^<]*(<\/[^>]+>)/g,
-      (_, open, close) => { changed = true; return open + mc + close; }
+    for (const attr of ["data-merged-count", "data-mf-count"]) {
+      html = html.replace(
+        new RegExp(`(<[^>]+${attr}[^>]*>)[^<]*(<\\/[^>]+>)`, "g"),
+        (_, open, close) => { changed = true; return open + mc + close; }
+      );
+    }
+  }
+
+  // Rewrite per-repo receipt counts (e.g. "Merged: systemd ×2"). The multiplier
+  // wrapper is hidden when a repo only has a single merged PR.
+  for (const [repo, n] of Object.entries(stats.repo_merged || {})) {
+    const re = new RegExp(
+      `(<[^>]+data-repo-merged="${repo.replace(/[.*+?^${}()|[\]\\/]/g, "\\$&")}"[^>]*>)[^<]*(<\\/[^>]+>)`,
+      "g"
     );
+    html = html.replace(re, (_, open, close) => { changed = true; return open + String(n) + close; });
   }
 
   // Rewrite data-bake="version" spans

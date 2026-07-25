@@ -114,6 +114,18 @@
     requestAnimationFrame(tick);
   }
 
+  // Raise a baked integer readout to a live value, never lower it (§6.1).
+  // data-countup-target is the authority when set, since textContent can be a
+  // mid-tween value while fx.js is animating; writing it back keeps a running
+  // count-up heading for the new figure. Returns the value now on screen.
+  function raiseCount(el, live) {
+    var floor = parseInt(el.getAttribute("data-countup-target") || el.textContent, 10) || 0;
+    var shown = Math.max(floor, live);
+    if (el.hasAttribute("data-countup")) el.setAttribute("data-countup-target", String(shown));
+    el.textContent = String(shown);
+    return shown;
+  }
+
   // Diff tab switcher (§7.1 v1.1) — keyboard nav, aria-selected, 120ms cross-fade
   var tablist = doc.querySelector(".diff-tablist");
   var tabs = tablist ? Array.from(tablist.querySelectorAll(".diff-tab")) : [];
@@ -233,6 +245,25 @@
         el.textContent = s.version;
       });
     }
+    // Total merged upstream PRs: the proofbar receipt and the hero merge-log
+    // header. The baked/derived value is a floor; live data may only raise it
+    // (§6.1), so a stale JSON can never shrink the number on screen.
+    if (typeof s.merged_prs === "number") {
+      doc.querySelectorAll("[data-merged-count], [data-mf-count]").forEach(function (el) {
+        raiseCount(el, s.merged_prs);
+      });
+    }
+    // Per-repo receipt counts ("Merged: systemd ×2"). Same floor rule; the ×
+    // wrapper is dropped when a repo only has one merged PR.
+    if (s.repo_merged) {
+      doc.querySelectorAll("[data-repo-merged]").forEach(function (el) {
+        var n = s.repo_merged[el.getAttribute("data-repo-merged")];
+        if (typeof n !== "number") return;
+        var shown = raiseCount(el, n);
+        var wrap = el.closest("[data-repo-mult]");
+        if (wrap) wrap.hidden = shown < 2;
+      });
+    }
   });
 
   // Load diffs.json: populate non-default hero diff panels
@@ -270,12 +301,9 @@
         var cell = doc.querySelector('[data-pr="' + c.repo + "#" + c.number + '"] .col-state');
         if (cell && c.state) { cell.textContent = ""; cell.appendChild(chip(c.state)); }
       });
+      // The baked value is the floor; live data may only raise it (§6.1).
       var mc = doc.querySelector("[data-merged-count]");
-      if (mc) {
-        // The baked value is the floor; live data may only raise it (§6.1).
-        var floor = parseInt(mc.textContent, 10) || 0;
-        if (merged > floor) mc.textContent = String(merged);
-      }
+      if (mc) raiseCount(mc, merged);
     }
     /* append recent activity */
     var body = doc.getElementById("recent-body");
@@ -283,6 +311,9 @@
     if (body && wrap && Array.isArray(a.recent) && a.recent.length) {
       a.recent.slice(0, 6).forEach(function (r) {
         var tr = doc.createElement("tr");
+        // Same data-pr key as the baked ledger rows: the hero merge log reads it
+        // for the PR number and to de-duplicate against curated entries.
+        tr.setAttribute("data-pr", r.repo + "#" + r.number);
         var s = doc.createElement("td"); s.className = "col-state"; s.appendChild(chip(r.state || "open"));
         var repo = doc.createElement("td"); repo.className = "col-repo"; repo.textContent = r.repo;
         var title = doc.createElement("td"); title.className = "col-title";
@@ -297,6 +328,10 @@
       });
       wrap.hidden = false;
     }
+    /* Tell the motion layer the tables changed so the hero merge log picks up
+       these merges. fx.js also builds once on its own load, so it does not
+       matter whether this fetch lands before or after fx.js runs. */
+    doc.dispatchEvent(new CustomEvent("deck:activity"));
   });
 
   // 1. Spotlight border glow cards
