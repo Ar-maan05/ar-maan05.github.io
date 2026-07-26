@@ -1,5 +1,5 @@
 {
-  "generated": "2026-07-25T14:10:41.498Z",
+  "generated": "2026-07-26T08:07:34.794Z",
   "curated": [
     {
       "repo": "lightpanda-io/browser",
@@ -165,6 +165,15 @@
     }
   ],
   "recent": [
+    {
+      "repo": "systemd/systemd",
+      "number": 43150,
+      "title": "ask-password: refuse agent requests with unsafe characters in prompt fields",
+      "state": "merged",
+      "url": "https://github.com/systemd/systemd/pull/43150",
+      "updated_at": "2026-07-25T20:30:09Z",
+      "merged_at": "2026-07-25T20:30:02Z"
+    },
     {
       "repo": "systemd/systemd",
       "number": 43102,
