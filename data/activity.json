@@ -1,5 +1,5 @@
 {
-  "generated": "2026-07-31T08:33:21.292Z",
+  "generated": "2026-08-01T08:02:38.355Z",
   "curated": [
     {
       "repo": "lightpanda-io/browser",
@@ -167,6 +167,15 @@
   "recent": [
     {
       "repo": "systemd/systemd",
+      "number": 43230,
+      "title": "string-util: don't miss ANSI sequence at the very end in previous_ansi_sequence()",
+      "state": "merged",
+      "url": "https://github.com/systemd/systemd/pull/43230",
+      "updated_at": "2026-07-31T15:12:50Z",
+      "merged_at": "2026-07-31T15:12:41Z"
+    },
+    {
+      "repo": "systemd/systemd",
       "number": 43150,
       "title": "ask-password: refuse agent requests with unsafe characters in prompt fields",
       "state": "merged",
@@ -209,15 +218,6 @@
       "url": "https://github.com/systemd/systemd/pull/43077",
       "updated_at": "2026-07-20T08:01:14Z",
       "merged_at": "2026-07-20T07:35:13Z"
-    },
-    {
-      "repo": "lancedb/lancedb",
-      "number": 3599,
-      "title": "fix(python): average MRR reciprocal ranks over all rankings",
-      "state": "merged",
-      "url": "https://github.com/lancedb/lancedb/pull/3599",
-      "updated_at": "2026-07-02T09:34:23Z",
-      "merged_at": "2026-07-01T22:36:56Z"
     }
   ]
 }
