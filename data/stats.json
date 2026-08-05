@@ -3,15 +3,15 @@
   "downloads_display": "15,000+",
   "downloads_short": "15k+",
   "version": "2.0.0",
-  "merged_prs": 25,
+  "merged_prs": 26,
   "repos_merged": 6,
   "repo_merged": {
     "systemd/systemd": 7,
+    "lance-format/lance": 4,
     "lancedb/lancedb": 5,
     "BerriAI/litellm": 6,
-    "lance-format/lance": 3,
     "lightpanda-io/browser": 3,
     "python/cpython": 1
   },
-  "generated": "2026-08-04T08:19:11.776Z"
+  "generated": "2026-08-05T08:15:26.618Z"
 }

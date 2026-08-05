@@ -1,5 +1,5 @@
 {
-  "generated": "2026-08-04T08:19:28.722Z",
+  "generated": "2026-08-05T08:15:38.706Z",
   "curated": [
     {
       "repo": "lightpanda-io/browser",
@@ -166,6 +166,15 @@
   ],
   "recent": [
     {
+      "repo": "lance-format/lance",
+      "number": 7845,
+      "title": "fix(ngram): recheck contains() with sub-trigram needle instead of dropping rows",
+      "state": "merged",
+      "url": "https://github.com/lance-format/lance/pull/7845",
+      "updated_at": "2026-08-04T16:13:17Z",
+      "merged_at": "2026-08-04T16:13:17Z"
+    },
+    {
       "repo": "systemd/systemd",
       "number": 43230,
       "title": "string-util: don't miss ANSI sequence at the very end in previous_ansi_sequence()",
@@ -209,15 +218,6 @@
       "url": "https://github.com/systemd/systemd/pull/43079",
       "updated_at": "2026-07-21T14:40:36Z",
       "merged_at": "2026-07-21T14:40:27Z"
-    },
-    {
-      "repo": "systemd/systemd",
-      "number": 43077,
-      "title": "hostname-util: strip all trailing separators in hostname_cleanup()",
-      "state": "merged",
-      "url": "https://github.com/systemd/systemd/pull/43077",
-      "updated_at": "2026-07-20T08:01:14Z",
-      "merged_at": "2026-07-20T07:35:13Z"
     }
   ]
 }
