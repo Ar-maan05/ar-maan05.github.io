@@ -1,5 +1,5 @@
 {
-  "generated": "2026-08-06T08:14:18.347Z",
+  "generated": "2026-08-07T06:59:37.080Z",
   "curated": [
     {
       "repo": "lightpanda-io/browser",
@@ -171,7 +171,7 @@
       "title": "fix(ngram): recheck contains() with sub-trigram needle instead of dropping rows",
       "state": "merged",
       "url": "https://github.com/lance-format/lance/pull/7845",
-      "updated_at": "2026-08-04T16:13:17Z",
+      "updated_at": "2026-08-06T14:55:50Z",
       "merged_at": "2026-08-04T16:13:17Z"
     },
     {
