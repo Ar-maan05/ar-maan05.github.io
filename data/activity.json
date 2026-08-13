@@ -1,5 +1,5 @@
 {
-  "generated": "2026-08-12T07:07:21.185Z",
+  "generated": "2026-08-13T07:11:18.421Z",
   "curated": [
     {
       "repo": "lightpanda-io/browser",
@@ -166,6 +166,24 @@
   ],
   "recent": [
     {
+      "repo": "systemd/systemd",
+      "number": 43333,
+      "title": "options: reject an empty long option name",
+      "state": "merged",
+      "url": "https://github.com/systemd/systemd/pull/43333",
+      "updated_at": "2026-08-12T22:12:04Z",
+      "merged_at": "2026-08-12T22:11:37Z"
+    },
+    {
+      "repo": "systemd/systemd",
+      "number": 43326,
+      "title": "strv: treat newlines as hard line breaks in strv_rebreak_lines()",
+      "state": "merged",
+      "url": "https://github.com/systemd/systemd/pull/43326",
+      "updated_at": "2026-08-12T22:12:01Z",
+      "merged_at": "2026-08-12T22:11:50Z"
+    },
+    {
       "repo": "lance-format/lance",
       "number": 7845,
       "title": "fix(ngram): recheck contains() with sub-trigram needle instead of dropping rows",
@@ -200,24 +218,6 @@
       "url": "https://github.com/systemd/systemd/pull/43102",
       "updated_at": "2026-07-23T10:18:36Z",
       "merged_at": "2026-07-23T10:18:14Z"
-    },
-    {
-      "repo": "systemd/systemd",
-      "number": 43078,
-      "title": "strv: don't read past end of string on invalid UTF-8 in strv_rebreak_lines()",
-      "state": "merged",
-      "url": "https://github.com/systemd/systemd/pull/43078",
-      "updated_at": "2026-07-23T10:17:09Z",
-      "merged_at": "2026-07-23T10:17:00Z"
-    },
-    {
-      "repo": "systemd/systemd",
-      "number": 43079,
-      "title": "escape: reject UTF-16 surrogates in \\u escapes in cunescape_one()",
-      "state": "merged",
-      "url": "https://github.com/systemd/systemd/pull/43079",
-      "updated_at": "2026-07-21T14:40:36Z",
-      "merged_at": "2026-07-21T14:40:27Z"
     }
   ]
 }
