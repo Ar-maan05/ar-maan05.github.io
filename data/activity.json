@@ -1,5 +1,5 @@
 {
-  "generated": "2026-08-14T07:08:05.615Z",
+  "generated": "2026-08-15T06:19:45.038Z",
   "curated": [
     {
       "repo": "lightpanda-io/browser",
@@ -166,6 +166,15 @@
   ],
   "recent": [
     {
+      "repo": "BerriAI/litellm",
+      "number": 35455,
+      "title": "feat(proxy): serve Anthropic-native /v1/models for Claude Code gateway discovery",
+      "state": "merged",
+      "url": "https://github.com/BerriAI/litellm/pull/35455",
+      "updated_at": "2026-08-14T17:22:59Z",
+      "merged_at": "2026-08-14T17:22:59Z"
+    },
+    {
       "repo": "systemd/systemd",
       "number": 43333,
       "title": "options: reject an empty long option name",
@@ -209,15 +218,6 @@
       "url": "https://github.com/systemd/systemd/pull/43150",
       "updated_at": "2026-07-25T20:30:09Z",
       "merged_at": "2026-07-25T20:30:02Z"
-    },
-    {
-      "repo": "systemd/systemd",
-      "number": 43102,
-      "title": "ask-password: reject oversized Plymouth prompts",
-      "state": "merged",
-      "url": "https://github.com/systemd/systemd/pull/43102",
-      "updated_at": "2026-07-23T10:18:36Z",
-      "merged_at": "2026-07-23T10:18:14Z"
     }
   ]
 }
