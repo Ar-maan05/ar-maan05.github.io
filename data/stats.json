@@ -2,7 +2,7 @@
   "downloads": 16000,
   "downloads_display": "16,000+",
   "downloads_short": "16k+",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "merged_prs": 29,
   "repos_merged": 6,
   "repo_merged": {
@@ -13,5 +13,5 @@
     "lightpanda-io/browser": 3,
     "python/cpython": 1
   },
-  "generated": "2026-08-19T06:24:59.178Z"
+  "generated": "2026-08-20T06:25:45.849Z"
 }
