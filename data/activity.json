@@ -1,5 +1,5 @@
 {
-  "generated": "2026-08-27T17:03:55.821Z",
+  "generated": "2026-08-28T17:52:14.626Z",
   "curated": [
     {
       "repo": "lightpanda-io/browser",
@@ -166,6 +166,15 @@
   ],
   "recent": [
     {
+      "repo": "coreos/afterburn",
+      "number": 1295,
+      "title": "providers: Don't panic truncating a multi-byte hostname",
+      "state": "merged",
+      "url": "https://github.com/coreos/afterburn/pull/1295",
+      "updated_at": "2026-08-28T17:42:02Z",
+      "merged_at": "2026-08-28T17:42:01Z"
+    },
+    {
       "repo": "BerriAI/litellm",
       "number": 35455,
       "title": "feat(proxy): serve Anthropic-native /v1/models for Claude Code gateway discovery",
@@ -209,15 +218,6 @@
       "url": "https://github.com/systemd/systemd/pull/43230",
       "updated_at": "2026-07-31T15:12:50Z",
       "merged_at": "2026-07-31T15:12:41Z"
-    },
-    {
-      "repo": "systemd/systemd",
-      "number": 43150,
-      "title": "ask-password: refuse agent requests with unsafe characters in prompt fields",
-      "state": "merged",
-      "url": "https://github.com/systemd/systemd/pull/43150",
-      "updated_at": "2026-07-25T20:30:09Z",
-      "merged_at": "2026-07-25T20:30:02Z"
     }
   ]
 }
