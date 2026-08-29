@@ -1,5 +1,5 @@
 {
-  "generated": "2026-08-28T17:52:14.626Z",
+  "generated": "2026-08-29T11:56:41.314Z",
   "curated": [
     {
       "repo": "lightpanda-io/browser",
@@ -167,6 +167,15 @@
   "recent": [
     {
       "repo": "coreos/afterburn",
+      "number": 1294,
+      "title": "proxmoxve: Emit one nameserver= karg per address",
+      "state": "merged",
+      "url": "https://github.com/coreos/afterburn/pull/1294",
+      "updated_at": "2026-08-28T19:43:53Z",
+      "merged_at": "2026-08-28T19:43:52Z"
+    },
+    {
+      "repo": "coreos/afterburn",
       "number": 1295,
       "title": "providers: Don't panic truncating a multi-byte hostname",
       "state": "merged",
@@ -209,15 +218,6 @@
       "url": "https://github.com/lance-format/lance/pull/7845",
       "updated_at": "2026-08-06T14:55:50Z",
       "merged_at": "2026-08-04T16:13:17Z"
-    },
-    {
-      "repo": "systemd/systemd",
-      "number": 43230,
-      "title": "string-util: don't miss ANSI sequence at the very end in previous_ansi_sequence()",
-      "state": "merged",
-      "url": "https://github.com/systemd/systemd/pull/43230",
-      "updated_at": "2026-07-31T15:12:50Z",
-      "merged_at": "2026-07-31T15:12:41Z"
     }
   ]
 }
