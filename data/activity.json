@@ -1,5 +1,5 @@
 {
-  "generated": "2026-08-29T11:56:41.314Z",
+  "generated": "2026-08-30T10:53:41.849Z",
   "curated": [
     {
       "repo": "lightpanda-io/browser",
@@ -167,21 +167,21 @@
   "recent": [
     {
       "repo": "coreos/afterburn",
-      "number": 1294,
-      "title": "proxmoxve: Emit one nameserver= karg per address",
-      "state": "merged",
-      "url": "https://github.com/coreos/afterburn/pull/1294",
-      "updated_at": "2026-08-28T19:43:53Z",
-      "merged_at": "2026-08-28T19:43:52Z"
-    },
-    {
-      "repo": "coreos/afterburn",
       "number": 1295,
       "title": "providers: Don't panic truncating a multi-byte hostname",
       "state": "merged",
       "url": "https://github.com/coreos/afterburn/pull/1295",
-      "updated_at": "2026-08-28T17:42:02Z",
+      "updated_at": "2026-08-29T17:52:45Z",
       "merged_at": "2026-08-28T17:42:01Z"
+    },
+    {
+      "repo": "coreos/afterburn",
+      "number": 1294,
+      "title": "proxmoxve: Emit one nameserver= karg per address",
+      "state": "merged",
+      "url": "https://github.com/coreos/afterburn/pull/1294",
+      "updated_at": "2026-08-29T17:52:25Z",
+      "merged_at": "2026-08-28T19:43:52Z"
     },
     {
       "repo": "BerriAI/litellm",
