@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-02T10:09:41.913Z",
+  "generated": "2026-09-03T10:21:13.150Z",
   "curated": [
     {
       "repo": "lightpanda-io/browser",
@@ -166,6 +166,24 @@
   ],
   "recent": [
     {
+      "repo": "systemd/systemd",
+      "number": 43608,
+      "title": "resolve: fix use-after-free of the service browser in mDNS maintenance",
+      "state": "merged",
+      "url": "https://github.com/systemd/systemd/pull/43608",
+      "updated_at": "2026-09-02T21:38:03Z",
+      "merged_at": "2026-09-02T21:37:53Z"
+    },
+    {
+      "repo": "systemd/systemd",
+      "number": 43589,
+      "title": "compress: fix unbounded buffer growth on truncated streams, and fuzz the decompressors",
+      "state": "merged",
+      "url": "https://github.com/systemd/systemd/pull/43589",
+      "updated_at": "2026-09-02T19:06:09Z",
+      "merged_at": "2026-09-02T10:59:52Z"
+    },
+    {
       "repo": "coreos/afterburn",
       "number": 1295,
       "title": "providers: Don't panic truncating a multi-byte hostname",
@@ -200,24 +218,6 @@
       "url": "https://github.com/systemd/systemd/pull/43333",
       "updated_at": "2026-08-12T22:12:04Z",
       "merged_at": "2026-08-12T22:11:37Z"
-    },
-    {
-      "repo": "systemd/systemd",
-      "number": 43326,
-      "title": "strv: treat newlines as hard line breaks in strv_rebreak_lines()",
-      "state": "merged",
-      "url": "https://github.com/systemd/systemd/pull/43326",
-      "updated_at": "2026-08-12T22:12:01Z",
-      "merged_at": "2026-08-12T22:11:50Z"
-    },
-    {
-      "repo": "lance-format/lance",
-      "number": 7845,
-      "title": "fix(ngram): recheck contains() with sub-trigram needle instead of dropping rows",
-      "state": "merged",
-      "url": "https://github.com/lance-format/lance/pull/7845",
-      "updated_at": "2026-08-06T14:55:50Z",
-      "merged_at": "2026-08-04T16:13:17Z"
     }
   ]
 }
