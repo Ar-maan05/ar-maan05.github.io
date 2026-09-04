@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-03T10:21:13.150Z",
+  "generated": "2026-09-04T10:08:33.012Z",
   "curated": [
     {
       "repo": "lightpanda-io/browser",
@@ -167,6 +167,15 @@
   "recent": [
     {
       "repo": "systemd/systemd",
+      "number": 43650,
+      "title": "resolved: don't disable the listening socket when a datagram is dropped",
+      "state": "merged",
+      "url": "https://github.com/systemd/systemd/pull/43650",
+      "updated_at": "2026-09-04T04:55:12Z",
+      "merged_at": "2026-09-04T04:53:05Z"
+    },
+    {
+      "repo": "systemd/systemd",
       "number": 43608,
       "title": "resolve: fix use-after-free of the service browser in mDNS maintenance",
       "state": "merged",
@@ -209,15 +218,6 @@
       "url": "https://github.com/BerriAI/litellm/pull/35455",
       "updated_at": "2026-08-14T17:22:59Z",
       "merged_at": "2026-08-14T17:22:59Z"
-    },
-    {
-      "repo": "systemd/systemd",
-      "number": 43333,
-      "title": "options: reject an empty long option name",
-      "state": "merged",
-      "url": "https://github.com/systemd/systemd/pull/43333",
-      "updated_at": "2026-08-12T22:12:04Z",
-      "merged_at": "2026-08-12T22:11:37Z"
     }
   ]
 }
