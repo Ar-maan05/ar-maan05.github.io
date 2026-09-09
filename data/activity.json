@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-08T10:15:49.142Z",
+  "generated": "2026-09-09T10:21:38.139Z",
   "curated": [
     {
       "repo": "lightpanda-io/browser",
@@ -167,21 +167,21 @@
   "recent": [
     {
       "repo": "systemd/systemd",
+      "number": 43608,
+      "title": "resolve: fix use-after-free of the service browser in mDNS maintenance",
+      "state": "merged",
+      "url": "https://github.com/systemd/systemd/pull/43608",
+      "updated_at": "2026-09-08T20:55:24Z",
+      "merged_at": "2026-09-02T21:37:53Z"
+    },
+    {
+      "repo": "systemd/systemd",
       "number": 43650,
       "title": "resolved: don't disable the listening socket when a datagram is dropped",
       "state": "merged",
       "url": "https://github.com/systemd/systemd/pull/43650",
       "updated_at": "2026-09-04T04:55:12Z",
       "merged_at": "2026-09-04T04:53:05Z"
-    },
-    {
-      "repo": "systemd/systemd",
-      "number": 43608,
-      "title": "resolve: fix use-after-free of the service browser in mDNS maintenance",
-      "state": "merged",
-      "url": "https://github.com/systemd/systemd/pull/43608",
-      "updated_at": "2026-09-02T21:38:03Z",
-      "merged_at": "2026-09-02T21:37:53Z"
     },
     {
       "repo": "systemd/systemd",
