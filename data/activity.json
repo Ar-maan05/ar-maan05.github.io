@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-13T10:46:36.740Z",
+  "generated": "2026-09-14T11:12:52.456Z",
   "curated": [
     {
       "repo": "lightpanda-io/browser",
@@ -167,6 +167,15 @@
   "recent": [
     {
       "repo": "systemd/systemd",
+      "number": 43753,
+      "title": "parse-util: fix ineffective overflow guards in store_loadavg_fixed_point()",
+      "state": "merged",
+      "url": "https://github.com/systemd/systemd/pull/43753",
+      "updated_at": "2026-09-14T09:58:39Z",
+      "merged_at": "2026-09-14T05:12:39Z"
+    },
+    {
+      "repo": "systemd/systemd",
       "number": 43608,
       "title": "resolve: fix use-after-free of the service browser in mDNS maintenance",
       "state": "merged",
@@ -209,15 +218,6 @@
       "url": "https://github.com/coreos/afterburn/pull/1294",
       "updated_at": "2026-08-29T17:52:25Z",
       "merged_at": "2026-08-28T19:43:52Z"
-    },
-    {
-      "repo": "BerriAI/litellm",
-      "number": 35455,
-      "title": "feat(proxy): serve Anthropic-native /v1/models for Claude Code gateway discovery",
-      "state": "merged",
-      "url": "https://github.com/BerriAI/litellm/pull/35455",
-      "updated_at": "2026-08-14T17:22:59Z",
-      "merged_at": "2026-08-14T17:22:59Z"
     }
   ]
 }
