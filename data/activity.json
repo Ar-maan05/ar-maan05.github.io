@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-14T11:12:52.456Z",
+  "generated": "2026-09-15T10:40:01.347Z",
   "curated": [
     {
       "repo": "lightpanda-io/browser",
@@ -171,7 +171,7 @@
       "title": "parse-util: fix ineffective overflow guards in store_loadavg_fixed_point()",
       "state": "merged",
       "url": "https://github.com/systemd/systemd/pull/43753",
-      "updated_at": "2026-09-14T09:58:39Z",
+      "updated_at": "2026-09-14T13:05:56Z",
       "merged_at": "2026-09-14T05:12:39Z"
     },
     {
