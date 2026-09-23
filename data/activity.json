@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-22T10:33:02.945Z",
+  "generated": "2026-09-23T10:26:54.295Z",
   "curated": [
     {
       "repo": "lightpanda-io/browser",
@@ -167,6 +167,24 @@
   "recent": [
     {
       "repo": "systemd/systemd",
+      "number": 43663,
+      "title": "journalctl: make the read path 1.7x to 2.5x faster",
+      "state": "merged",
+      "url": "https://github.com/systemd/systemd/pull/43663",
+      "updated_at": "2026-09-23T04:54:47Z",
+      "merged_at": "2026-09-23T04:52:45Z"
+    },
+    {
+      "repo": "systemd/systemd",
+      "number": 43653,
+      "title": "utf8,format-table: make the console width helpers agree with the UTF-8 validators",
+      "state": "merged",
+      "url": "https://github.com/systemd/systemd/pull/43653",
+      "updated_at": "2026-09-23T00:07:57Z",
+      "merged_at": "2026-09-22T23:39:11Z"
+    },
+    {
+      "repo": "systemd/systemd",
       "number": 43333,
       "title": "options: reject an empty long option name",
       "state": "merged",
@@ -200,24 +218,6 @@
       "url": "https://github.com/systemd/systemd/pull/43608",
       "updated_at": "2026-09-21T13:12:56Z",
       "merged_at": "2026-09-02T21:37:53Z"
-    },
-    {
-      "repo": "util-linux/util-linux",
-      "number": 4621,
-      "title": "mbsalign: skip whole CSI sequences when counting cells",
-      "state": "merged",
-      "url": "https://github.com/util-linux/util-linux/pull/4621",
-      "updated_at": "2026-09-21T13:12:36Z",
-      "merged_at": "2026-09-21T13:11:41Z"
-    },
-    {
-      "repo": "systemd/systemd",
-      "number": 43753,
-      "title": "parse-util: fix ineffective overflow guards in store_loadavg_fixed_point()",
-      "state": "merged",
-      "url": "https://github.com/systemd/systemd/pull/43753",
-      "updated_at": "2026-09-14T13:05:56Z",
-      "merged_at": "2026-09-14T05:12:39Z"
     }
   ]
 }
