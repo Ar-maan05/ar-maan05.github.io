@@ -25,6 +25,31 @@
     doc.addEventListener("keydown", function (e) {
       if (e.key === "Escape") setOpen(false);
     });
+    // Touch: a tap anywhere outside the open menu closes it.
+    doc.addEventListener("click", function (e) {
+      if (toggle.getAttribute("aria-expanded") === "true" &&
+          !links.contains(e.target) && !toggle.contains(e.target)) setOpen(false);
+    });
+  }
+
+  // Phones stack the ledger into cards, so it opens collapsed to the first six
+  // rows with a button for the rest. CSS only applies the collapse on narrow
+  // screens; on desktop the class and button have no effect.
+  var ledgerTable = doc.getElementById("ledger-table");
+  var ledgerMore = doc.getElementById("ledger-more");
+  if (ledgerTable && ledgerMore) {
+    var ledgerRows = ledgerTable.tBodies[0].rows.length;
+    if (ledgerRows > 6) {
+      ledgerTable.classList.add("is-collapsed");
+      ledgerMore.textContent = "Show all " + ledgerRows + " pull requests";
+      ledgerMore.setAttribute("aria-expanded", "false");
+      ledgerMore.hidden = false;
+      ledgerMore.addEventListener("click", function () {
+        ledgerTable.classList.remove("is-collapsed");
+        ledgerMore.setAttribute("aria-expanded", "true");
+        ledgerMore.hidden = true;
+      });
+    }
   }
 
   // Theme Toggle
@@ -54,19 +79,28 @@
   // Scroll reveals (§10.3)
   var revealTargets = doc.querySelectorAll("main > section:not(.hero), .arch");
   if ("IntersectionObserver" in window && !reduce) {
+    // Sections reveal once their top clears the bottom 15% of the viewport.
+    // A ratio threshold would never fire for sections taller than ~6
+    // viewports (the stacked ledger on phones), leaving them invisible.
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (en) {
         if (en.isIntersecting) {
-          var isArch = en.target.classList.contains("arch");
-          var thresh = isArch ? 0.4 : 0.15;
-          if (en.intersectionRatio >= thresh) {
-            en.target.classList.add("in");
-            io.unobserve(en.target);
-          }
+          en.target.classList.add("in");
+          io.unobserve(en.target);
         }
       });
-    }, { threshold: [0.15, 0.4] });
-    revealTargets.forEach(function (s) { io.observe(s); });
+    }, { rootMargin: "0px 0px -15% 0px" });
+    var archIo = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting && en.intersectionRatio >= 0.4) {
+          en.target.classList.add("in");
+          archIo.unobserve(en.target);
+        }
+      });
+    }, { threshold: [0.4] });
+    revealTargets.forEach(function (s) {
+      (s.classList.contains("arch") ? archIo : io).observe(s);
+    });
   } else {
     revealTargets.forEach(function (s) { s.classList.add("in"); });
   }
@@ -857,9 +891,11 @@
     if (isSimulating) return;
     isSimulating = true;
 
-    var consoleSection = doc.getElementById("console");
-    if (consoleSection) {
-      consoleSection.scrollIntoView({ behavior: "smooth", block: "center" });
+    // Center the terminal itself: the whole section is taller than a phone
+    // screen, so centering it would leave the output below the fold.
+    var consoleTarget = doc.querySelector(".terminal-box") || doc.getElementById("console");
+    if (consoleTarget) {
+      consoleTarget.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "center" });
     }
 
     if (!termInput || !termBody) {
@@ -923,7 +959,8 @@
       setTimeout(function() {
         if (inputLine) inputLine.style.display = "";
         termInput.disabled = false;
-        termInput.focus();
+        // Refocusing on touch screens would pop the keyboard over the output.
+        if (window.matchMedia("(pointer: fine)").matches) termInput.focus();
         termBody.scrollTop = termBody.scrollHeight;
         isSimulating = false;
         var termTitle = doc.querySelector(".terminal-title");

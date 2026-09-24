@@ -307,7 +307,8 @@
     function runCmd(cmd) {
       var box = doc.querySelector(".terminal-box");
       if (box) box.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "center" });
-      input.focus();
+      // Skip focus on touch: it would open the keyboard over the output.
+      if (fine) input.focus();
       input.value = cmd;
       var echo = doc.getElementById("term-echo");
       if (echo) echo.textContent = cmd;

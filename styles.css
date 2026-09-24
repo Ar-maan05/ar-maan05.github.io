@@ -1680,8 +1680,11 @@ body {
   background: linear-gradient(180deg, transparent, rgba(163,113,247,0.06) 60%, rgba(163,113,247,0.14));
   border-bottom: 1px solid rgba(163,113,247,0.22);
   animation: scanbeam 7s linear infinite;
+  will-change: transform;
 }
-@keyframes scanbeam { 0% { top: -40%; } 100% { top: 100%; } }
+/* Animated with transform, not top, so the beam never triggers layout. The
+   beam is 40% of the stage tall, so 350% of itself spans the full stage. */
+@keyframes scanbeam { from { transform: translateY(0); } to { transform: translateY(350%); } }
 /* Vignette that melts the stage into the page */
 .hero-stage::after {
   content: ""; position: absolute; inset: 0;
@@ -2060,7 +2063,14 @@ main > section:not(.hero).in::before { box-shadow: 0 0 12px var(--merge-glow); }
 @media (max-width: 720px) { .ledger-stats { grid-template-columns: 1fr 1fr; } }
 
 /* --- Terminal: banner, boot log, clickable command chips ----------------- */
-.term-banner { color: var(--ink-muted); line-height: 1.35; margin-bottom: 6px; }
+/* Framed with a border rather than box-drawing characters, so the frame stays
+   closed whatever the live counts are and however narrow the screen. */
+.term-banner {
+  color: var(--ink-muted); line-height: 1.45; margin-bottom: 6px;
+  border: 1px solid var(--rule-strong); border-radius: var(--r-sm);
+  padding: 6px 12px; word-break: normal; overflow-wrap: anywhere;
+  width: fit-content; max-width: 100%;
+}
 .term-line.boot { color: var(--ink-muted); }
 .term-line.boot .ok { color: var(--open); }
 .term-hints {
@@ -2209,3 +2219,118 @@ main > section:not(.hero).in::before { box-shadow: 0 0 12px var(--merge-glow); }
   .mergefeed-viewport { height: 300px; }
 }
 
+
+/* ===========================================================================
+   Phone pass — layered last so it wins over the deck overrides above.
+   =========================================================================== */
+.nav-mobile-only { display: none; }
+.ledger-more { display: none; }
+.wordmark { white-space: nowrap; }
+.hero-availability > span { min-width: 0; }
+
+/* Touch devices: no blur over the always-moving canvas, and bigger targets. */
+@media (pointer: coarse) {
+  .mergefeed { -webkit-backdrop-filter: none; backdrop-filter: none; }
+  .btn-verify { padding: 7px 12px; font-size: 12px; }
+  .term-chip { padding: 8px 12px; }
+}
+/* iOS zooms the page when focusing an input under 16px. The input's own text
+   is transparent (the echo span renders it), so this changes nothing visible. */
+#term-input { font-size: 16px; }
+
+@media (max-width: 760px) {
+  .nav-mobile-only { display: block; }
+  .nav-links a { font-size: 15px; padding: 14px 0; }
+}
+
+@media (max-width: 720px) {
+  /* Ledger rows become compact cards: state · repo · date, then the title,
+     the note, and the Debug action. */
+  .ledger tbody tr {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    column-gap: var(--s-2);
+    row-gap: 4px;
+    padding: 14px 0;
+  }
+  .ledger tbody td { width: auto; padding: 0; }
+  .ledger .col-state, .ledger .col-repo { display: block; margin-left: 0; }
+  .ledger .col-repo { overflow: hidden; text-overflow: ellipsis; font-size: 12.5px; }
+  .ledger .col-state { grid-area: 1 / 1; }
+  .ledger .col-repo { grid-area: 1 / 2; }
+  .ledger .col-date { grid-area: 1 / 3; position: static; font-size: 12px; }
+  .ledger .col-title, .ledger .col-why, .ledger .col-action { grid-column: 1 / -1; }
+  .ledger .col-title { margin-top: 4px; line-height: 1.4; }
+  .ledger .col-action { margin-top: 6px; }
+  .ledger.is-collapsed tbody tr:nth-child(n+7) { display: none; }
+  .ledger-more:not([hidden]) {
+    display: flex; align-items: center; justify-content: center;
+    width: 100%; margin-top: var(--s-3); padding: 12px 16px;
+    font-family: var(--mono); font-size: 13px; color: var(--merge-deep);
+    background: var(--merge-tint);
+    border: 1px solid rgba(163,113,247,0.3); border-radius: var(--r-md);
+  }
+  [data-theme="light"] .ledger-more:not([hidden]) { color: var(--merge); }
+
+  .demo-pane { min-height: 170px; }
+}
+
+@media (max-width: 600px) {
+  main > section { padding-block: var(--s-6); }
+  .section-head { margin-bottom: var(--s-5); }
+  .hero { padding-top: var(--s-6); }
+  .proofbar { margin-top: var(--s-6); }
+
+  .status-chip { display: flex; width: fit-content; margin: 8px 0 0; }
+
+  .feature-grid, .ship-grid { gap: var(--s-3); margin-top: var(--s-5); }
+  .feature, .ship-card { padding: 20px; }
+
+  /* Merge log rows: repo and number on one line, the message under them,
+     instead of three columns truncated to a few characters each. */
+  .mf-row {
+    grid-template-columns: 8px auto 1fr;
+    grid-template-areas: "dot repo num" ". msg msg";
+    row-gap: 2px;
+    font-size: 12px;
+  }
+  .mf-dot { grid-area: dot; }
+  .mf-repo { grid-area: repo; }
+  .mf-num { grid-area: num; }
+  .mf-msg { grid-area: msg; }
+  .mergefeed-viewport { height: 320px; }
+}
+
+/* Grids never force a column wider than the screen (320px phones). */
+.feature-grid { grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); }
+.ship-grid { grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); }
+
+@media (max-width: 480px) {
+  /* Proof receipts wrap naturally instead of a ragged two-column grid. */
+  .proofbar { display: flex; flex-wrap: wrap; gap: 4px var(--s-4); }
+  .proofbar .receipt { white-space: nowrap; }
+  .proofbar b, .proofbar .mult { font-size: 19px; }
+
+  .eyebrow.status-eyebrow { letter-spacing: 0.08em; }
+  .hero-availability { align-items: flex-start; line-height: 1.5; }
+  .hero-availability .avail-dot { flex: none; margin-top: 6px; }
+
+  /* Terminal: the title shares the header row instead of floating over the
+     status, and the ASCII banner keeps its box shape. */
+  .terminal-header { gap: var(--s-2); }
+  .terminal-title {
+    position: static; transform: none;
+    flex: 1; min-width: 0; text-align: center; font-size: 12px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .terminal-body { padding: 14px; }
+  .term-line { word-break: normal; overflow-wrap: anywhere; }
+  .term-banner { padding: 6px 10px; }
+}
+
+@media (max-width: 420px) {
+  /* Nav fits one line: the Email button drops its label, keeps its icon. */
+  .nav-email .btn-label { display: none; }
+  .nav-actions .nav-email { padding: 8px 11px; }
+}

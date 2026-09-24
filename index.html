@@ -94,6 +94,8 @@
         <a href="#work">Work</a>
         <a href="#ledger">Ledger</a>
         <a href="#about">About</a>
+        <a class="nav-mobile-only" href="#contact">Contact</a>
+        <a class="nav-mobile-only" href="Resume.pdf" target="_blank" rel="noopener">Resume</a>
       </nav>
       <div class="nav-actions">
         <button class="btn btn-ghost theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
@@ -109,8 +111,8 @@
         <a class="btn btn-ghost resume-link" href="Resume.pdf" target="_blank" rel="noopener">
           <svg class="icon" aria-hidden="true"><use href="#i-download"/></svg>Resume
         </a>
-        <a class="btn btn-primary" href="mailto:asandhu@wpi.edu">
-          <svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg>Email me
+        <a class="btn btn-primary nav-email" href="mailto:asandhu@wpi.edu" aria-label="Email me">
+          <svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg><span class="btn-label">Email me</span>
         </a>
         <button class="nav-toggle" id="nav-toggle" aria-label="Menu" aria-controls="nav-links" aria-expanded="false">
           <svg class="icon icon-menu" aria-hidden="true"><use href="#i-menu"/></svg>
@@ -144,7 +146,7 @@
           </div>
           <p class="hero-availability" data-anim style="--d:160ms">
             <span class="avail-dot" aria-hidden="true"></span>
-            Open to <b>Summer 2027</b> Software Engineering internships
+            <span>Open to <b>Summer 2027</b> Software Engineering internships</span>
           </p>
         </div>
 
@@ -255,7 +257,7 @@
         <div class="case-body prose">
           <p><span class="runin">The design.</span> mcp-persist replaces that single point of loss with swappable, durable EventStore backends. Redis covers production fleets. SQLite covers single-node deployments. PostgreSQL slots into stacks that already run it. The Redis layout is built for replay. An INCR counter issues monotonic event IDs and the events themselves live in HASHes. A per-stream ZSET supports ranged reads so a reconnecting client can resume from any point. TTLs bound storage. A key_prefix namespace makes one Redis safe for many tenants.</p>
           <!-- NOTE FOR ARMAAN (decide later): naming a production adopter here, with their permission, would outweigh every award the old site listed. -->
-          <p id="adoption"><span class="runin">Adoption.</span> Shipped at v1.0.0 and versioned steadily forward through real usage: <span class="dl tnum" data-downloads>8,000+</span> downloads on PyPI and confirmed production deployments. The test suite runs 300+ async tests against fakeredis and real backends, with CI across Python 3.10 through 3.13.</p>
+          <p id="adoption"><span class="runin">Adoption.</span> Shipped at v1.0.0 and versioned steadily forward through real usage: <span class="dl tnum" data-bake="downloads" data-downloads>18,000+</span> downloads on PyPI and confirmed production deployments. The test suite runs 300+ async tests against fakeredis and real backends, with CI across Python 3.10 through 3.13.</p>
           <p><span class="runin">Positioning.</span> mcp-persist plugs into the official SDK's EventStore interface, so it tracks upstream releases and existing servers adopt it unchanged. Where a server can't be modified at all, the PersistenceProxy adds durability from the outside.</p>
         </div>
 
@@ -600,6 +602,7 @@ app = with_persistence(mcp, backend=<span class="s">"redis"</span>, url=<span cl
             </tbody>
           </table>
         </div>
+        <button class="ledger-more" id="ledger-more" type="button" aria-controls="ledger-table" hidden></button>
 
         <div id="recent-activity" hidden>
           <p class="recent-head">Recent activity</p>
@@ -692,9 +695,9 @@ app = with_persistence(mcp, backend=<span class="s">"redis"</span>, url=<span cl
             <span class="terminal-status"><span class="status-dot"></span><span class="status-text">CONNECTED</span></span>
           </div>
           <div class="terminal-body" id="term-body">
-            <div class="term-line term-banner">┌─ <span class="text-merge">WPI SYSTEMS TERMINAL</span> · v1.0.0 ─────────────┐
-│ <span data-merged-count>39</span> merged upstream · mcp-persist live · <span data-bake="downloads-short">18k+</span> installs │
-└─ type <span class="text-merge">help</span> · or tap a command below ──────────┘</div>
+            <div class="term-line term-banner"><span class="text-merge">WPI SYSTEMS TERMINAL</span> · v1.0.0
+<span data-merged-count>39</span> merged upstream · mcp-persist live · <span data-bake="downloads-short">18k+</span> installs
+type <span class="text-merge">help</span> · or tap a command below</div>
             <div class="term-line prompt-line">
               <span class="term-prompt">asandhu@wpi:~$</span>
               <span class="term-render"><span class="term-echo" id="term-echo"></span><span class="term-cursor" aria-hidden="true">█</span></span>
