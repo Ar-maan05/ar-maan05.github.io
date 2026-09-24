@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-23T10:26:54.295Z",
+  "generated": "2026-09-24T10:43:40.288Z",
   "curated": [
     {
       "repo": "lightpanda-io/browser",
@@ -167,6 +167,15 @@
   "recent": [
     {
       "repo": "systemd/systemd",
+      "number": 43714,
+      "title": "siphash24: force inlining of the round",
+      "state": "merged",
+      "url": "https://github.com/systemd/systemd/pull/43714",
+      "updated_at": "2026-09-23T19:32:19Z",
+      "merged_at": "2026-09-23T14:30:50Z"
+    },
+    {
+      "repo": "systemd/systemd",
       "number": 43663,
       "title": "journalctl: make the read path 1.7x to 2.5x faster",
       "state": "merged",
@@ -209,15 +218,6 @@
       "url": "https://github.com/systemd/systemd/pull/43650",
       "updated_at": "2026-09-21T13:13:15Z",
       "merged_at": "2026-09-04T04:53:05Z"
-    },
-    {
-      "repo": "systemd/systemd",
-      "number": 43608,
-      "title": "resolve: fix use-after-free of the service browser in mDNS maintenance",
-      "state": "merged",
-      "url": "https://github.com/systemd/systemd/pull/43608",
-      "updated_at": "2026-09-21T13:12:56Z",
-      "merged_at": "2026-09-02T21:37:53Z"
     }
   ]
 }
