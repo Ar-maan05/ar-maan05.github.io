@@ -1,122 +1,207 @@
 {
-  "generated": "2026-09-26T10:29:24.839Z",
+  "generated": "2026-09-26T14:52:21.973Z",
   "curated": [
     {
-      "repo": "lightpanda-io/browser",
-      "number": 2537,
-      "title": "feat(webapi): implement W3C File API",
+      "repo": "systemd/systemd",
+      "number": 43714,
+      "title": "siphash24: force inlining of the round",
       "state": "merged",
-      "merged_at": "2026-05-25T04:10:43Z",
-      "url": "https://github.com/lightpanda-io/browser/pull/2537",
-      "note": "W3C File API surface implemented in Zig for an AI-agent headless browser."
+      "merged_at": "2026-09-23T14:30:50Z",
+      "url": "https://github.com/systemd/systemd/pull/43714",
+      "note": "Forced SipHash's round inline where gcc -O2 declined, making short-key hashing up to 6.6x faster across systemd's hashmaps."
     },
     {
-      "repo": "python/cpython",
-      "number": 150328,
-      "title": "gh-150311: Fix minor issues in configure.ac for the CYGWIN port",
+      "repo": "systemd/systemd",
+      "number": 43663,
+      "title": "journalctl: make the read path 1.7x to 2.5x faster",
       "state": "merged",
-      "merged_at": "2026-05-28T12:38:39Z",
-      "url": "https://github.com/python/cpython/pull/150328",
-      "note": "Build-system fix accepted into the reference Python implementation."
+      "merged_at": "2026-09-23T04:52:45Z",
+      "url": "https://github.com/systemd/systemd/pull/43663",
+      "note": "Three fixes on journalctl's per-entry read path, including a UTF-8 decoder that ran twice per byte. Output is byte-for-byte identical, 1.7x to 2.5x faster.",
+      "highlight": true
+    },
+    {
+      "repo": "systemd/systemd",
+      "number": 43653,
+      "title": "utf8,format-table: make the console width helpers agree with the UTF-8 validators",
+      "state": "merged",
+      "merged_at": "2026-09-22T23:39:11Z",
+      "url": "https://github.com/systemd/systemd/pull/43653",
+      "note": "The console-width helper used the permissive UTF-8 decoder, so one invalid cell failed a whole table with a bogus out-of-memory error."
+    },
+    {
+      "repo": "util-linux/util-linux",
+      "number": 4621,
+      "title": "mbsalign: skip whole CSI sequences when counting cells",
+      "state": "merged",
+      "merged_at": "2026-09-21T13:11:41Z",
+      "url": "https://github.com/util-linux/util-linux/pull/4621",
+      "note": "column(1) mis-measured cells after any non-SGR escape sequence; the scan now stops at a real ECMA-48 CSI final byte."
+    },
+    {
+      "repo": "systemd/systemd",
+      "number": 43753,
+      "title": "parse-util: fix ineffective overflow guards in store_loadavg_fixed_point()",
+      "state": "merged",
+      "merged_at": "2026-09-14T05:12:39Z",
+      "url": "https://github.com/systemd/systemd/pull/43753",
+      "note": "Fixed both overflow guards in the load-average parser: one was inverted and one ran after the shift, so values from 2^53 up wrapped to 0.00 instead of being rejected."
+    },
+    {
+      "repo": "systemd/systemd",
+      "number": 43650,
+      "title": "resolved: don't disable the listening socket when a datagram is dropped",
+      "state": "merged",
+      "merged_at": "2026-09-04T04:53:05Z",
+      "url": "https://github.com/systemd/systemd/pull/43650",
+      "note": "One datagram with a bad checksum, sendable by anyone on the link, disabled resolved's mDNS, LLMNR or stub listener until restart.",
+      "highlight": true
+    },
+    {
+      "repo": "systemd/systemd",
+      "number": 43608,
+      "title": "resolve: fix use-after-free of the service browser in mDNS maintenance",
+      "state": "merged",
+      "merged_at": "2026-09-02T21:37:53Z",
+      "url": "https://github.com/systemd/systemd/pull/43608",
+      "note": "A leaked reference let resolved free an mDNS service browser while its maintenance timer still used it: a use-after-free, fixed in one line.",
+      "highlight": true
+    },
+    {
+      "repo": "systemd/systemd",
+      "number": 43589,
+      "title": "compress: fix unbounded buffer growth on truncated streams, and fuzz the decompressors",
+      "state": "merged",
+      "merged_at": "2026-09-02T10:59:52Z",
+      "url": "https://github.com/systemd/systemd/pull/43589",
+      "note": "Stopped unbounded buffer growth on truncated compressed streams, and added fuzzers that feed hostile input to every decompressor and to importd's qcow2 path."
+    },
+    {
+      "repo": "coreos/afterburn",
+      "number": 1294,
+      "title": "proxmoxve: Emit one nameserver= karg per address",
+      "state": "merged",
+      "merged_at": "2026-08-28T19:43:52Z",
+      "url": "https://github.com/coreos/afterburn/pull/1294",
+      "note": "ProxmoxVE configs with more than one nameserver left DNS unset at boot; now emits one dracut nameserver= per address, IPv6 bracketed."
+    },
+    {
+      "repo": "coreos/afterburn",
+      "number": 1295,
+      "title": "providers: Don't panic truncating a multi-byte hostname",
+      "state": "merged",
+      "merged_at": "2026-08-28T17:42:01Z",
+      "url": "https://github.com/coreos/afterburn/pull/1295",
+      "note": "Truncating a long multi-byte hostname split a UTF-8 character and panicked, failing afterburn-hostname.service at boot."
+    },
+    {
+      "repo": "BerriAI/litellm",
+      "number": 35455,
+      "title": "feat(proxy): serve Anthropic-native /v1/models for Claude Code gateway discovery",
+      "state": "merged",
+      "merged_at": "2026-08-14T17:22:59Z",
+      "url": "https://github.com/BerriAI/litellm/pull/35455",
+      "note": "Re-landed Anthropic-native /v1/models after a staging revert, so Claude Code's model picker populates through a litellm gateway."
+    },
+    {
+      "repo": "systemd/systemd",
+      "number": 43326,
+      "title": "strv: treat newlines as hard line breaks in strv_rebreak_lines()",
+      "state": "merged",
+      "merged_at": "2026-08-12T22:11:50Z",
+      "url": "https://github.com/systemd/systemd/pull/43326",
+      "note": "The line re-breaker dropped text before an embedded newline and returned entries spanning lines, which could emit uncommented lines in Varlink IDL output."
+    },
+    {
+      "repo": "systemd/systemd",
+      "number": 43333,
+      "title": "options: reject an empty long option name",
+      "state": "merged",
+      "merged_at": "2026-08-12T22:11:37Z",
+      "url": "https://github.com/systemd/systemd/pull/43333",
+      "note": "An empty long option (--=VALUE) prefix-matched every option, and with only one defined was silently accepted as it. Now rejected."
     },
     {
       "repo": "lance-format/lance",
-      "number": 6934,
-      "title": "feat(rust): support datafusion expressions for merge insert predicates",
+      "number": 7845,
+      "title": "fix(ngram): recheck contains() with sub-trigram needle instead of dropping rows",
       "state": "merged",
-      "merged_at": "2026-05-28T04:13:33Z",
-      "url": "https://github.com/lance-format/lance/pull/6934",
-      "note": "DataFusion expressions for merge-insert predicates in a production columnar format."
+      "merged_at": "2026-08-04T16:13:17Z",
+      "url": "https://github.com/lance-format/lance/pull/7845",
+      "note": "An NGRAM-indexed contains() with a needle under three characters returned zero rows; it now falls back to a full recheck."
     },
     {
-      "repo": "BerriAI/litellm",
-      "number": 29483,
-      "title": "fix(proxy): don't enforce budgets on model-discovery / info routes (#27923)",
+      "repo": "systemd/systemd",
+      "number": 43230,
+      "title": "string-util: don't miss ANSI sequence at the very end in previous_ansi_sequence()",
       "state": "merged",
-      "merged_at": "2026-06-02T11:18:50Z",
-      "url": "https://github.com/BerriAI/litellm/pull/29483",
-      "note": "Stopped budget enforcement on model-discovery and info routes."
+      "merged_at": "2026-07-31T15:12:41Z",
+      "url": "https://github.com/systemd/systemd/pull/43230",
+      "note": "An off-by-one skipped the last offset a two-byte escape sequence can start at, so ellipsize() over-truncated strings containing ESC M."
+    },
+    {
+      "repo": "systemd/systemd",
+      "number": 43150,
+      "title": "ask-password: refuse agent requests with unsafe characters in prompt fields",
+      "state": "merged",
+      "merged_at": "2026-07-25T20:30:02Z",
+      "url": "https://github.com/systemd/systemd/pull/43150",
+      "note": "A newline in an ask-password prompt could inject a Socket= line and send the typed password to another path. Unsafe characters are now refused.",
+      "highlight": true
+    },
+    {
+      "repo": "systemd/systemd",
+      "number": 43102,
+      "title": "ask-password: reject oversized Plymouth prompts",
+      "state": "merged",
+      "merged_at": "2026-07-23T10:18:14Z",
+      "url": "https://github.com/systemd/systemd/pull/43102",
+      "note": "Prompts of 255+ bytes wrapped Plymouth's one-byte length field, so the rest of the prompt was parsed as protocol data. Now rejected with -EMSGSIZE."
+    },
+    {
+      "repo": "systemd/systemd",
+      "number": 43078,
+      "title": "strv: don't read past end of string on invalid UTF-8 in strv_rebreak_lines()",
+      "state": "merged",
+      "merged_at": "2026-07-23T10:17:00Z",
+      "url": "https://github.com/systemd/systemd/pull/43078",
+      "note": "A truncated multi-byte character at the end of a string made the line breaker step past the NUL terminator and read out of bounds."
+    },
+    {
+      "repo": "systemd/systemd",
+      "number": 43079,
+      "title": "escape: reject UTF-16 surrogates in \\u escapes in cunescape_one()",
+      "state": "merged",
+      "merged_at": "2026-07-21T14:40:27Z",
+      "url": "https://github.com/systemd/systemd/pull/43079",
+      "note": "\\u escapes accepted UTF-16 surrogates and produced invalid UTF-8 downstream; now rejected, matching the \\U form."
+    },
+    {
+      "repo": "systemd/systemd",
+      "number": 43077,
+      "title": "hostname-util: strip all trailing separators in hostname_cleanup()",
+      "state": "merged",
+      "merged_at": "2026-07-20T07:35:13Z",
+      "url": "https://github.com/systemd/systemd/pull/43077",
+      "note": "hostname_cleanup() stripped only one trailing separator, so foobar-- came back as the invalid hostname foobar-."
     },
     {
       "repo": "lancedb/lancedb",
-      "number": 3444,
-      "title": "feat(rust): support datafusion expressions for merge insert predicates",
+      "number": 3599,
+      "title": "fix(python): average MRR reciprocal ranks over all rankings",
       "state": "merged",
-      "merged_at": "2026-06-03T22:47:51Z",
-      "url": "https://github.com/lancedb/lancedb/pull/3444",
-      "note": "The same DataFusion capability carried into LanceDB's Rust core."
+      "merged_at": "2026-07-01T22:36:56Z",
+      "url": "https://github.com/lancedb/lancedb/pull/3599",
+      "note": "MRR fusion averaged only over the rankings a document appeared in, letting a single-system hit outrank a consensus pick."
     },
     {
-      "repo": "lancedb/lancedb",
-      "number": 3459,
-      "title": "fix(python): run AsyncTable.search embeddings on a dedicated executor",
+      "repo": "systemd/systemd",
+      "number": 42578,
+      "title": "sysupdate: refuse reboot/pending logic when --component= is used",
       "state": "merged",
-      "merged_at": "2026-06-05T04:57:16Z",
-      "url": "https://github.com/lancedb/lancedb/pull/3459",
-      "note": "Moved embedding search onto a dedicated executor to stop event-loop stalls."
-    },
-    {
-      "repo": "lightpanda-io/browser",
-      "number": 2635,
-      "title": "Implement input type=file support (FileList, input.files/value, DOM.setFileInputFiles)",
-      "state": "merged",
-      "merged_at": "2026-06-05T02:52:24Z",
-      "url": "https://github.com/lightpanda-io/browser/pull/2635",
-      "note": "Completed file-input support, from FileList through DOM.setFileInputFiles."
-    },
-    {
-      "repo": "BerriAI/litellm",
-      "number": 29493,
-      "title": "feat(proxy): add disable_budget_reservation general setting (#27639)",
-      "state": "merged",
-      "merged_at": "2026-06-08T12:36:51Z",
-      "url": "https://github.com/BerriAI/litellm/pull/29493",
-      "note": "Added a proxy-wide setting to disable budget reservation."
-    },
-    {
-      "repo": "lancedb/lancedb",
-      "number": 3511,
-      "title": "fix(python): raise clear TypeError for bare List/Tuple in pydantic schema conversion",
-      "state": "merged",
-      "merged_at": "2026-06-17T18:58:48Z",
-      "url": "https://github.com/lancedb/lancedb/pull/3511",
-      "note": "Fixed opaque AttributeError for bare List/Tuple generics in Pydantic schema conversion, raising a clear TypeError instead."
-    },
-    {
-      "repo": "lancedb/lancedb",
-      "number": 3512,
-      "title": "fix(rust): return typed errors instead of panicking in Bedrock embedding path",
-      "state": "merged",
-      "merged_at": "2026-06-17T22:06:45Z",
-      "url": "https://github.com/lancedb/lancedb/pull/3512",
-      "note": "Replaced panic paths in the Bedrock embedding provider with typed error returns across serialization, API, and runtime failure modes."
-    },
-    {
-      "repo": "BerriAI/litellm",
-      "number": 30020,
-      "title": "fix(proxy): release max_parallel_requests slot when a stream is cancelled mid-flight (#27955)",
-      "state": "merged",
-      "merged_at": "2026-06-11T10:37:31Z",
-      "url": "https://github.com/BerriAI/litellm/pull/30020",
-      "note": "Stopped a cancelled stream from stranding its max_parallel_requests slot, which had been pinning capped keys at their limit."
-    },
-    {
-      "repo": "BerriAI/litellm",
-      "number": 30272,
-      "title": "feat(proxy): surface max_input_tokens/max_output_tokens on /v1/models",
-      "state": "merged",
-      "merged_at": "2026-06-17T10:59:23Z",
-      "url": "https://github.com/BerriAI/litellm/pull/30272",
-      "note": "Surfaced max_input_tokens and max_output_tokens on /v1/models for accurate client-side capacity planning."
-    },
-    {
-      "repo": "BerriAI/litellm",
-      "number": 30273,
-      "title": "feat(proxy): serve Anthropic-native /v1/models for Claude Code gateway discovery",
-      "state": "merged",
-      "merged_at": "2026-06-17T11:23:21Z",
-      "url": "https://github.com/BerriAI/litellm/pull/30273",
-      "note": "Enabled Anthropic-native model discovery for Claude Code gateway deployments."
+      "merged_at": "2026-06-19T20:11:28Z",
+      "url": "https://github.com/systemd/systemd/pull/42578",
+      "note": "Fixed incorrect reboot/pending logic in sysupdate when --component= is used. First PR merged into systemd."
     },
     {
       "repo": "lightpanda-io/browser",
@@ -137,22 +222,31 @@
       "note": "Fixed incorrect evaluation of list-element docs in the FTS prefilter walk-the-allowlist branch."
     },
     {
-      "repo": "lance-format/lance",
-      "number": 7251,
-      "title": "fix: merge_insert silently drops matches when a leading payload column is all-null",
+      "repo": "lancedb/lancedb",
+      "number": 3512,
+      "title": "fix(rust): return typed errors instead of panicking in Bedrock embedding path",
       "state": "merged",
-      "merged_at": "2026-06-16T19:14:59Z",
-      "url": "https://github.com/lance-format/lance/pull/7251",
-      "note": "Critical fix: merge_insert silently dropped matched rows when the leading payload column was all-null."
+      "merged_at": "2026-06-17T22:06:45Z",
+      "url": "https://github.com/lancedb/lancedb/pull/3512",
+      "note": "Replaced panic paths in the Bedrock embedding provider with typed error returns across serialization, API, and runtime failure modes."
     },
     {
-      "repo": "systemd/systemd",
-      "number": 42578,
-      "title": "sysupdate: refuse reboot/pending logic when --component= is used",
+      "repo": "lancedb/lancedb",
+      "number": 3511,
+      "title": "fix(python): raise clear TypeError for bare List/Tuple in pydantic schema conversion",
       "state": "merged",
-      "merged_at": "2026-06-19T20:11:28Z",
-      "url": "https://github.com/systemd/systemd/pull/42578",
-      "note": "Fixed incorrect reboot/pending logic in sysupdate when --component= is used. First PR merged into systemd."
+      "merged_at": "2026-06-17T18:58:48Z",
+      "url": "https://github.com/lancedb/lancedb/pull/3511",
+      "note": "Fixed opaque AttributeError for bare List/Tuple generics in Pydantic schema conversion, raising a clear TypeError instead."
+    },
+    {
+      "repo": "BerriAI/litellm",
+      "number": 30273,
+      "title": "feat(proxy): serve Anthropic-native /v1/models for Claude Code gateway discovery",
+      "state": "merged",
+      "merged_at": "2026-06-17T11:23:21Z",
+      "url": "https://github.com/BerriAI/litellm/pull/30273",
+      "note": "Enabled Anthropic-native model discovery for Claude Code gateway deployments."
     },
     {
       "repo": "BerriAI/litellm",
@@ -162,62 +256,110 @@
       "merged_at": "2026-06-17T11:03:48Z",
       "url": "https://github.com/BerriAI/litellm/pull/30387",
       "note": "Preserved cache_control headers for OpenAI-compatible custom endpoints, fixing silent cache bypass."
-    }
-  ],
-  "recent": [
-    {
-      "repo": "systemd/systemd",
-      "number": 43714,
-      "title": "siphash24: force inlining of the round",
-      "state": "merged",
-      "url": "https://github.com/systemd/systemd/pull/43714",
-      "updated_at": "2026-09-23T19:32:19Z",
-      "merged_at": "2026-09-23T14:30:50Z"
-    },
-    {
-      "repo": "systemd/systemd",
-      "number": 43663,
-      "title": "journalctl: make the read path 1.7x to 2.5x faster",
-      "state": "merged",
-      "url": "https://github.com/systemd/systemd/pull/43663",
-      "updated_at": "2026-09-23T04:54:47Z",
-      "merged_at": "2026-09-23T04:52:45Z"
-    },
-    {
-      "repo": "systemd/systemd",
-      "number": 43653,
-      "title": "utf8,format-table: make the console width helpers agree with the UTF-8 validators",
-      "state": "merged",
-      "url": "https://github.com/systemd/systemd/pull/43653",
-      "updated_at": "2026-09-23T00:07:57Z",
-      "merged_at": "2026-09-22T23:39:11Z"
-    },
-    {
-      "repo": "systemd/systemd",
-      "number": 43333,
-      "title": "options: reject an empty long option name",
-      "state": "merged",
-      "url": "https://github.com/systemd/systemd/pull/43333",
-      "updated_at": "2026-09-21T13:13:54Z",
-      "merged_at": "2026-08-12T22:11:37Z"
     },
     {
       "repo": "BerriAI/litellm",
-      "number": 35455,
-      "title": "feat(proxy): serve Anthropic-native /v1/models for Claude Code gateway discovery",
+      "number": 30272,
+      "title": "feat(proxy): surface max_input_tokens/max_output_tokens on /v1/models",
       "state": "merged",
-      "url": "https://github.com/BerriAI/litellm/pull/35455",
-      "updated_at": "2026-09-21T13:13:42Z",
-      "merged_at": "2026-08-14T17:22:59Z"
+      "merged_at": "2026-06-17T10:59:23Z",
+      "url": "https://github.com/BerriAI/litellm/pull/30272",
+      "note": "Surfaced max_input_tokens and max_output_tokens on /v1/models for accurate client-side capacity planning."
     },
     {
-      "repo": "systemd/systemd",
-      "number": 43650,
-      "title": "resolved: don't disable the listening socket when a datagram is dropped",
+      "repo": "lance-format/lance",
+      "number": 7251,
+      "title": "fix: merge_insert silently drops matches when a leading payload column is all-null",
       "state": "merged",
-      "url": "https://github.com/systemd/systemd/pull/43650",
-      "updated_at": "2026-09-21T13:13:15Z",
-      "merged_at": "2026-09-04T04:53:05Z"
+      "merged_at": "2026-06-16T19:14:59Z",
+      "url": "https://github.com/lance-format/lance/pull/7251",
+      "note": "Critical fix: merge_insert silently dropped matched rows when the leading payload column was all-null.",
+      "highlight": true
+    },
+    {
+      "repo": "BerriAI/litellm",
+      "number": 30020,
+      "title": "fix(proxy): release max_parallel_requests slot when a stream is cancelled mid-flight (#27955)",
+      "state": "merged",
+      "merged_at": "2026-06-11T10:37:31Z",
+      "url": "https://github.com/BerriAI/litellm/pull/30020",
+      "note": "Stopped a cancelled stream from stranding its max_parallel_requests slot, which had been pinning capped keys at their limit.",
+      "highlight": true
+    },
+    {
+      "repo": "BerriAI/litellm",
+      "number": 29493,
+      "title": "feat(proxy): add disable_budget_reservation general setting (#27639)",
+      "state": "merged",
+      "merged_at": "2026-06-08T12:36:51Z",
+      "url": "https://github.com/BerriAI/litellm/pull/29493",
+      "note": "Added a proxy-wide setting to disable budget reservation."
+    },
+    {
+      "repo": "lancedb/lancedb",
+      "number": 3459,
+      "title": "fix(python): run AsyncTable.search embeddings on a dedicated executor",
+      "state": "merged",
+      "merged_at": "2026-06-05T04:57:16Z",
+      "url": "https://github.com/lancedb/lancedb/pull/3459",
+      "note": "Moved embedding search onto a dedicated executor to stop event-loop stalls."
+    },
+    {
+      "repo": "lightpanda-io/browser",
+      "number": 2635,
+      "title": "Implement input type=file support (FileList, input.files/value, DOM.setFileInputFiles)",
+      "state": "merged",
+      "merged_at": "2026-06-05T02:52:24Z",
+      "url": "https://github.com/lightpanda-io/browser/pull/2635",
+      "note": "Completed file-input support, from FileList through DOM.setFileInputFiles."
+    },
+    {
+      "repo": "lancedb/lancedb",
+      "number": 3444,
+      "title": "feat(rust): support datafusion expressions for merge insert predicates",
+      "state": "merged",
+      "merged_at": "2026-06-03T22:47:51Z",
+      "url": "https://github.com/lancedb/lancedb/pull/3444",
+      "note": "The same DataFusion capability carried into LanceDB's Rust core."
+    },
+    {
+      "repo": "BerriAI/litellm",
+      "number": 29483,
+      "title": "fix(proxy): don't enforce budgets on model-discovery / info routes (#27923)",
+      "state": "merged",
+      "merged_at": "2026-06-02T11:18:50Z",
+      "url": "https://github.com/BerriAI/litellm/pull/29483",
+      "note": "Stopped budget enforcement on model-discovery and info routes."
+    },
+    {
+      "repo": "python/cpython",
+      "number": 150328,
+      "title": "gh-150311: Fix minor issues in configure.ac for the CYGWIN port",
+      "state": "merged",
+      "merged_at": "2026-05-28T12:38:39Z",
+      "url": "https://github.com/python/cpython/pull/150328",
+      "note": "Build-system fix accepted into the reference Python implementation.",
+      "highlight": true
+    },
+    {
+      "repo": "lance-format/lance",
+      "number": 6934,
+      "title": "feat(rust): support datafusion expressions for merge insert predicates",
+      "state": "merged",
+      "merged_at": "2026-05-28T04:13:33Z",
+      "url": "https://github.com/lance-format/lance/pull/6934",
+      "note": "DataFusion expressions for merge-insert predicates in a production columnar format."
+    },
+    {
+      "repo": "lightpanda-io/browser",
+      "number": 2537,
+      "title": "feat(webapi): implement W3C File API",
+      "state": "merged",
+      "merged_at": "2026-05-25T04:10:43Z",
+      "url": "https://github.com/lightpanda-io/browser/pull/2537",
+      "note": "W3C File API surface implemented in Zig for an AI-agent headless browser.",
+      "highlight": true
     }
-  ]
+  ],
+  "extra": []
 }

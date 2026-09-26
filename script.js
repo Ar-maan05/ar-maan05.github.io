@@ -5,8 +5,6 @@
   "use strict";
   var doc = document;
   var reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  var activityData = null;
-  var statsData = null;
 
   // Mobile nav
   var toggle = doc.getElementById("nav-toggle");
@@ -32,24 +30,98 @@
     });
   }
 
-  // Phones stack the ledger into cards, so it opens collapsed to the first six
-  // rows with a button for the rest. CSS only applies the collapse on narrow
-  // screens; on desktop the class and button have no effect.
-  var ledgerTable = doc.getElementById("ledger-table");
-  var ledgerMore = doc.getElementById("ledger-more");
-  if (ledgerTable && ledgerMore) {
-    var ledgerRows = ledgerTable.tBodies[0].rows.length;
-    if (ledgerRows > 6) {
-      ledgerTable.classList.add("is-collapsed");
-      ledgerMore.textContent = "Show all " + ledgerRows + " pull requests";
-      ledgerMore.setAttribute("aria-expanded", "false");
-      ledgerMore.hidden = false;
-      ledgerMore.addEventListener("click", function () {
-        ledgerTable.classList.remove("is-collapsed");
-        ledgerMore.setAttribute("aria-expanded", "true");
-        ledgerMore.hidden = true;
+  // ---- Ledger: repo filters, search and paging over every merged PR --------
+  // The list is baked in full (no-JS readers see everything). With JS it opens
+  // on the highlights; the chips are built from the rows themselves, so a repo
+  // the pipeline appends later gets its own chip without touching this file.
+  var ledgerList = doc.getElementById("ledger-body");
+  var ledgerCtl = doc.querySelector("[data-ledger-controls]");
+  var ledgerRender = function () {};
+  if (ledgerList && ledgerCtl) {
+    var LEDGER_PAGE = 8;
+    var REPO_LABEL = { "lightpanda-io/browser": "lightpanda", "lance-format/lance": "lance" };
+    var chipWrap = ledgerCtl.querySelector("[data-ledger-filters]");
+    var ledgerQ = doc.getElementById("ledger-q");
+    var ledgerStatus = doc.getElementById("ledger-status");
+    var ledgerMore = doc.getElementById("ledger-more");
+    var lf = { filter: "highlights", q: "", shown: LEDGER_PAGE };
+    ledgerCtl.hidden = false;
+
+    var prItems = function () { return Array.prototype.slice.call(ledgerList.querySelectorAll(".pr")); };
+    var prMatches = function (li) {
+      if (lf.filter === "highlights" && !lf.q && !li.hasAttribute("data-hl")) return false;
+      if (lf.filter !== "highlights" && lf.filter !== "all" && li.getAttribute("data-repo") !== lf.filter) return false;
+      return !lf.q || li.textContent.toLowerCase().indexOf(lf.q) !== -1;
+    };
+
+    var buildChips = function () {
+      var counts = {}, all = prItems(), hl = 0;
+      all.forEach(function (li) {
+        var r = li.getAttribute("data-repo");
+        counts[r] = (counts[r] || 0) + 1;
+        if (li.hasAttribute("data-hl")) hl++;
       });
-    }
+      var defs = [{ id: "highlights", label: "Highlights", n: hl }, { id: "all", label: "All", n: all.length }];
+      Object.keys(counts)
+        .sort(function (x, y) { return counts[y] - counts[x] || x.localeCompare(y); })
+        .forEach(function (r) { defs.push({ id: r, label: REPO_LABEL[r] || r.split("/")[1], n: counts[r] }); });
+      chipWrap.innerHTML = "";
+      defs.forEach(function (d) {
+        var b = doc.createElement("button");
+        b.type = "button";
+        b.className = "lf-chip";
+        b.setAttribute("data-filter", d.id);
+        if (d.id.indexOf("/") !== -1) b.title = d.id;
+        b.innerHTML = escHtml(d.label) + ' <span class="lf-n">' + d.n + "</span>";
+        chipWrap.appendChild(b);
+      });
+    };
+
+    ledgerRender = function () {
+      var hits = prItems().filter(prMatches);
+      prItems().forEach(function (li) { li.hidden = true; });
+      hits.forEach(function (li, i) { li.hidden = i >= lf.shown; });
+      var visible = Math.min(hits.length, lf.shown);
+      chipWrap.querySelectorAll(".lf-chip").forEach(function (b) {
+        b.setAttribute("aria-pressed", String(b.getAttribute("data-filter") === lf.filter));
+      });
+      if (ledgerStatus) {
+        ledgerStatus.textContent = hits.length
+          ? "Showing " + visible + " of " + hits.length + (lf.q ? " matching “" + lf.q + "”" : "")
+          : "No merged pull requests match “" + lf.q + "”. Try a repo name, a function, or a word like crash.";
+      }
+      var rest = hits.length - visible;
+      ledgerMore.hidden = rest <= 0;
+      ledgerMore.textContent = "Show " + Math.min(rest, LEDGER_PAGE) + " more";
+    };
+
+    chipWrap.addEventListener("click", function (e) {
+      var b = e.target.closest(".lf-chip");
+      if (!b) return;
+      lf.filter = b.getAttribute("data-filter");
+      lf.shown = LEDGER_PAGE;
+      ledgerRender();
+    });
+    if (ledgerQ) ledgerQ.addEventListener("input", function () {
+      lf.q = ledgerQ.value.trim().toLowerCase();
+      // Searching the highlights alone would hide most answers: widen to all.
+      if (lf.q && lf.filter === "highlights") lf.filter = "all";
+      lf.shown = LEDGER_PAGE;
+      ledgerRender();
+    });
+    ledgerMore.addEventListener("click", function () {
+      var firstNew = lf.shown;
+      lf.shown += LEDGER_PAGE;
+      ledgerRender();
+      // Move focus to the first revealed row so keyboard users keep their place.
+      var next = prItems().filter(prMatches)[firstNew];
+      var link = next && next.querySelector(".col-title a");
+      if (link) link.focus({ preventScroll: true });
+    });
+    ledgerList.addEventListener("ledger:changed", function () { buildChips(); ledgerRender(); });
+
+    buildChips();
+    ledgerRender();
   }
 
   // Theme Toggle
@@ -161,108 +233,6 @@
     return shown;
   }
 
-  // ---- Live merge inventory -----------------------------------------------
-  // Single source for every terminal command that quotes merge numbers, so none
-  // of them can drift: read the merged rows off the page (curated ledger plus
-  // the recent-activity rows hydrated from activity.json), fall back to
-  // activity.json itself, then to the baked list. De-duplicated by repo#number.
-  var MERGED_FALLBACK = [
-    { repo: "python/cpython", pr: "150328", title: "gh-150311: Fix minor issues in configure.ac for the CYGWIN port" },
-    { repo: "lance-format/lance", pr: "6934", title: "feat(rust): support datafusion expressions for merge insert predicates" },
-    { repo: "lancedb/lancedb", pr: "3444", title: "feat(rust): support datafusion expressions for merge insert predicates" },
-    { repo: "lancedb/lancedb", pr: "3459", title: "fix(python): run AsyncTable.search embeddings on a dedicated executor" },
-    { repo: "lightpanda-io/browser", pr: "2537", title: "feat(webapi): implement W3C File API" },
-    { repo: "lightpanda-io/browser", pr: "2635", title: "Implement input type=file support (FileList, input.files/value, DOM.setFileInputFiles)" },
-    { repo: "BerriAI/litellm", pr: "29493", title: "feat(proxy): add disable_budget_reservation general setting" },
-    { repo: "BerriAI/litellm", pr: "29483", title: "fix(proxy): don't enforce budgets on model-discovery / info routes" },
-    { repo: "BerriAI/litellm", pr: "30020", title: "fix(proxy): release max_parallel_requests slot when a stream is cancelled mid-flight" },
-    { repo: "lancedb/lancedb", pr: "3511", title: "fix(python): raise clear TypeError for bare List/Tuple in pydantic schema conversion" },
-    { repo: "lancedb/lancedb", pr: "3512", title: "fix(rust): return typed errors instead of panicking in Bedrock embedding path" },
-    { repo: "BerriAI/litellm", pr: "30272", title: "feat(proxy): surface max_input_tokens/max_output_tokens on /v1/models" },
-    { repo: "BerriAI/litellm", pr: "30273", title: "feat(proxy): serve Anthropic-native /v1/models for Claude Code gateway discovery" },
-    { repo: "lightpanda-io/browser", pr: "2722", title: "feat(cdp): implement Browser.setDownloadBehavior file downloads" },
-    { repo: "lance-format/lance", pr: "7246", title: "fix: evaluate all list-element docs in FTS prefilter walk-the-allowlist branch" },
-    { repo: "lance-format/lance", pr: "7251", title: "fix: merge_insert silently drops matches when a leading payload column is all-null" },
-    { repo: "systemd/systemd", pr: "42578", title: "sysupdate: refuse reboot/pending logic when --component= is used" },
-    { repo: "BerriAI/litellm", pr: "30387", title: "fix(openai): preserve cache_control for openai-compatible custom endpoints" }
-  ];
-
-  function collectMergedPRs() {
-    var out = [];
-    function add(repo, pr, title) {
-      if (!repo || !pr || !title) return;
-      var exists = out.some(function (p) { return p.repo === repo && p.pr === String(pr); });
-      if (!exists) out.push({ repo: repo, pr: String(pr), title: title });
-    }
-
-    // Recent activity first so the freshest merges lead, matching the hero feed.
-    // Two passes because a combined selector would return document order.
-    ["#recent-body tr", "#ledger-body tr"].forEach(function (sel) {
-      doc.querySelectorAll(sel).forEach(function (row) {
-        var stateCell = row.querySelector(".col-state");
-        if (!stateCell || stateCell.textContent.trim().toLowerCase() !== "merged") return;
-        var repoCell = row.querySelector(".col-repo");
-        var titleCell = row.querySelector(".col-title a");
-        var prNum = "";
-        var dataPr = row.getAttribute("data-pr");
-        if (dataPr && dataPr.indexOf("#") !== -1) {
-          prNum = dataPr.split("#")[1];
-        } else if (titleCell) {
-          var match = (titleCell.getAttribute("href") || "").match(/\/pull\/(\d+)/);
-          if (match) prNum = match[1];
-        }
-        add(repoCell ? repoCell.textContent.trim() : "", prNum, titleCell ? titleCell.textContent.trim() : "");
-      });
-    });
-
-    // The tables may not be hydrated yet when a command runs this early.
-    if (!out.length && activityData) {
-      ["recent", "curated"].forEach(function (k) {
-        if (!Array.isArray(activityData[k])) return;
-        activityData[k].forEach(function (p) {
-          if (p.state === "merged") add(p.repo, p.number, p.title);
-        });
-      });
-    }
-    if (!out.length) out = MERGED_FALLBACK.slice();
-    return out;
-  }
-
-  // Merged PRs per repo. The page is a sample; stats.json carries GitHub's own
-  // per-repo totals from the workflow, so take whichever is higher per repo and
-  // include repos that only the workflow knows about.
-  function mergedByRepo() {
-    var byRepo = {};
-    collectMergedPRs().forEach(function (p) {
-      byRepo[p.repo] = (byRepo[p.repo] || 0) + 1;
-    });
-    var live = statsData && statsData.repo_merged;
-    if (live) {
-      Object.keys(live).forEach(function (repo) {
-        if (typeof live[repo] === "number") {
-          byRepo[repo] = Math.max(byRepo[repo] || 0, live[repo]);
-        }
-      });
-    }
-    return byRepo;
-  }
-
-  // Column padding for the `ls projects` listing.
-  function lsPad(name) {
-    return (name + "                         ").slice(0, Math.max(24, name.length + 2));
-  }
-
-  // Total merged upstream. The receipt count is GitHub's own figure (baked by
-  // the workflow, hydrated from stats.json), so it outranks the page sample.
-  function mergedTotal() {
-    var sample = collectMergedPRs().length;
-    var el = doc.querySelector("[data-merged-count]");
-    var authoritative = el
-      ? parseInt(el.getAttribute("data-countup-target") || el.textContent, 10) || 0
-      : 0;
-    return Math.max(sample, authoritative);
-  }
-
   // Diff tab switcher (§7.1 v1.1) — keyboard nav, aria-selected, 120ms cross-fade
   var tablist = doc.querySelector(".diff-tablist");
   var tabs = tablist ? Array.from(tablist.querySelectorAll(".diff-tab")) : [];
@@ -372,17 +342,9 @@
   // Load stats.json: downloads + version
   getJSON("data/stats.json").then(function (s) {
     if (!s) return;
-    statsData = s;
     if (typeof s.downloads === "number") {
       var live = Math.max(FLOOR, s.downloads);
       if (live > FLOOR) animateDownloads(live);
-    }
-    // Compact downloads for the terminal banner (kept plain text: the banner is
-    // box-drawn, so it must not animate character by character)
-    if (s.downloads_short) {
-      doc.querySelectorAll("[data-bake='downloads-short']").forEach(function (el) {
-        el.textContent = s.downloads_short;
-      });
     }
     // Hydrate version data-bake spans
     if (s.version) {
@@ -441,1174 +403,58 @@
     return span;
   }
 
+  // Merges the pipeline found that the baked ledger doesn't list yet (and any
+  // curated entry added since the HTML was last baked) are inserted in date
+  // order, with a generic Debug replay, so the ledger never goes stale.
+  function ledgerRow(p) {
+    var li = doc.createElement("li");
+    li.className = "pr";
+    li.setAttribute("data-pr", p.repo + "#" + p.number);
+    li.setAttribute("data-repo", p.repo);
+    if (p.highlight) li.setAttribute("data-hl", "");
+    li.innerHTML =
+      '<p class="pr-meta"><span class="col-repo">' + escHtml(p.repo) + '</span>' +
+      '<span class="col-date">' + escHtml((p.merged_at || "").slice(0, 10)) + '</span></p>' +
+      '<h3 class="col-title"><a href="' + escHtml(p.url) + '" target="_blank" rel="noopener">' +
+      escHtml(p.title || p.repo + " #" + p.number) + '</a></h3>' +
+      (p.note ? '<p class="col-why">' + escHtml(p.note) + '</p>' : "") +
+      '<button class="btn-verify" type="button" aria-label="Debug ' + escHtml(p.repo + "#" + p.number) + '">Debug</button>';
+    return li;
+  }
+
   getJSON("data/activity.json").then(function (a) {
-    if (!a) return;
-    activityData = a;
-    /* hydrate baked curated states from live data */
-    if (Array.isArray(a.curated)) {
-      var merged = 0;
-      a.curated.forEach(function (c) {
-        if (c.state === "merged") merged++;
-        var cell = doc.querySelector('[data-pr="' + c.repo + "#" + c.number + '"] .col-state');
-        if (cell && c.state) { cell.textContent = ""; cell.appendChild(chip(c.state)); }
+    if (!a || !ledgerList) return;
+    var added = 0;
+    ["curated", "extra"].forEach(function (k) {
+      (a[k] || []).forEach(function (p) {
+        if (p.state !== "merged") return;
+        var key = p.repo + "#" + p.number;
+        if (ledgerList.querySelector('[data-pr="' + key.replace(/"/g, "") + '"]')) return;
+        var row = ledgerRow(p), when = p.merged_at || "";
+        var before = Array.prototype.find.call(ledgerList.children, function (li) {
+          var d = li.querySelector(".col-date");
+          return d && d.textContent < when.slice(0, 10);
+        });
+        ledgerList.insertBefore(row, before || null);
+        added++;
       });
-      // The baked value is the floor; live data may only raise it (§6.1).
-      var mc = doc.querySelector("[data-merged-count]");
-      if (mc) raiseCount(mc, merged);
-    }
-    /* append recent activity */
-    var body = doc.getElementById("recent-body");
-    var wrap = doc.getElementById("recent-activity");
-    if (body && wrap && Array.isArray(a.recent) && a.recent.length) {
-      a.recent.slice(0, 6).forEach(function (r) {
-        var tr = doc.createElement("tr");
-        // Same data-pr key as the baked ledger rows: the hero merge log reads it
-        // for the PR number and to de-duplicate against curated entries.
-        tr.setAttribute("data-pr", r.repo + "#" + r.number);
-        var s = doc.createElement("td"); s.className = "col-state"; s.appendChild(chip(r.state || "open"));
-        var repo = doc.createElement("td"); repo.className = "col-repo"; repo.textContent = r.repo;
-        var title = doc.createElement("td"); title.className = "col-title";
-        var link = doc.createElement("a");
-        link.href = r.url; link.target = "_blank"; link.rel = "noopener";
-        link.textContent = r.title || (r.repo + " #" + r.number);
-        title.appendChild(link);
-        var date = doc.createElement("td"); date.className = "col-date";
-        date.textContent = (r.updated_at || r.merged_at || "").slice(0, 10);
-        tr.appendChild(s); tr.appendChild(repo); tr.appendChild(title); tr.appendChild(date);
-        body.appendChild(tr);
-      });
-      wrap.hidden = false;
-    }
-    /* Tell the motion layer the tables changed so the hero merge log picks up
+    });
+    if (added) ledgerList.dispatchEvent(new CustomEvent("ledger:changed"));
+    // The baked value is the floor; live data may only raise it (§6.1).
+    var mc = doc.querySelector("[data-merged-count]");
+    if (mc) raiseCount(mc, ledgerList.querySelectorAll("[data-pr]").length);
+    /* Tell the motion layer the ledger changed so the hero merge log picks up
        these merges. fx.js also builds once on its own load, so it does not
        matter whether this fetch lands before or after fx.js runs. */
     doc.dispatchEvent(new CustomEvent("deck:activity"));
   });
 
-  // 1. Spotlight border glow cards
-  var glowCards = doc.querySelectorAll(".glow-card");
-  if (glowCards.length && !reduce) {
-    doc.addEventListener("mousemove", function (e) {
-      glowCards.forEach(function (card) {
-        var rect = card.getBoundingClientRect();
-        var x = e.clientX - rect.left;
-        var y = e.clientY - rect.top;
-        card.style.setProperty("--mx", x + "px");
-        card.style.setProperty("--my", y + "px");
-      });
-    });
-  }
-
-  // 3. Interactive CLI Terminal Console
-  var termInput = doc.getElementById("term-input");
-  var termBody = doc.getElementById("term-body");
-
-  if (termInput && termBody) {
-    // Keep focus inside terminal when clicking anywhere in terminal body
-    var terminalBox = doc.querySelector(".terminal-box");
-    if (terminalBox) {
-      terminalBox.addEventListener("click", function () {
-        termInput.focus();
-      });
-    }
-
-    // Terminal cursor: a fake block cursor that mirrors the hidden input. It sits
-    // right after the echoed text so it moves as you type, and it blinks only when
-    // idle (a short pause after the last keystroke), like a real terminal caret.
-    var termEcho = doc.getElementById("term-echo");
-    var promptLineEl = termInput.parentElement;
-    var idleTimer = null;
-    function cursorTyping() {
-      if (!promptLineEl) return;
-      promptLineEl.classList.add("typing");          // solid while keys are flying
-      if (idleTimer) clearTimeout(idleTimer);
-      idleTimer = setTimeout(function () {
-        promptLineEl.classList.remove("typing");     // resume blink when idle
-      }, 600);
-    }
-    function cursorReset() {
-      if (idleTimer) clearTimeout(idleTimer);
-      if (termEcho) termEcho.textContent = "";
-      if (promptLineEl) promptLineEl.classList.remove("typing");
-    }
-    termInput.addEventListener("input", function () {
-      if (termEcho) termEcho.textContent = termInput.value;   // echo follows input
-      cursorTyping();
-    });
-
-    function findPrKey(term) {
-      term = term.toLowerCase().trim();
-      var keys = [
-        "python/cpython#150328",
-        "lance-format/lance#6934",
-        "lancedb/lancedb#3444",
-        "lancedb/lancedb#3459",
-        "lightpanda-io/browser#2537",
-        "lightpanda-io/browser#2635",
-        "BerriAI/litellm#29493",
-        "BerriAI/litellm#29483",
-        "BerriAI/litellm#30020",
-        "lancedb/lancedb#3511",
-        "lancedb/lancedb#3512",
-        "BerriAI/litellm#30272",
-        "BerriAI/litellm#30273",
-        "lightpanda-io/browser#2722",
-        "lance-format/lance#7246",
-        "lance-format/lance#7251",
-        "systemd/systemd#42578",
-        "BerriAI/litellm#30387"
-      ];
-      for (var i = 0; i < keys.length; i++) {
-        if (keys[i].toLowerCase().indexOf(term) !== -1) {
-          return keys[i];
-        }
-      }
-      return null;
-    }
-
-    function triggerStatusError() {
-      var termStatus = doc.querySelector(".terminal-status");
-      var statusText = termStatus ? termStatus.querySelector(".status-text") : null;
-      if (!termStatus || !statusText) return;
-      termStatus.className = "terminal-status error";
-      statusText.textContent = "CMD ERROR";
-      setTimeout(function () {
-        if (termStatus.classList.contains("error")) {
-          termStatus.className = "terminal-status";
-          statusText.textContent = "CONNECTED";
-        }
-      }, 1500);
-    }
-
-    var cmdHistory = [];
-    var historyIdx = -1;
-    var tempInput = "";
-    var COMMANDS = ["help", "about", "skills", "merged", "downloads", "debug", "clear", "git log", "uptime", "ls", "ls projects", "cd", "contact", "sudo hire-me"];
-
-    // Navigable page sections, in document order. `ls` lists these and
-    // `cd <name>` scrolls the page to the matching <section> id.
-    var PAGE_SECTIONS = [
-      { name: "work",        id: "work",        desc: "Case study: mcp-persist" },
-      { name: "mlrouter",    id: "mlrouter",    desc: "Flagship: multi-model LLM gateway" },
-      { name: "shipped",     id: "shipped",     desc: "Other shipped packages" },
-      { name: "ledger",      id: "ledger",      desc: "Upstream merged pull requests" },
-      { name: "foundations", id: "foundations", desc: "Systems groundwork" },
-      { name: "runixos",     id: "runixos",     desc: "Research OS microkernel" },
-      { name: "about",       id: "about",       desc: "Off the clock, sort of" },
-      { name: "console",     id: "console",     desc: "This terminal" },
-      { name: "contact",     id: "contact",     desc: "Get in touch" },
-      { name: "colophon",    id: "colophon",    desc: "How this site is built" }
-    ];
-    // Aliases that resolve to a section name above (or the page top).
-    var SECTION_ALIASES = { "top": "top", "home": "top", "hero": "top", "terminal": "console" };
-    function resolveSection(query) {
-      query = query.trim().toLowerCase();
-      if (query === "top" || SECTION_ALIASES[query] === "top") return { id: "top" };
-      if (SECTION_ALIASES[query]) query = SECTION_ALIASES[query];
-      for (var i = 0; i < PAGE_SECTIONS.length; i++) {
-        if (PAGE_SECTIONS[i].name === query) return PAGE_SECTIONS[i];
-      }
-      return null;
-    }
-
-    termInput.addEventListener("keydown", function (e) {
-      cursorTyping();                                          // any key keeps it solid
-      if (e.key === "Tab") {
-        e.preventDefault();
-        var val = termInput.value.trim().toLowerCase();
-        if (val) {
-          if (val.indexOf("debug ") === 0) {
-            var sub = val.slice(6).trim();
-            var prs = ["cpython", "lance", "lancedb", "browser", "lightpanda", "litellm", "systemd", "150328", "6934", "3444", "3459", "2537", "2635", "29493", "29483", "30020", "3511", "3512", "30272", "30273", "2722", "7246", "7251", "42578", "30387"];
-            var prMatches = prs.filter(function (p) {
-              return p.indexOf(sub) === 0;
-            });
-            if (prMatches.length === 1) {
-              termInput.value = "debug " + prMatches[0];
-              if (termEcho) termEcho.textContent = termInput.value;
-            } else if (prMatches.length > 1) {
-              var matchLine = doc.createElement("div");
-              matchLine.className = "term-line";
-              matchLine.innerHTML = prMatches.map(function(p) { return "debug " + p; }).join("   ");
-              var inputLine = termInput.parentElement;
-              termBody.insertBefore(matchLine, inputLine);
-              termBody.scrollTop = termBody.scrollHeight;
-            }
-          } else if (val.indexOf("cd ") === 0) {
-            var csub = val.slice(3).trim();
-            var secMatches = PAGE_SECTIONS.map(function (s) { return s.name; }).filter(function (n) {
-              return n.indexOf(csub) === 0;
-            });
-            if (secMatches.length === 1) {
-              termInput.value = "cd " + secMatches[0];
-              if (termEcho) termEcho.textContent = termInput.value;
-            } else if (secMatches.length > 1) {
-              var secLine = doc.createElement("div");
-              secLine.className = "term-line";
-              secLine.innerHTML = secMatches.map(function (n) { return "cd " + n; }).join("   ");
-              var inputLine = termInput.parentElement;
-              termBody.insertBefore(secLine, inputLine);
-              termBody.scrollTop = termBody.scrollHeight;
-            }
-          } else {
-            var matches = COMMANDS.filter(function (c) {
-              return c.indexOf(val) === 0;
-            });
-            if (matches.length === 1) {
-              termInput.value = matches[0];
-              if (termEcho) termEcho.textContent = termInput.value;
-            } else if (matches.length > 1) {
-              var matchLine = doc.createElement("div");
-              matchLine.className = "term-line";
-              matchLine.innerHTML = matches.join("   ");
-              var inputLine = termInput.parentElement;
-              termBody.insertBefore(matchLine, inputLine);
-              termBody.scrollTop = termBody.scrollHeight;
-            }
-          }
-        }
-      } else if (e.key === "ArrowUp") {
-        e.preventDefault();
-        if (historyIdx === cmdHistory.length) {
-          tempInput = termInput.value;
-        }
-        if (historyIdx > 0) {
-          historyIdx--;
-          termInput.value = cmdHistory[historyIdx];
-          if (termEcho) termEcho.textContent = termInput.value;
-        }
-      } else if (e.key === "ArrowDown") {
-        e.preventDefault();
-        if (historyIdx < cmdHistory.length - 1) {
-          historyIdx++;
-          termInput.value = cmdHistory[historyIdx];
-          if (termEcho) termEcho.textContent = termInput.value;
-        } else if (historyIdx === cmdHistory.length - 1) {
-          historyIdx++;
-          termInput.value = tempInput;
-          if (termEcho) termEcho.textContent = termInput.value;
-        }
-      } else if (e.key === "Enter") {
-        var cmd = termInput.value.trim().toLowerCase();
-        termInput.value = "";
-        cursorReset();   // clear the echo and let the cursor blink at an empty prompt
-
-        // Output prompt and original command
-        var promptLine = doc.createElement("div");
-        promptLine.className = "term-line";
-        promptLine.innerHTML = '<span class="term-prompt">asandhu@wpi:~$</span> ' + escHtml(cmd);
-        
-        // Insert before prompt line
-        var inputLine = termInput.parentElement;
-        termBody.insertBefore(promptLine, inputLine);
-
-        if (cmd) {
-          if (cmdHistory.length === 0 || cmdHistory[cmdHistory.length - 1] !== cmd) {
-            cmdHistory.push(cmd);
-          }
-          historyIdx = cmdHistory.length;
-          var response = "";
-          if (cmd === "debug") {
-            response = "Usage: <span class=\"text-merge\">debug &lt;repo_name or pr_number&gt;</span>\n" +
-                       "Example: <span class=\"text-merge\">debug cpython</span>  or  <span class=\"text-merge\">debug 30020</span>";
-          } else if (cmd.indexOf("debug ") === 0) {
-            var query = cmd.slice(6).trim();
-            var prKey = findPrKey(query);
-            if (prKey) {
-              setTimeout(function () {
-                runSimulation(prKey);
-              }, 100);
-              response = null;
-            } else {
-              response = "No matching pull request found for '" + escHtml(query) + "'. Type <span class=\"text-merge\">merged</span> to see a list.";
-              triggerStatusError();
-            }
-          } else if (cmd === "cd") {
-            response = "Usage: <span class=\"text-merge\">cd &lt;section&gt;</span>\n" +
-                       "Type <span class=\"text-merge\">ls</span> to see the sections you can jump to.";
-          } else if (cmd.indexOf("cd ") === 0) {
-            var dest = resolveSection(cmd.slice(3));
-            if (dest) {
-              var target = dest.id === "top" ? doc.body : doc.getElementById(dest.id);
-              if (target) {
-                if (dest.id === "top") {
-                  window.scrollTo({ top: 0, behavior: "smooth" });
-                } else {
-                  target.scrollIntoView({ behavior: "smooth", block: "start" });
-                }
-                response = "→ " + escHtml(dest.id === "top" ? "top" : dest.name);
-              } else {
-                response = "No such section: '" + escHtml(cmd.slice(3).trim()) + "'.";
-                triggerStatusError();
-              }
-            } else {
-              response = "No such section: '" + escHtml(cmd.slice(3).trim()) + "'. Type <span class=\"text-merge\">ls</span> to list sections.";
-              triggerStatusError();
-            }
-          } else {
-            switch (cmd) {
-              case "help":
-                response = "Available commands:\n" +
-                           "  <span class=\"text-merge\">about</span>       Print brief bio / background\n" +
-                           "  <span class=\"text-merge\">skills</span>      Display core technical stack\n" +
-                           "  <span class=\"text-merge\">merged</span>      View statistics on upstream contributions\n" +
-                           "  <span class=\"text-merge\">downloads</span>   Show total downloads of mcp-persist\n" +
-                           "  <span class=\"text-merge\">debug</span>       Run debugging simulation for a PR (e.g. debug cpython)\n" +
-                           "  <span class=\"text-merge\">ls</span>          List the sections of this page\n" +
-                           "  <span class=\"text-merge\">cd</span>          Jump to a section (e.g. cd ledger)\n" +
-                           "  <span class=\"text-merge\">clear</span>       Clear the screen";
-                break;
-              case "about":
-                response = "Armaan Sandhu · CS @ WPI\n" +
-                           "Student developing open-source AI infrastructure.\n" +
-                           "Wrote and maintained mcp-persist. WPI systems tutor and peer advisor.";
-                break;
-              case "skills":
-                response = "<span class=\"text-merge\">[LANGUAGES]</span>\n" +
-                           "  Java, Python, C / C++, Rust, Zig, x86 ASM, JavaScript, HTML / CSS\n\n" +
-                           "<span class=\"text-merge\">[CONCEPTS & DOMAINS]</span>\n" +
-                           "  Systems Programming, Language Runtimes, AI Agents & Tooling,\n" +
-                           "  Browser Engines, Machine Organization & Assembly, Object-Oriented Design,\n" +
-                           "  Linear Algebra, Applied Probability, Open Source\n\n" +
-                           "<span class=\"text-merge\">[TOOLS & DEVOPS]</span>\n" +
-                           "  Git, GDB, Linux, Bash, Valgrind, IntelliJ IDEA, VS Code";
-                break;
-              case "merged":
-                var mergedPRs = collectMergedPRs();
-
-                response = "Upstream merged pull requests:\n";
-                mergedPRs.forEach(function (pr) {
-                  response += " - <span class=\"text-merge\">" + escHtml(pr.repo) + "#" + pr.pr + "</span>: " + escHtml(pr.title) + "\n";
-                });
-                response = response.trim();
-                break;
-              case "downloads":
-                var bakedDl = doc.querySelector("[data-downloads]");
-                var dlText = bakedDl ? bakedDl.textContent : "8,000+";
-                response = "mcp-persist downloads total on PyPI: <span class=\"text-merge\">" + dlText + "</span>";
-                break;
-              case "git log":
-                // Decorative log over the four freshest merges (§17.9B). Hashes are
-                // plausible hex; * and hash render in merge, message in ink.
-                var glHashes = ["a3f9c2e", "71bd44a", "c8e1f03", "2d8a991"];
-                response = collectMergedPRs().slice(0, 4).map(function (pr, i) {
-                  return "<span class=\"text-merge\">* " + glHashes[i] + "</span>" +
-                         (i === 0 ? " (HEAD → main)" : "") + " " + escHtml(pr.title);
-                }).join("\n");
-                break;
-              case "uptime":
-                // Pulls the live download figure from the data-bake span when present.
-                var upDl = doc.querySelector("[data-downloads]");
-                var upText = upDl ? upDl.textContent.trim() : "8,000+";
-                response = "up " + escHtml(upText) + " PyPI installations · " +
-                           mergedTotal() + " upstream merges · 0 regrets";
-                break;
-              case "ls":
-                // Sections of the page; `cd <name>` scrolls to each.
-                response = "Sections · use <span class=\"text-merge\">cd &lt;name&gt;</span> to jump:\n";
-                PAGE_SECTIONS.forEach(function (s) {
-                  var pad = (s.name + "             ").slice(0, 13);
-                  response += "  <span class=\"text-merge\">" + escHtml(s.name) + "</span>" +
-                              pad.slice(s.name.length) + escHtml(s.desc) + "\n";
-                });
-                response = response.trim();
-                break;
-              case "ls projects":
-                // Live download + version values, so this listing never goes stale
-                // or drops below the baked floor (§17.9B, Verification Mandate).
-                var lsDl = doc.querySelector("[data-downloads]");
-                var lsDlText = lsDl ? lsDl.textContent.trim() : "8,000+";
-                var lsVer = doc.querySelector("[data-bake='version']");
-                var lsVerText = lsVer ? "v" + lsVer.textContent.trim() : "v1.8.x";
-                // Upstream repos and their PR counts come from the live merge
-                // inventory, so a merge into a new repo lists itself here.
-                var lsLines = ["drwxr-xr-x  " + lsPad("mcp-persist/") + escHtml(lsDlText) +
-                               " downloads · MIT · " + escHtml(lsVerText)];
-                var lsByRepo = mergedByRepo();
-                Object.keys(lsByRepo)
-                  .sort(function (a, b) { return lsByRepo[b] - lsByRepo[a] || a.localeCompare(b); })
-                  .forEach(function (repo) {
-                    var n = lsByRepo[repo];
-                    lsLines.push("drwxr-xr-x  " + lsPad(escHtml(repo) + "/") +
-                                 n + (n === 1 ? " PR merged" : " PRs merged"));
-                  });
-                response = lsLines.join("\n");
-                break;
-              case "contact":
-                response = "email    asandhu@wpi.edu\n" +
-                           "github   github.com/Ar-maan05\n" +
-                           "linkedin linkedin.com/in/asandhu05";
-                break;
-              case "sudo hire-me":
-                // The payoff command: the joke, then the actual case in one
-                // screen. Every figure is read live so it can never overstate.
-                var hmDl = doc.querySelector("[data-downloads]");
-                var hmVer = doc.querySelector("[data-bake='version']");
-                var hmAvail = doc.querySelector(".hero-availability b");
-                var hmRepos = Object.keys(mergedByRepo()).length;
-                response =
-                  "[sudo] password for recruiter: ••••••••\n" +
-                  "Verifying credentials ......... <span class=\"text-merge\">ok</span>\n" +
-                  "Elevating to hire/armaan ...... <span class=\"text-merge\">ok</span>\n\n" +
-                  "  candidate   Armaan Sandhu · CS @ WPI · BS/MS '29\n" +
-                  "  available   " + escHtml(hmAvail ? hmAvail.textContent.trim() : "Summer 2027") +
-                    " SWE internships\n" +
-                  "  upstream    <span class=\"text-merge\">" + mergedTotal() + "</span> PRs merged across " +
-                    hmRepos + " repositories\n" +
-                  "  shipping    mcp-persist " + escHtml(hmDl ? hmDl.textContent.trim() : "8,000+") +
-                    " downloads" + (hmVer ? " · v" + escHtml(hmVer.textContent.trim()) : "") + "\n" +
-                  "  building    mlrouter · multi-model LLM gateway · mlrouter.com\n" +
-                  "  stack       Zig · Rust · Python · C\n\n" +
-                  "Permission granted. → <span class=\"text-merge\">asandhu@wpi.edu</span>";
-                break;
-              case "clear":
-                // Clear everything except the prompt line
-                while (termBody.firstChild && termBody.firstChild !== inputLine) {
-                  termBody.removeChild(termBody.firstChild);
-                }
-                response = null;
-                break;
-              default:
-                response = "Command not found: '" + escHtml(cmd) + "'. Type <span class=\"text-merge\">help</span> to see options.";
-                triggerStatusError();
-            }
-          }
-
-          if (response !== null) {
-            var respLine = doc.createElement("div");
-            respLine.className = "term-line";
-            respLine.innerHTML = response;
-            termBody.insertBefore(respLine, inputLine);
-          }
-        }
-
-        // Scroll to bottom
-        termBody.scrollTop = termBody.scrollHeight;
-      }
-    });
-  var isSimulating = false;
-  function runSimulation(simKey) {
-    if (isSimulating) return;
-    isSimulating = true;
-
-    // Center the terminal itself: the whole section is taller than a phone
-    // screen, so centering it would leave the output below the fold.
-    var consoleTarget = doc.querySelector(".terminal-box") || doc.getElementById("console");
-    if (consoleTarget) {
-      consoleTarget.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "center" });
-    }
-
-    if (!termInput || !termBody) {
-      isSimulating = false;
-      return;
-    }
-
-    termInput.blur();
-    termInput.disabled = true;
-    var inputLine = termInput.parentElement;
-    if (inputLine) inputLine.style.display = "none";
-
-    while (termBody.firstChild && termBody.firstChild !== inputLine) {
-      termBody.removeChild(termBody.firstChild);
-    }
-
-    var termTitle = doc.querySelector(".terminal-title");
-    if (termTitle) termTitle.textContent = "asandhu@wpi: ~ [Debugging: " + simKey.split("#")[0] + "]";
-
-    var termStatus = doc.querySelector(".terminal-status");
-    var statusText = termStatus ? termStatus.querySelector(".status-text") : null;
-    if (termStatus && statusText) {
-      termStatus.className = "terminal-status debugging";
-      statusText.textContent = "DEBUGGING";
-    }
-
-    function printLine(html, className) {
-      var div = doc.createElement("div");
-      div.className = className || "term-line";
-      div.innerHTML = html;
-      termBody.insertBefore(div, inputLine);
-      termBody.scrollTop = termBody.scrollHeight;
-    }
-
-    function typeCommand(promptText, cmdText, callback) {
-      var div = doc.createElement("div");
-      div.className = "term-line prompt-line typing";
-      div.innerHTML = '<span class="term-prompt">' + promptText + '</span> <span class="term-render"><span class="term-echo"></span><span class="term-cursor">█</span></span>';
-      termBody.insertBefore(div, inputLine);
-      termBody.scrollTop = termBody.scrollHeight;
-
-      var echo = div.querySelector(".term-echo");
-      var idx = 0;
-      function step() {
-        if (idx < cmdText.length) {
-          echo.textContent += cmdText.charAt(idx);
-          idx++;
-          termBody.scrollTop = termBody.scrollHeight;
-          setTimeout(step, 45);
-        } else {
-          div.classList.remove("typing");
-          var cursor = div.querySelector(".term-cursor");
-          if (cursor) cursor.remove();
-          setTimeout(callback, 500);
-        }
-      }
-      step();
-    }
-
-    function finishSim() {
-      setTimeout(function() {
-        if (inputLine) inputLine.style.display = "";
-        termInput.disabled = false;
-        // Refocusing on touch screens would pop the keyboard over the output.
-        if (window.matchMedia("(pointer: fine)").matches) termInput.focus();
-        termBody.scrollTop = termBody.scrollHeight;
-        isSimulating = false;
-        var termTitle = doc.querySelector(".terminal-title");
-        if (termTitle) termTitle.textContent = "asandhu@wpi: ~";
-        var termStatus = doc.querySelector(".terminal-status");
-        var statusText = termStatus ? termStatus.querySelector(".status-text") : null;
-        if (termStatus && statusText) {
-          termStatus.className = "terminal-status";
-          statusText.textContent = "CONNECTED";
-        }
-      }, 600);
-    }
-
-    if (simKey === "BerriAI/litellm#30020") {
-      typeCommand("asandhu@wpi:~$", "gdb python3", function() {
-        printLine("GNU gdb (GDB) 14.1");
-        printLine("Copyright (C) 2023 Free Software Foundation, Inc.");
-        printLine("Reading symbols from python3...");
-        
-        setTimeout(function() {
-          typeCommand("(gdb)", "run litellm_proxy.py --port 8000", function() {
-            printLine("Starting program: /usr/bin/python3 litellm_proxy.py");
-            printLine("Proxy running on port 8000...");
-            printLine("[New Thread 0x7fffef7fe700 (LWP 40221)]");
-            
-            setTimeout(function() {
-              printLine("<br><span class=\"text-merge\">-- SIMULATING CONCURRENT CLIENTS & LEAKS --</span>");
-              printLine("[Client 1] GET /v1/models (concurrency: 1)");
-              printLine("[Client 2] GET /v1/chat/completions (concurrency: 2) -> Stream Opened");
-              printLine("[Client 2] cancelled stream mid-flight");
-              printLine("[Client 3] GET /v1/chat/completions (concurrency: 3) -> Stream Opened");
-              printLine("[Client 3] cancelled stream mid-flight");
-              printLine("[Client 4] GET /v1/chat/completions (concurrency: 4) -> Stream Opened");
-              printLine("[Client 4] cancelled stream mid-flight");
-              printLine("[Client 5] GET /v1/chat/completions (concurrency: 5) -> Stream Opened");
-              printLine("[Client 5] cancelled stream mid-flight");
-              printLine("<span class=\"text-danger\">Warning: max_parallel_requests (5) reached. Blocking new queries.</span>");
-              printLine("[Client 6] GET /v1/models -> <span class=\"text-danger\">429 Too Many Requests (Transient Leak!)</span>");
-              
-              setTimeout(function() {
-                typeCommand("(gdb)", "bt", function() {
-                  printLine("#0  litellm.proxy.proxy_server.max_parallel_requests_check()");
-                  printLine("#1  litellm.proxy.proxy_server.request_handler()");
-                  printLine("#2  fastapi.routing.APIRoute.solve_dependencies()");
-                  printLine("#3  starlette.routing.Route.handle()");
-                  printLine("#4  <span class=\"text-merge\">[Active connections: 0, Stranded request slots: 4]</span>");
-                  
-                  setTimeout(function() {
-                    typeCommand("(gdb)", "print active_request_locks", function() {
-                      printLine("$1 = { \"key_user_402\": 4 }  <span class=\"text-danger\">(4 active locks stranded on 0 connections)</span>");
-                      
-                      setTimeout(function() {
-                        typeCommand("(gdb)", "quit", function() {
-                          printLine("[Inferior 1 (process 40221) exited normally]");
-                          printLine("<span class=\"text-merge\">Bug diagnosed: Concurrency slot leak in stream cancellation handlers.</span>");
-                          printLine("Resolution merged in PR #30020.");
-                          finishSim();
-                        });
-                      }, 1000);
-                    });
-                  }, 1000);
-                });
-              }, 1200);
-            }, 1000);
-          });
-        }, 800);
-      });
-    } else if (simKey === "python/cpython#150328") {
-      typeCommand("asandhu@wpi:~$", "gdb python3", function() {
-        printLine("GNU gdb (GDB) 14.1");
-        printLine("Reading symbols from python3...");
-        setTimeout(function() {
-          typeCommand("(gdb)", "break configure.c:120", function() {
-            printLine("Breakpoint 1 at 0x180328: file configure.c, line 120.");
-            setTimeout(function() {
-              typeCommand("(gdb)", "run -m test test_configure", function() {
-                printLine("Starting program: /usr/bin/python3 -m test test_configure");
-                printLine("[Thread debugging using libthread_db enabled]");
-                printLine("<br>Breakpoint 1, configure_casing_check () at configure.c:120");
-                printLine("120\t    if (strcmp(ac_sys_system, \"CYGWIN\") == 0) {");
-                setTimeout(function() {
-                  typeCommand("(gdb)", "print ac_sys_system", function() {
-                    printLine("$1 = 0x7fffffffe120 \"CYGWIN\" <span class=\"text-merge\">(Casing case-sensitivity resolved!)</span>");
-                    setTimeout(function() {
-                      typeCommand("(gdb)", "continue", function() {
-                        printLine("Continuing.");
-                        printLine("test_configure passed.");
-                        printLine("[Inferior 1 (process 40230) exited normally]");
-                        printLine("Verification complete: Cygwin configure.ac patches validated.");
-                        finishSim();
-                      });
-                    }, 1000);
-                  });
-                }, 1000);
-              });
-            }, 800);
-          });
-        }, 800);
-      });
-    } else if (simKey === "lance-format/lance#6934") {
-      typeCommand("asandhu@wpi:~$", "rust-gdb target/debug/deps/merge_insert", function() {
-        printLine("GNU gdb (GDB) 14.1");
-        printLine("Reading symbols from target/debug/deps/merge_insert...");
-        setTimeout(function() {
-          typeCommand("(gdb)", "break lance::format::merge_insert::plan_predicate", function() {
-            printLine("Breakpoint 1 at 0x27abcf: file src/format/merge_insert.rs, line 84.");
-            setTimeout(function() {
-              typeCommand("(gdb)", "run", function() {
-                printLine("Starting program: target/debug/deps/merge_insert");
-                printLine("<br>Breakpoint 1, lance::format::merge_insert::plan_predicate (expr=...) at src/format/merge_insert.rs:84");
-                printLine("84\t    match expr {");
-                setTimeout(function() {
-                  typeCommand("(gdb)", "print expr", function() {
-                    printLine("$1 = Expr::BinaryExpr { left: Column(\"id\"), op: Eq, right: Literal(42) }");
-                    printLine("<span class=\"text-merge\">DataFusion logical expression matched directly in query planner!</span>");
-                    setTimeout(function() {
-                      typeCommand("(gdb)", "continue", function() {
-                        printLine("Continuing.");
-                        printLine("test result: ok. 3 passed; 0 failed");
-                        printLine("[Inferior 1 (process 40244) exited normally]");
-                        printLine("Verification complete: DataFusion expressions verified in merge-insert.");
-                        finishSim();
-                      });
-                    }, 1000);
-                  });
-                }, 1000);
-              });
-            }, 800);
-          });
-        }, 800);
-      });
-    } else if (simKey === "lancedb/lancedb#3444") {
-      typeCommand("asandhu@wpi:~$", "rust-gdb target/debug/deps/lancedb_core", function() {
-        printLine("GNU gdb (GDB) 14.1");
-        printLine("Reading symbols from target/debug/deps/lancedb_core...");
-        setTimeout(function() {
-          typeCommand("(gdb)", "break connection::tests::test_merge_insert_datafusion", function() {
-            printLine("Breakpoint 1 at 0x12bcdf: file src/connection.rs, line 312.");
-            setTimeout(function() {
-              typeCommand("(gdb)", "run", function() {
-                printLine("Starting program: target/debug/deps/lancedb_core");
-                printLine("<br>Breakpoint 1, connection::tests::test_merge_insert_datafusion () at src/connection.rs:312");
-                printLine("312\t    let query = conn.table(\"my_table\").merge_insert(predicate);");
-                setTimeout(function() {
-                  typeCommand("(gdb)", "print query.merge_insert_predicate", function() {
-                    printLine("$1 = Some(Expr::And(Column(\"status\"), Literal(\"active\")))");
-                    printLine("<span class=\"text-merge\">DataFusion logical filter loaded into Rust query payload!</span>");
-                    setTimeout(function() {
-                      typeCommand("(gdb)", "continue", function() {
-                        printLine("Continuing.");
-                        printLine("test result: ok. 1 passed; 0 failed");
-                        printLine("[Inferior 1 (process 40250) exited normally]");
-                        printLine("Verification complete: Rust LanceDB connection merge insert expression verified.");
-                        finishSim();
-                      });
-                    }, 1000);
-                  });
-                }, 1000);
-              });
-            }, 800);
-          });
-        }, 800);
-      });
-    } else if (simKey === "lancedb/lancedb#3459") {
-      typeCommand("asandhu@wpi:~$", "gdb python3", function() {
-        printLine("GNU gdb (GDB) 14.1");
-        printLine("Reading symbols from python3...");
-        setTimeout(function() {
-          typeCommand("(gdb)", "run -m pytest tests/test_embeddings.py", function() {
-            printLine("Starting program: /usr/bin/python3 -m pytest tests/test_embeddings.py");
-            printLine("[Thread debugging using libthread_db enabled]");
-            printLine("Simulating blocking python calls in event loop...");
-            printLine("<span class=\"text-danger\">Stall check triggered: Event loop check interval > 500ms...</span>");
-            setTimeout(function() {
-              printLine("<br>-- SENDING SIGINT (CTRL-C) TO INSPECT THREADS --");
-              printLine("Program received signal SIGINT, Interrupt.");
-              setTimeout(function() {
-                typeCommand("(gdb)", "thread apply all bt", function() {
-                  printLine("<br><b>Thread 1 (Main Loop Thread):</b>");
-                  printLine("#0  0x00007ffff7bc8459 in select () at ../sysdeps/unix/syscall-template.S:120");
-                  printLine("#1  asyncio.base_events.BaseEventLoop._run_once (self=...)");
-                  printLine("    <span class=\"text-merge\">-> Event loop thread is idle/waiting (not blocked!)</span>");
-                  printLine("<br><b>Thread 2 (lancedb-embedding executor):</b>");
-                  printLine("#0  blocking_embedding_call_in_python (model=...) at embeddings.py:42");
-                  printLine("#1  concurrent.futures.thread._worker (executor=...) at thread.py:58");
-                  printLine("    <span class=\"text-merge\">-> Dedicated executor thread is running the blocking work!</span>");
-                  setTimeout(function() {
-                    typeCommand("(gdb)", "quit", function() {
-                      printLine("Quit anyway? (y or n) [answered Y]");
-                      printLine("[Inferior 1 (process 40260) exited normally]");
-                      printLine("Verification complete: Embedding queries moved to dedicated executor.");
-                      finishSim();
-                    });
-                  }, 1200);
-                });
-              }, 1000);
-            }, 1000);
-          });
-        }, 800);
-      });
-    } else if (simKey === "lightpanda-io/browser#2537") {
-      typeCommand("asandhu@wpi:~$", "gdb zig-out/bin/test", function() {
-        printLine("GNU gdb (GDB) 14.1");
-        printLine("Reading symbols from zig-out/bin/test...");
-        setTimeout(function() {
-          typeCommand("(gdb)", "break webapi.File.init", function() {
-            printLine("Breakpoint 1 at 0x937ef: file src/webapi/File.zig, line 48.");
-            setTimeout(function() {
-              typeCommand("(gdb)", "run", function() {
-                printLine("Starting program: zig-out/bin/test");
-                printLine("<br>Breakpoint 1, webapi.File.init (name=...) at src/webapi/File.zig:48");
-                printLine("48\t    self.name = try allocator.dupe(u8, name);");
-                setTimeout(function() {
-                  typeCommand("(gdb)", "print self.name", function() {
-                    printLine("$1 = { .ptr = 0x7fffffffe020 \"avatar.png\", .len = 10 } <span class=\"text-merge\">(Allocated in Zig runtime)</span>");
-                    setTimeout(function() {
-                      typeCommand("(gdb)", "continue", function() {
-                        printLine("Continuing.");
-                        printLine("All 4 tests passed.");
-                        printLine("[Inferior 1 (process 40270) exited normally]");
-                        printLine("Verification complete: Zig W3C File API interface validated.");
-                        finishSim();
-                      });
-                    }, 1000);
-                  });
-                }, 1000);
-              });
-            }, 800);
-          });
-        }, 800);
-      });
-    } else if (simKey === "lightpanda-io/browser#2635") {
-      typeCommand("asandhu@wpi:~$", "gdb zig-out/bin/test", function() {
-        printLine("GNU gdb (GDB) 14.1");
-        printLine("Reading symbols from zig-out/bin/test...");
-        setTimeout(function() {
-          typeCommand("(gdb)", "break dom.HTMLInputElement.setFileInputFiles", function() {
-            printLine("Breakpoint 1 at 0x92635: file src/dom/HTMLInputElement.zig, line 214.");
-            setTimeout(function() {
-              typeCommand("(gdb)", "run", function() {
-                printLine("Starting program: zig-out/bin/test");
-                printLine("<br>Breakpoint 1, dom.HTMLInputElement.setFileInputFiles (self=..., files=...) at src/dom/HTMLInputElement.zig:214");
-                printLine("214\t    self.files = try FileList.init(allocator, files);");
-                setTimeout(function() {
-                  typeCommand("(gdb)", "print files.len", function() {
-                    printLine("$1 = 2 <span class=\"text-merge\">(CDP command setFileInputFiles mapped files array correctly)</span>");
-                    setTimeout(function() {
-                      typeCommand("(gdb)", "continue", function() {
-                        printLine("Continuing.");
-                        printLine("All 3 tests passed.");
-                        printLine("[Inferior 1 (process 40280) exited normally]");
-                        printLine("Verification complete: Headless browser form file upload support verified.");
-                        finishSim();
-                      });
-                    }, 1000);
-                  });
-                }, 1000);
-              });
-            }, 800);
-          });
-        }, 800);
-      });
-    } else if (simKey === "BerriAI/litellm#29493") {
-      typeCommand("asandhu@wpi:~$", "gdb python3", function() {
-        printLine("GNU gdb (GDB) 14.1");
-        printLine("Reading symbols from python3...");
-        setTimeout(function() {
-          typeCommand("(gdb)", "break litellm.proxy.proxy_server.check_budget", function() {
-            printLine("Breakpoint 1 at 0x39493: file proxy_server.py, line 580.");
-            setTimeout(function() {
-              typeCommand("(gdb)", "run litellm_proxy.py --port 8000", function() {
-                printLine("Starting program: /usr/bin/python3 litellm_proxy.py");
-                printLine("Proxy running on port 8000...");
-                printLine("<br>Breakpoint 1, check_budget (key=...) at proxy_server.py:580");
-                printLine("580\t    if disable_budget_reservation:");
-                setTimeout(function() {
-                  typeCommand("(gdb)", "print disable_budget_reservation", function() {
-                    printLine("$1 = True <span class=\"text-merge\">(Optimistic reservation bypass active)</span>");
-                    setTimeout(function() {
-                      typeCommand("(gdb)", "continue", function() {
-                        printLine("Continuing.");
-                        printLine("[Client 1] GET /v1/chat/completions (status: 200 OK)");
-                        printLine("Verification complete: disable_budget_reservation setting verified.");
-                        finishSim();
-                      });
-                    }, 1000);
-                  });
-                }, 1000);
-              });
-            }, 800);
-          });
-        }, 800);
-      });
-    } else if (simKey === "BerriAI/litellm#29483") {
-      typeCommand("asandhu@wpi:~$", "gdb python3", function() {
-        printLine("GNU gdb (GDB) 14.1");
-        printLine("Reading symbols from python3...");
-        setTimeout(function() {
-          typeCommand("(gdb)", "break litellm.proxy.proxy_server.enforce_budget", function() {
-            printLine("Breakpoint 1 at 0x29483: file proxy_server.py, line 542.");
-            setTimeout(function() {
-              typeCommand("(gdb)", "run litellm_proxy.py --port 8000", function() {
-                printLine("Starting program: /usr/bin/python3 litellm_proxy.py");
-                printLine("Proxy running on port 8000...");
-                printLine("<br>-- SENDING REQUEST TO '/v1/models' --");
-                printLine("[Client] GET /v1/models");
-                setTimeout(function() {
-                  printLine("Request resolved. <span class=\"text-merge\">(enforce_budget breakpoint NOT hit - route correctly bypassed!)</span>");
-                  setTimeout(function() {
-                    typeCommand("(gdb)", "quit", function() {
-                      printLine("[Inferior 1 (process 40290) exited normally]");
-                      printLine("Verification complete: Telemetry and info routes bypass budget checks.");
-                      finishSim();
-                    });
-                  }, 1000);
-                }, 1200);
-              });
-            }, 800);
-          });
-        }, 800);
-      });
-    } else if (simKey === "lancedb/lancedb#3511") {
-      typeCommand("asandhu@wpi:~$", "gdb python3", function() {
-        printLine("GNU gdb (GDB) 14.1");
-        printLine("Reading symbols from python3...");
-        setTimeout(function() {
-          typeCommand("(gdb)", "run -m pytest tests/test_pydantic.py", function() {
-            printLine("Starting program: /usr/bin/python3 -m pytest tests/test_pydantic.py");
-            printLine("[Thread debugging using libthread_db enabled]");
-            printLine("Executing schema conversion with bare List/Tuple generic...");
-            setTimeout(function() {
-              typeCommand("(gdb)", "break lancedb/pydantic.py:84", function() {
-                printLine("Breakpoint 1 at 0x3f511: file lancedb/pydantic.py, line 84.");
-                setTimeout(function() {
-                  typeCommand("(gdb)", "continue", function() {
-                    printLine("Continuing.");
-                    printLine("Breakpoint 1, py_to_schema (field_type=List) at lancedb/pydantic.py:84");
-                    printLine("84\t    if hasattr(field_type, '__args__') and not field_type.__args__:");
-                    setTimeout(function() {
-                      typeCommand("(gdb)", "print field_type", function() {
-                        printLine("$1 = &lt;class 'typing.List'&gt; <span class=\"text-merge\">(bare generic list detected!)</span>");
-                        setTimeout(function() {
-                          typeCommand("(gdb)", "continue", function() {
-                            printLine("Continuing.");
-                            printLine("<span class=\"text-merge\">Raised TypeError: Bare List/Tuple generics are not supported. Specify element types.</span>");
-                            printLine("Verification complete: TypeError successfully raised for bare generics.");
-                            finishSim();
-                          });
-                        }, 1000);
-                      });
-                    }, 1000);
-                  });
-                }, 800);
-              });
-            }, 800);
-          });
-        }, 800);
-      });
-    } else if (simKey === "lancedb/lancedb#3512") {
-      typeCommand("asandhu@wpi:~$", "rust-gdb target/debug/deps/lancedb_core", function() {
-        printLine("GNU gdb (GDB) 14.1");
-        printLine("Reading symbols from target/debug/deps/lancedb_core...");
-        setTimeout(function() {
-          typeCommand("(gdb)", "break embeddings::bedrock::BedrockProvider::embed", function() {
-            printLine("Breakpoint 1 at 0x3f512: file src/embeddings/bedrock.rs, line 112.");
-            setTimeout(function() {
-              typeCommand("(gdb)", "run", function() {
-                printLine("Starting program: target/debug/deps/lancedb_core");
-                printLine("Breakpoint 1, BedrockProvider::embed (self=..., input=...) at src/embeddings/bedrock.rs:112");
-                printLine("112\t    let res = self.client.invoke_model(...);");
-                setTimeout(function() {
-                  typeCommand("(gdb)", "next", function() {
-                    printLine("113\t    match res {");
-                    printLine("114\t        Err(err) => return Err(Error::Bedrock(err.to_string())),");
-                    setTimeout(function() {
-                      typeCommand("(gdb)", "print res", function() {
-                        printLine("$1 = Err(AwsServiceError { message: \"AccessDeniedException\" })");
-                        printLine("<span class=\"text-merge\">Safe error boundary crossed, returning Result instead of panic!</span>");
-                        setTimeout(function() {
-                          typeCommand("(gdb)", "continue", function() {
-                            printLine("Continuing.");
-                            printLine("test result: ok. Bedrock failure handled gracefully.");
-                            finishSim();
-                          });
-                        }, 1000);
-                      });
-                    }, 1000);
-                  });
-                }, 1000);
-              });
-            }, 800);
-          });
-        }, 800);
-      });
-    } else if (simKey === "BerriAI/litellm#30272") {
-      typeCommand("asandhu@wpi:~$", "gdb python3", function() {
-        printLine("GNU gdb (GDB) 14.1");
-        printLine("Reading symbols from python3...");
-        setTimeout(function() {
-          typeCommand("(gdb)", "break litellm.proxy.proxy_server.models_handler", function() {
-            printLine("Breakpoint 1 at 0x30272: file proxy_server.py, line 1405.");
-            setTimeout(function() {
-              typeCommand("(gdb)", "run litellm_proxy.py", function() {
-                printLine("Starting program: /usr/bin/python3 litellm_proxy.py");
-                printLine("Proxy running on port 8000...");
-                printLine("[Client] GET /v1/models");
-                printLine("Breakpoint 1, models_handler () at proxy_server.py:1405");
-                setTimeout(function() {
-                  typeCommand("(gdb)", "print response_data['data'][0]['max_input_tokens']", function() {
-                    printLine("$1 = 200000");
-                    setTimeout(function() {
-                      typeCommand("(gdb)", "print response_data['data'][0]['max_output_tokens']", function() {
-                        printLine("$2 = 4096 <span class=\"text-merge\">(Model capacities correctly surfaced!)</span>");
-                        setTimeout(function() {
-                          typeCommand("(gdb)", "continue", function() {
-                            printLine("Continuing.");
-                            printLine("Response successfully returned with token limits.");
-                            finishSim();
-                          });
-                        }, 1000);
-                      });
-                    }, 1000);
-                  });
-                }, 1000);
-              });
-            }, 800);
-          });
-        }, 800);
-      });
-    } else if (simKey === "BerriAI/litellm#30273") {
-      typeCommand("asandhu@wpi:~$", "gdb python3", function() {
-        printLine("GNU gdb (GDB) 14.1");
-        printLine("Reading symbols from python3...");
-        setTimeout(function() {
-          typeCommand("(gdb)", "break litellm.proxy.proxy_server.get_anthropic_models", function() {
-            printLine("Breakpoint 1 at 0x30273: file proxy_server.py, line 1420.");
-            setTimeout(function() {
-              typeCommand("(gdb)", "run litellm_proxy.py", function() {
-                printLine("Starting program: /usr/bin/python3 litellm_proxy.py");
-                printLine("Proxy running on port 8000...");
-                printLine("[Client: Claude Code Gateway] GET /v1/models (Anthropic header present)");
-                printLine("Breakpoint 1, get_anthropic_models () at proxy_server.py:1420");
-                setTimeout(function() {
-                  typeCommand("(gdb)", "print anthropic_format", function() {
-                    printLine("$1 = True <span class=\"text-merge\">(Claude Code gateway signature matched!)</span>");
-                    setTimeout(function() {
-                      typeCommand("(gdb)", "continue", function() {
-                        printLine("Continuing.");
-                        printLine("Returned model list in native Anthropic-compatible JSON layout.");
-                        finishSim();
-                      });
-                    }, 1000);
-                  });
-                }, 1000);
-              });
-            }, 800);
-          });
-        }, 800);
-      });
-    } else if (simKey === "lightpanda-io/browser#2722") {
-      typeCommand("asandhu@wpi:~$", "gdb zig-out/bin/test", function() {
-        printLine("GNU gdb (GDB) 14.1");
-        printLine("Reading symbols from zig-out/bin/test...");
-        setTimeout(function() {
-          typeCommand("(gdb)", "break browser.Browser.setDownloadBehavior", function() {
-            printLine("Breakpoint 1 at 0x92722: file src/Browser.zig, line 310.");
-            setTimeout(function() {
-              typeCommand("(gdb)", "run", function() {
-                printLine("Starting program: zig-out/bin/test");
-                printLine("Breakpoint 1, Browser.setDownloadBehavior (self=..., behavior=..., path=...) at src/Browser.zig:310");
-                printLine("310\t    self.download_behavior = behavior;");
-                setTimeout(function() {
-                  typeCommand("(gdb)", "print behavior", function() {
-                    printLine("$1 = DownloadBehavior.allow");
-                    setTimeout(function() {
-                      typeCommand("(gdb)", "print path", function() {
-                        printLine("$2 = { .ptr = 0x7fffffffe100 \"/downloads\", .len = 10 }");
-                        printLine("<span class=\"text-merge\">CDP download automation behavior configuration matches allow state!</span>");
-                        setTimeout(function() {
-                          typeCommand("(gdb)", "continue", function() {
-                            printLine("Continuing.");
-                            printLine("Browser.setDownloadBehavior test passed.");
-                            finishSim();
-                          });
-                        }, 1000);
-                      });
-                    }, 1000);
-                  });
-                }, 1000);
-              });
-            }, 800);
-          });
-        }, 800);
-      });
-    } else if (simKey === "lance-format/lance#7246") {
-      typeCommand("asandhu@wpi:~$", "rust-gdb target/debug/deps/lance_core", function() {
-        printLine("GNU gdb (GDB) 14.1");
-        printLine("Reading symbols from target/debug/deps/lance_core...");
-        setTimeout(function() {
-          typeCommand("(gdb)", "break fts::prefilter::walk_the_allowlist", function() {
-            printLine("Breakpoint 1 at 0x7246c: file src/fts/prefilter.rs, line 144.");
-            setTimeout(function() {
-              typeCommand("(gdb)", "run", function() {
-                printLine("Starting program: target/debug/deps/lance_core");
-                printLine("Breakpoint 1, fts::prefilter::walk_the_allowlist (self=..., doc_ids=...) at src/fts/prefilter.rs:144");
-                printLine("144\t    for doc_id in doc_ids {");
-                setTimeout(function() {
-                  typeCommand("(gdb)", "print doc_ids.len()", function() {
-                    printLine("$1 = 105 <span class=\"text-merge\">(All 105 elements inside allowlist prefilter loaded)</span>");
-                    setTimeout(function() {
-                      typeCommand("(gdb)", "next", function() {
-                        printLine("145\t        self.evaluate_doc(doc_id);");
-                        printLine("<span class=\"text-merge\">Successfully verifying list-element iteration covers all allowlisted IDs</span>");
-                        setTimeout(function() {
-                          typeCommand("(gdb)", "continue", function() {
-                            printLine("Continuing.");
-                            printLine("fts prefilter tests passed.");
-                            finishSim();
-                          });
-                        }, 1000);
-                      });
-                    }, 1000);
-                  });
-                }, 1000);
-              });
-            }, 800);
-          });
-        }, 800);
-      });
-    } else if (simKey === "lance-format/lance#7251") {
-      typeCommand("asandhu@wpi:~$", "rust-gdb target/debug/deps/lance_core", function() {
-        printLine("GNU gdb (GDB) 14.1");
-        printLine("Reading symbols from target/debug/deps/lance_core...");
-        setTimeout(function() {
-          typeCommand("(gdb)", "break merge_insert::compare_payload_columns", function() {
-            printLine("Breakpoint 1 at 0x7251d: file src/merge_insert.rs, line 290.");
-            setTimeout(function() {
-              typeCommand("(gdb)", "run", function() {
-                printLine("Starting program: target/debug/deps/lance_core");
-                printLine("Breakpoint 1, compare_payload_columns (col1=..., col2=...) at src/merge_insert.rs:290");
-                printLine("290\t    if col1.is_null() && col2.is_null() {");
-                setTimeout(function() {
-                  typeCommand("(gdb)", "print col1.is_null()", function() {
-                    printLine("$1 = true");
-                    setTimeout(function() {
-                      typeCommand("(gdb)", "next", function() {
-                        printLine("291\t        return CompareResult::Match;");
-                        printLine("<span class=\"text-merge\">Leading null payload columns successfully matched (no silent drops!)</span>");
-                        setTimeout(function() {
-                          typeCommand("(gdb)", "continue", function() {
-                            printLine("Continuing.");
-                            printLine("merge_insert tests passed.");
-                            finishSim();
-                          });
-                        }, 1000);
-                      });
-                    }, 1000);
-                  });
-                }, 1000);
-              });
-            }, 800);
-          });
-        }, 800);
-      });
-    } else if (simKey === "systemd/systemd#42578") {
-      typeCommand("asandhu@wpi:~$", "gdb sysupdate", function() {
-        printLine("GNU gdb (GDB) 14.1");
-        printLine("Reading symbols from sysupdate...");
-        setTimeout(function() {
-          typeCommand("(gdb)", "break sysupdate.c:check_reboot_pending", function() {
-            printLine("Breakpoint 1 at 0x42578: file src/sysupdate/sysupdate.c, line 482.");
-            setTimeout(function() {
-              typeCommand("(gdb)", "run --component=kernel update", function() {
-                printLine("Starting program: /usr/bin/sysupdate --component=kernel update");
-                printLine("Breakpoint 1, check_reboot_pending (component=...) at src/sysupdate/sysupdate.c:482");
-                printLine("482\t    if (component) {");
-                setTimeout(function() {
-                  typeCommand("(gdb)", "next", function() {
-                    printLine("483\t        log_error(\"Refusing reboot/pending update logic when --component= is specified.\");");
-                    printLine("484\t        return -EINVAL;");
-                    setTimeout(function() {
-                      typeCommand("(gdb)", "continue", function() {
-                        printLine("Continuing.");
-                        printLine("<span class=\"text-danger\">Refusing reboot/pending update logic when --component= is specified.</span>");
-                        printLine("[Inferior 1 (process 40300) exited with code 0377]");
-                        printLine("Verification complete: sysupdate correctly rejected reboot checks with --component.");
-                        finishSim();
-                      });
-                    }, 1000);
-                  });
-                }, 1000);
-              });
-            }, 800);
-          });
-        }, 800);
-      });
-    } else if (simKey === "BerriAI/litellm#30387") {
-      typeCommand("asandhu@wpi:~$", "gdb python3", function() {
-        printLine("GNU gdb (GDB) 14.1");
-        printLine("Reading symbols from python3...");
-        setTimeout(function() {
-          typeCommand("(gdb)", "break litellm.proxy.proxy_server.custom_openai_endpoint", function() {
-            printLine("Breakpoint 1 at 0x30387: file proxy_server.py, line 910.");
-            setTimeout(function() {
-              typeCommand("(gdb)", "run litellm_proxy.py", function() {
-                printLine("Starting program: /usr/bin/python3 litellm_proxy.py");
-                printLine("Proxy running on port 8000...");
-                printLine("[Client] POST /v1/chat/completions (custom endpoint with Cache-Control: no-cache)");
-                printLine("Breakpoint 1, custom_openai_endpoint (headers=...) at proxy_server.py:910");
-                setTimeout(function() {
-                  typeCommand("(gdb)", "print headers['Cache-Control']", function() {
-                    printLine("$1 = \"no-cache\" <span class=\"text-merge\">(Cache-Control header successfully preserved!)</span>");
-                    setTimeout(function() {
-                      typeCommand("(gdb)", "continue", function() {
-                        printLine("Continuing.");
-                        printLine("Forwarded request with headers intact. Custom endpoint cache bypass working.");
-                        finishSim();
-                      });
-                    }, 1000);
-                  });
-                }, 1000);
-              });
-            }, 800);
-          });
-        }, 800);
-      });
-    } else {
-      typeCommand("asandhu@wpi:~$", "echo 'Verifying " + escHtml(simKey) + "'", function() {
-        printLine("Verifying " + escHtml(simKey) + "...");
-        printLine("Status: <span class=\"text-merge\">Merged</span>");
-        printLine("All checks passed.");
-        finishSim();
-      });
-    }
-  }
-
-  var ledgerTable = doc.getElementById("ledger-table");
-  if (ledgerTable) {
-    ledgerTable.addEventListener("click", function (e) {
+  // Ledger Debug buttons open a replay in the terminal (terminal.js).
+  if (ledgerList) {
+    ledgerList.addEventListener("click", function (e) {
       var btn = e.target.closest(".btn-verify");
-      if (!btn) return;
-      var tr = btn.closest("tr");
-      if (!tr) return;
-      var prKey = tr.getAttribute("data-pr");
-      if (prKey) {
-        runSimulation(prKey);
-      }
+      var row = btn && btn.closest("[data-pr]");
+      if (row && window.deckTerminal) window.deckTerminal.debug(row.getAttribute("data-pr"));
     });
-  }
   }
 })();

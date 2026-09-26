@@ -15,7 +15,8 @@
   (function heroCanvas() {
     var canvas = doc.getElementById("fx-canvas");
     var stage = canvas && canvas.parentElement;
-    if (!canvas || !stage || reduce) return;
+    // depth.js replaces this flat stream with its 3D scene when it is active.
+    if (!canvas || !stage || reduce || doc.documentElement.classList.contains("depth-on")) return;
 
     var ctx = canvas.getContext("2d");
     var dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -117,29 +118,7 @@
   })();
 
   /* ======================================================================
-     2. Magnetic controls — pull toward the cursor
-     ====================================================================== */
-  if (fine && !reduce) {
-    var magnets = Array.prototype.slice.call(doc.querySelectorAll("[data-magnetic]"));
-    magnets.forEach(function (el) {
-      var pending = false, mx = 0, my = 0;
-      el.addEventListener("pointermove", function (e) {
-        var r = el.getBoundingClientRect();
-        mx = (e.clientX - (r.left + r.width / 2)) * 0.3;
-        my = (e.clientY - (r.top + r.height / 2)) * 0.4;
-        if (!pending) { pending = true; raf(function () {
-          el.style.transform = "translate(" + mx + "px," + my + "px)";
-          pending = false;
-        }); }
-      });
-      el.addEventListener("pointerleave", function () {
-        el.style.transform = "";
-      });
-    });
-  }
-
-  /* ======================================================================
-     3. 3D tilt — panels lean toward the cursor
+     2. 3D tilt — panels lean toward the cursor
      ====================================================================== */
   if (fine && !reduce) {
     var tilts = Array.prototype.slice.call(doc.querySelectorAll("[data-tilt]"));
@@ -166,7 +145,7 @@
   }
 
   /* ======================================================================
-     4. Channel-rail scrollspy
+     3. Channel-rail scrollspy
      ====================================================================== */
   (function scrollspy() {
     var nodes = Array.prototype.slice.call(doc.querySelectorAll(".deck-rail .rail-node"));
@@ -196,7 +175,7 @@
   })();
 
   /* ======================================================================
-     5. Count-up numerals on first reveal
+     4. Count-up numerals on first reveal
      ====================================================================== */
   (function countUp() {
     var els = Array.prototype.slice.call(doc.querySelectorAll("[data-countup]"));
@@ -234,32 +213,7 @@
   })();
 
   /* ======================================================================
-     6. Deploy ticker — rebuild from the ledger, then loop seamlessly
-     ====================================================================== */
-  (function ticker() {
-    var track = doc.querySelector("[data-ticker]");
-    if (!track) return;
-    // Prefer live repo names from the ledger so the readout never goes stale.
-    var repos = [];
-    doc.querySelectorAll("#ledger-body .col-repo").forEach(function (c) {
-      var name = c.textContent.trim();
-      if (name && repos.indexOf(name) === -1) repos.push(name);
-    });
-    if (repos.length) {
-      track.innerHTML = "";
-      repos.forEach(function (name) {
-        var s = doc.createElement("span");
-        s.className = "ticker-item";
-        s.innerHTML = '<i>merged</i>' + name;
-        track.appendChild(s);
-      });
-    }
-    // Duplicate the set so the -50% keyframe loops with no visible seam.
-    if (!reduce) track.innerHTML += track.innerHTML;
-  })();
-
-  /* ======================================================================
-     7. Ledger telemetry — derive real counts from the ledger rows
+     5. Ledger telemetry — derive real counts from the ledger rows
      ====================================================================== */
   (function ledgerStats() {
     var wrap = doc.querySelector("[data-ledger-stats]");
@@ -274,20 +228,18 @@
       el.textContent = String(shown);
     }
     function run() {
-      // Curated ledger plus the recent merges script.js appends, so a merge in a
-      // repo the ledger has never listed still counts here.
-      var rows = doc.querySelectorAll("#ledger-body tr, #recent-body tr");
+      // The ledger lists merged PRs only, including the ones script.js
+      // appends from activity.json, so a new repo counts here straight away.
+      var rows = doc.querySelectorAll("#ledger-body [data-pr]");
       if (!rows.length) return;
-      var repos = {}, merged = 0;
+      var repos = {}, merged = rows.length;
       rows.forEach(function (tr) {
-        var st = tr.querySelector(".col-state");
         var repo = tr.querySelector(".col-repo");
-        if (st && st.textContent.trim().toLowerCase() === "merged") merged++;
         if (repo) repos[repo.textContent.trim()] = 1;
       });
       var nums = wrap.querySelectorAll(".num");
-      // [0] merged upstream, [1] repos. The baked value is the authoritative
-      // GitHub floor; these tables are a subset, so only ever raise it.
+      // [0] merged upstream, [1] repos. The baked value is GitHub's own count,
+      // so the page may only ever raise it.
       raise(nums[0], merged);
       raise(nums[1], Object.keys(repos).length);
     }
@@ -296,76 +248,9 @@
   })();
 
   /* ======================================================================
-     8. Terminal: clickable command chips + a boot sequence on first reveal.
-     Drives the existing terminal in script.js by dispatching a real Enter.
-     ====================================================================== */
-  (function terminalFx() {
-    var input = doc.getElementById("term-input");
-    var body = doc.getElementById("term-body");
-    if (!input || !body) return;
-
-    function runCmd(cmd) {
-      var box = doc.querySelector(".terminal-box");
-      if (box) box.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "center" });
-      // Skip focus on touch: it would open the keyboard over the output.
-      if (fine) input.focus();
-      input.value = cmd;
-      var echo = doc.getElementById("term-echo");
-      if (echo) echo.textContent = cmd;
-      // script.js listens for a real keydown on the input and reads its value.
-      input.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter", bubbles: true }));
-    }
-    doc.querySelectorAll(".term-chip").forEach(function (b) {
-      b.addEventListener("click", function () { runCmd(b.getAttribute("data-cmd")); });
-    });
-
-    // Boot log: dim lines that fade in above the banner, once, on first view.
-    if (reduce) return;
-    var banner = body.querySelector(".term-banner");
-    if (!banner) return;
-    var booted = false;
-    // The merge figure comes off the live receipt count, not a literal. Read at
-    // boot time (first view of the console), by which point stats.json has
-    // usually hydrated it.
-    function bootLines() {
-      var el = doc.querySelector("[data-merged-count]");
-      var n = el
-        ? parseInt(el.getAttribute("data-countup-target") || el.textContent, 10) || 0
-        : 0;
-      return [
-        "mounting /dev/wpi",
-        "loading module mcp-persist.ko",
-        "syncing upstream ledger" + (n ? " · " + n + " merged" : ""),
-        "link established · latency 0ms"
-      ];
-    }
-    function boot() {
-      if (booted) return; booted = true;
-      var lines = bootLines();
-      lines.forEach(function (txt, i) {
-        setTimeout(function () {
-          var d = doc.createElement("div");
-          d.className = "term-line boot";
-          d.style.opacity = "0";
-          d.style.transition = "opacity 220ms ease";
-          d.innerHTML = '[<span class="ok"> ok </span>] ' + txt;
-          body.insertBefore(d, banner);
-          requestAnimationFrame(function () { d.style.opacity = "1"; });
-        }, i * 260);
-      });
-    }
-    if ("IntersectionObserver" in window) {
-      var io = new IntersectionObserver(function (ents) {
-        ents.forEach(function (en) { if (en.isIntersecting) { boot(); io.disconnect(); } });
-      }, { threshold: 0.35 });
-      io.observe(doc.getElementById("console"));
-    } else { boot(); }
-  })();
-
-  /* ======================================================================
-     9. Hero merge log — the streaming centerpiece.
-     Rebuilds from every merged row on the page: the curated ledger plus the
-     recent-activity rows script.js appends from activity.json, so a fresh
+     6. Hero merge log — the streaming centerpiece.
+     Rebuilds from every row in the ledger, including the merges script.js
+     appends from activity.json, so a fresh
      upstream merge shows up here the same day it lands. Then duplicates the
      track so the vertical scroll loops with no seam.
      ====================================================================== */
@@ -376,16 +261,12 @@
       return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
     }
 
-    // Recent activity first — it is the freshest — then the curated ledger.
-    // Keyed by repo#number so a PR listed in both places appears once.
+    // The ledger is newest first, so document order is the feed order.
+    // Keyed by repo#number so a PR can't appear twice.
     function collect() {
       var items = [], seen = {};
-      // Two passes, not one selector list: querySelectorAll returns document
-      // order, which would bury the fresh rows below the ledger.
-      ["#recent-body tr", "#ledger-body tr"].forEach(function (sel) {
+      ["#ledger-body [data-pr]"].forEach(function (sel) {
         doc.querySelectorAll(sel).forEach(function (tr) {
-          var st = tr.querySelector(".col-state");
-          if (!st || st.textContent.trim().toLowerCase() !== "merged") return;
           var repoEl = tr.querySelector(".col-repo");
           var a = tr.querySelector(".col-title a");
           if (!repoEl || !a) return;

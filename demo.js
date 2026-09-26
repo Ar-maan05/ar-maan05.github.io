@@ -37,7 +37,7 @@
   var storeBtns = mount.querySelectorAll(".store-toggle button");
 
   var store = "memory", phase = "idle";   // idle | killed | replaying
-  var serverId = 11, clientId = 11, emitTimer = null, visible = false;
+  var serverId = 6, clientId = 6, emitTimer = null, visible = false;
 
   function logLine(box, text, cls) {
     var d = document.createElement("div");
@@ -134,6 +134,15 @@
       });
     }
   }
+
+  // Open mid-stream, so the panes are never empty before the first tick.
+  for (var k = 0; k < 5; k++) {
+    serverId += 1; clientId = serverId;
+    var t0 = TYPES[serverId % TYPES.length];
+    logLine(serverLog, "emit  event #" + serverId + " · " + t0);
+    logLine(clientLog, "recv  event #" + serverId + " · " + t0);
+  }
+  setCursor(clientId);
 
   action.addEventListener("click", function () {
     if (phase === "idle") kill();

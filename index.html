@@ -38,6 +38,7 @@
 
   <link rel="preload" href="fonts/plex-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="depth.css">
 
   <script type="application/ld+json">
   {
@@ -65,16 +66,15 @@
 
   <!-- Channel rail: a mission-deck side index. Real section order, scrollspy-lit. -->
   <nav class="deck-rail" aria-label="Sections">
-    <a href="#top"          class="rail-node" data-rail="top"><span class="rail-ch">00</span><span class="rail-name">Top</span></a>
-    <a href="#work"         class="rail-node" data-rail="work"><span class="rail-ch">01</span><span class="rail-name">Case study</span></a>
-    <a href="#mlrouter"     class="rail-node" data-rail="mlrouter"><span class="rail-ch">02</span><span class="rail-name">mlrouter</span></a>
-    <a href="#shipped"      class="rail-node" data-rail="shipped"><span class="rail-ch">03</span><span class="rail-name">Shipped</span></a>
-    <a href="#ledger"       class="rail-node" data-rail="ledger"><span class="rail-ch">04</span><span class="rail-name">Ledger</span></a>
-    <a href="#foundations"  class="rail-node" data-rail="foundations"><span class="rail-ch">05</span><span class="rail-name">Foundations</span></a>
-    <a href="#runixos"      class="rail-node" data-rail="runixos"><span class="rail-ch">06</span><span class="rail-name">RunixOS</span></a>
-    <a href="#about"        class="rail-node" data-rail="about"><span class="rail-ch">07</span><span class="rail-name">Now</span></a>
-    <a href="#console"      class="rail-node" data-rail="console"><span class="rail-ch">08</span><span class="rail-name">Terminal</span></a>
-    <a href="#contact"      class="rail-node" data-rail="contact"><span class="rail-ch">09</span><span class="rail-name">Contact</span></a>
+    <a href="#top"          class="rail-node" data-rail="top"><span class="rail-name">Top</span></a>
+    <a href="#work"         class="rail-node" data-rail="work"><span class="rail-name">Case study</span></a>
+    <a href="#mlrouter"     class="rail-node" data-rail="mlrouter"><span class="rail-name">mlrouter</span></a>
+    <a href="#shipped"      class="rail-node" data-rail="shipped"><span class="rail-name">Shipped</span></a>
+    <a href="#ledger"       class="rail-node" data-rail="ledger"><span class="rail-name">Ledger</span></a>
+    <a href="#runixos"      class="rail-node" data-rail="runixos"><span class="rail-name">RunixOS</span></a>
+    <a href="#about"        class="rail-node" data-rail="about"><span class="rail-name">Now</span></a>
+    <a href="#console"      class="rail-node" data-rail="console"><span class="rail-name">Terminal</span></a>
+    <a href="#contact"      class="rail-node" data-rail="contact"><span class="rail-name">Contact</span></a>
   </nav>
 
   <!-- Inline icon sprite (Lucide), stroked via .icon in CSS -->
@@ -93,6 +93,7 @@
       <nav class="nav-links" id="nav-links" aria-label="Primary">
         <a href="#work">Work</a>
         <a href="#ledger">Ledger</a>
+        <a href="#console">Terminal</a>
         <a href="#about">About</a>
         <a class="nav-mobile-only" href="#contact">Contact</a>
         <a class="nav-mobile-only" href="Resume.pdf" target="_blank" rel="noopener">Resume</a>
@@ -135,14 +136,12 @@
       <div class="shell hero-shell">
       <div class="hero-grid">
         <div class="hero-text">
-          <p class="eyebrow status-eyebrow" data-anim style="--d:0ms">
-            <span class="sig-dot" aria-hidden="true"></span>Systems online · CS @ WPI · 4.0 GPA · BS/MS '29
-          </p>
+          <p class="hero-kicker" data-anim style="--d:0ms">WPI Computer Science, BS/MS ’29, 4.0 GPA</p>
           <h1 id="hero-h1" data-anim style="--d:0ms">Merged upstream.</h1>
-          <p class="hero-lede" data-anim style="--d:80ms">I'm a computer science student who builds infrastructure for AI tooling. My package mcp-persist has <span class="tnum" data-bake="downloads" data-downloads>18,000+</span> downloads on PyPI and runs in production, including inside mlrouter, the multi-model LLM gateway I'm shipping at mlrouter.com. My pull requests are merged upstream in CPython, systemd, and across the AI data stack.</p>
+          <p class="hero-lede" data-anim style="--d:80ms">I build infrastructure for AI tooling, and fix the Linux and Python layers it runs on. My event store for MCP servers, mcp-persist, has <span class="tnum" data-bake="downloads" data-downloads>18,000+</span> downloads and runs in production inside mlrouter, the LLM gateway I'm shipping. My fixes are merged upstream in systemd, CPython and across the AI data stack.</p>
           <div class="hero-cta" data-anim style="--d:80ms">
-            <a class="btn btn-primary" href="#work" data-magnetic>Read the case study</a>
-            <a class="btn btn-ghost" href="#ledger" data-magnetic>See the ledger</a>
+            <a class="btn btn-primary" href="#work">Read the case study</a>
+            <a class="btn btn-ghost" href="#ledger">See the ledger</a>
           </div>
           <p class="hero-availability" data-anim style="--d:160ms">
             <span class="avail-dot" aria-hidden="true"></span>
@@ -151,10 +150,9 @@
         </div>
 
         <div class="hero-figure" data-tilt>
-          <span class="figure-tag" aria-hidden="true">MERGE LOG</span>
-          <div class="mergefeed glow-card">
+          <div class="mergefeed">
             <div class="mergefeed-head">
-              <span class="mf-live"><span class="mf-live-dot" aria-hidden="true"></span>LIVE FEED</span>
+              <span class="mf-title">Latest merges</span>
               <span class="mf-count"><b data-mf-count data-countup>39</b>&nbsp;merged upstream</span>
             </div>
             <div class="mergefeed-viewport">
@@ -176,43 +174,26 @@
 
       <div class="proofbar" aria-label="Proof">
         <a class="receipt" href="https://pepy.tech/project/mcp-persist" target="_blank" rel="noopener" data-anim style="--d:600ms">
-          <span class="live-dot" aria-hidden="true"></span>
-          <b class="tnum" data-bake="downloads" data-downloads>18,000+</b>&nbsp;downloads <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg>
+          <b class="tnum" data-bake="downloads" data-downloads>18,000+</b>&nbsp;PyPI downloads <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg>
         </a>
-        <a class="receipt" href="https://github.com/python/cpython/pulls?q=is%3Apr+author%3AAr-maan05+is%3Amerged" target="_blank" rel="noopener" data-anim style="--d:660ms">
-          Merged: CPython <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg>
-        </a>
-        <a class="receipt" href="https://github.com/systemd/systemd/pulls?q=is%3Apr+author%3AAr-maan05+is%3Amerged" target="_blank" rel="noopener" data-anim style="--d:720ms">
-          Merged: systemd <span class="mult" data-repo-mult>×<b class="tnum" data-repo-merged="systemd/systemd">16</b></span> <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg>
-        </a>
-        <a class="receipt" href="#ledger" data-anim style="--d:780ms">
+        <a class="receipt" href="#ledger" data-anim style="--d:660ms">
           <b class="tnum" data-merged-count data-countup>39</b>&nbsp;PRs merged upstream
         </a>
-        <a class="receipt" href="#adoption" data-anim style="--d:840ms">
-          In production
+        <a class="receipt" href="https://github.com/systemd/systemd/pulls?q=is%3Apr+author%3AAr-maan05+is%3Amerged" target="_blank" rel="noopener" data-anim style="--d:720ms">
+          <b class="tnum" data-repo-merged="systemd/systemd">16</b>&nbsp;in systemd <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg>
+        </a>
+        <a class="receipt" href="https://github.com/python/cpython/pulls?q=is%3Apr+author%3AAr-maan05+is%3Amerged" target="_blank" rel="noopener" data-anim style="--d:780ms">
+          CPython contributor <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg>
         </a>
       </div>
       </div><!-- /.hero-shell -->
 
-      <!-- Deploy ticker: a continuous readout of the repos merged into.
-           fx.js repopulates it from the ledger; this baked set is the fallback. -->
-      <div class="ticker" aria-hidden="true">
-        <div class="ticker-track" data-ticker>
-          <span class="ticker-item"><i>merged</i> python/cpython</span>
-          <span class="ticker-item"><i>merged</i> systemd/systemd</span>
-          <span class="ticker-item"><i>merged</i> BerriAI/litellm</span>
-          <span class="ticker-item"><i>merged</i> lancedb/lancedb</span>
-          <span class="ticker-item"><i>merged</i> lance-format/lance</span>
-          <span class="ticker-item"><i>merged</i> lightpanda-io/browser</span>
-        </div>
-      </div>
     </section>
 
     <!-- ===================== 2. CASE STUDY ===================== -->
     <section id="work" aria-labelledby="cs-h2">
       <div class="shell">
         <div class="section-head">
-          <p class="eyebrow">Case study</p>
           <h2 id="cs-h2">mcp-persist</h2>
           <p class="case-sub">Durable persistence for MCP servers · PyPI · v<span data-bake="version">2.1.0</span> · MIT</p>
         </div>
@@ -320,7 +301,6 @@ app = with_persistence(mcp, backend=<span class="s">"redis"</span>, url=<span cl
     <section id="mlrouter" aria-labelledby="mlrouter-h2">
       <div class="shell">
         <div class="section-head">
-          <p class="eyebrow">Flagship · Platform</p>
           <h2 id="mlrouter-h2">mlrouter</h2>
           <p class="case-sub">One OpenAI-compatible API across every model provider ·
             <a href="https://mlrouter.com" target="_blank" rel="noopener">mlrouter.com</a>
@@ -331,38 +311,32 @@ app = with_persistence(mcp, backend=<span class="s">"redis"</span>, url=<span cl
           <p>mlrouter is a multi-model LLM gateway: a single OpenAI-compatible endpoint that routes requests across OpenAI, Anthropic, Google, Mistral, HuggingFace, XAI, OpenRouter, Deepseek, and many others. It picks a backend by cost or latency, scores each provider's health, and fails over through circuit breakers and fallback chains when one degrades. Virtual keys carry spend caps; every request is logged. It's live at <a href="https://mlrouter.com" target="_blank" rel="noopener">mlrouter.com</a> and going into production with its first customers. It's also the platform where my open-source packages run as first-class services.</p>
         </div>
 
-        <div class="feature-grid">
-          <div class="feature glow-card" data-tilt>
-            <span class="feature-k">01</span>
-            <h4>Unified gateway</h4>
-            <p>One <code>/v1/chat/completions</code> across every major provider. The model prefix selects the backend; <code>auto</code> routes on cost.</p>
+        <dl class="spec">
+          <div class="spec-row">
+            <dt>Unified gateway</dt>
+            <dd>One <code>/v1/chat/completions</code> across every major provider. The model prefix selects the backend; <code>auto</code> routes on cost.</dd>
           </div>
-          <div class="feature glow-card" data-tilt>
-            <span class="feature-k">02</span>
-            <h4>Cost &amp; latency routing</h4>
-            <p>Strategies score providers on price and p50/p95 latency, with automatic context-window escalation when a prompt outgrows a model.</p>
+          <div class="spec-row">
+            <dt>Cost &amp; latency routing</dt>
+            <dd>Strategies score providers on price and p50/p95 latency, with automatic context-window escalation when a prompt outgrows a model.</dd>
           </div>
-          <div class="feature glow-card" data-tilt>
-            <span class="feature-k">03</span>
-            <h4>Health &amp; failover</h4>
-            <p>Per-provider health scores, circuit breakers, and fallback chains keep the endpoint answering when an upstream goes bad.</p>
+          <div class="spec-row">
+            <dt>Health &amp; failover</dt>
+            <dd>Per-provider health scores, circuit breakers, and fallback chains keep the endpoint answering when an upstream goes bad.</dd>
           </div>
-          <div class="feature glow-card" data-tilt>
-            <span class="feature-k">04</span>
-            <h4>Virtual keys</h4>
-            <p>Hashed virtual keys resolve to real provider keys server-side, never exposed, with per-key spend caps enforced in Redis.</p>
+          <div class="spec-row">
+            <dt>Virtual keys</dt>
+            <dd>Hashed virtual keys resolve to real provider keys server-side, never exposed, with per-key spend caps enforced in Redis.</dd>
           </div>
-          <div class="feature glow-card" data-tilt>
-            <span class="feature-k">05</span>
-            <h4>Durable sessions <span class="feature-by">mcp-persist</span></h4>
-            <p>Streaming sessions survive a restart and resume mid-stream, powered by my own <a href="#work">mcp-persist</a>.</p>
+          <div class="spec-row">
+            <dt>Durable sessions <span class="feature-by">mcp-persist</span></dt>
+            <dd>Streaming sessions survive a restart and resume mid-stream, powered by my own <a href="#work">mcp-persist</a>.</dd>
           </div>
-          <div class="feature glow-card" data-tilt>
-            <span class="feature-k">06</span>
-            <h4>Tokenizer safety <span class="feature-by">TokenDrift</span></h4>
-            <p>Token counts and migration-safety checks run before a model swap reaches production, powered by <a href="https://pypi.org/project/tokendrift/" target="_blank" rel="noopener">TokenDrift</a>.</p>
+          <div class="spec-row">
+            <dt>Tokenizer safety <span class="feature-by">TokenDrift</span></dt>
+            <dd>Token counts and migration-safety checks run before a model swap reaches production, powered by <a href="https://pypi.org/project/tokendrift/" target="_blank" rel="noopener">TokenDrift</a>.</dd>
           </div>
-        </div>
+        </dl>
 
         <div class="flagship-note">
           <p><span class="runin">The parts and the whole.</span> mlrouter ships my open source as production services: <a href="#work">mcp-persist</a> for durable sessions, <a href="https://pypi.org/project/tokendrift/" target="_blank" rel="noopener">TokenDrift</a> for tokenizer safety, a prompt compressor, and a no-code MCP server builder. The packages are the parts; the platform is the whole.</p>
@@ -371,7 +345,7 @@ app = with_persistence(mcp, backend=<span class="s">"redis"</span>, url=<span cl
         <p class="stack-line meta">Next.js 15 · Hono · FastAPI · Neon / Drizzle · Upstash Redis · Clerk · Stripe · BullMQ · Docker MCP runtime</p>
 
         <div class="case-links">
-          <a class="btn btn-primary" href="https://mlrouter.com" target="_blank" rel="noopener" data-magnetic>
+          <a class="btn btn-primary" href="https://mlrouter.com" target="_blank" rel="noopener">
             Visit mlrouter.com <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg>
           </a>
         </div>
@@ -382,12 +356,11 @@ app = with_persistence(mcp, backend=<span class="s">"redis"</span>, url=<span cl
     <section id="shipped" aria-labelledby="shipped-h2">
       <div class="shell">
         <div class="section-head">
-          <p class="eyebrow">Shipped</p>
           <h2 id="shipped-h2">Also shipped.</h2>
         </div>
         <div class="ship-grid">
 
-          <article class="ship-card glow-card" data-tilt>
+          <article class="ship-card" data-tilt>
             <div class="ship-top">
               <h3>codebase-rag</h3>
               <span class="chip chip-draft">v1.0.1</span>
@@ -399,7 +372,7 @@ app = with_persistence(mcp, backend=<span class="s">"redis"</span>, url=<span cl
             </div>
           </article>
 
-          <article class="ship-card glow-card" data-tilt>
+          <article class="ship-card" data-tilt>
             <div class="ship-top">
               <h3>rag-timetravel</h3>
               <span class="chip chip-draft">v1.1.0</span>
@@ -411,7 +384,7 @@ app = with_persistence(mcp, backend=<span class="s">"redis"</span>, url=<span cl
             </div>
           </article>
 
-          <article class="ship-card glow-card" data-tilt>
+          <article class="ship-card" data-tilt>
             <div class="ship-top">
               <h3>TokenDrift</h3>
               <span class="chip chip-draft">v1.0.0</span>
@@ -431,225 +404,273 @@ app = with_persistence(mcp, backend=<span class="s">"redis"</span>, url=<span cl
     <section id="ledger" aria-labelledby="ledger-h2">
       <div class="shell">
         <div class="section-head">
-          <p class="eyebrow">Upstream</p>
           <h2 id="ledger-h2">The ledger.</h2>
-          <p class="lead">Selected pull requests into projects other people depend on. States are fetched from GitHub daily; the receipts link to the source.</p>
+          <p class="lead">Every pull request I've had merged into projects other people depend on. States are checked against GitHub daily, and Debug replays what each fix changed.</p>
         </div>
 
-        <div class="ledger-stats" data-ledger-stats>
-          <div class="lstat"><span class="num" data-merged-count data-countup>39</span><span class="lbl">Merged upstream</span></div>
-          <div class="lstat"><span class="num" data-repos-count data-countup>8</span><span class="lbl">Repositories</span></div>
-          <div class="lstat"><span class="num">4</span><span class="lbl">Languages · Zig / Rust / Python / C</span></div>
+        <p class="ledger-summary" data-ledger-stats><span class="num" data-merged-count>39</span> merged across <span class="num" data-repos-count>8</span> repositories, in C, Rust, Zig and Python.</p>
+
+        <!-- Every merged PR is baked here, newest first, so the page reads fully
+             without JS. script.js adds the repo filters, search and paging, and
+             appends merges the daily pipeline finds that are not listed yet. -->
+        <div class="ledger-controls" data-ledger-controls hidden>
+          <div class="ledger-filters" role="group" aria-label="Filter by repository" data-ledger-filters></div>
+          <label class="ledger-search">
+            <svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+            <span class="sr-only">Search pull requests</span>
+            <input type="search" id="ledger-q" placeholder="Search: UTF-8, mDNS, panic…" autocomplete="off" spellcheck="false">
+          </label>
         </div>
 
-        <div class="ledger-wrap">
-          <table class="ledger" id="ledger-table">
-            <thead>
-              <tr>
-                <th scope="col">State</th>
-                <th scope="col">Repo</th>
-                <th scope="col">Contribution</th>
-                <th scope="col">Why it mattered</th>
-                <th scope="col">Date</th>
-                <th scope="col">Simulation</th>
-              </tr>
-            </thead>
-            <tbody id="ledger-body" data-curated>
-              <tr data-pr="lightpanda-io/browser#2537">
-                <td class="col-state"><span class="chip chip-merged">merged</span></td>
-                <td class="col-repo">lightpanda-io/browser</td>
-                <td class="col-title"><a href="https://github.com/lightpanda-io/browser/pull/2537" target="_blank" rel="noopener">feat(webapi): implement W3C File API</a></td>
-                <td class="col-why">W3C File API surface implemented in Zig for an AI-agent headless browser.</td>
-                <td class="col-date">2026-05-25</td>
-                <td class="col-action"><button class="btn-verify" type="button">Debug</button></td>
-              </tr>
-              <tr data-pr="python/cpython#150328">
-                <td class="col-state"><span class="chip chip-merged">merged</span></td>
-                <td class="col-repo">python/cpython</td>
-                <td class="col-title"><a href="https://github.com/python/cpython/pull/150328" target="_blank" rel="noopener">gh-150311: Fix minor issues in configure.ac for the CYGWIN port</a></td>
-                <td class="col-why">Build-system fix accepted into the reference Python implementation.</td>
-                <td class="col-date">2026-05-28</td>
-                <td class="col-action"><button class="btn-verify" type="button">Debug</button></td>
-              </tr>
-              <tr data-pr="lance-format/lance#6934">
-                <td class="col-state"><span class="chip chip-merged">merged</span></td>
-                <td class="col-repo">lance-format/lance</td>
-                <td class="col-title"><a href="https://github.com/lance-format/lance/pull/6934" target="_blank" rel="noopener">feat(rust): support datafusion expressions for merge insert predicates</a></td>
-                <td class="col-why">DataFusion expressions for merge-insert predicates in a production columnar format.</td>
-                <td class="col-date">2026-05-28</td>
-                <td class="col-action"><button class="btn-verify" type="button">Debug</button></td>
-              </tr>
-              <tr data-pr="BerriAI/litellm#29483">
-                <td class="col-state"><span class="chip chip-merged">merged</span></td>
-                <td class="col-repo">BerriAI/litellm</td>
-                <td class="col-title"><a href="https://github.com/BerriAI/litellm/pull/29483" target="_blank" rel="noopener">fix(proxy): don't enforce budgets on model-discovery / info routes</a></td>
-                <td class="col-why">Stopped budget enforcement on model-discovery and info routes.</td>
-                <td class="col-date">2026-06-02</td>
-                <td class="col-action"><button class="btn-verify" type="button">Debug</button></td>
-              </tr>
-              <tr data-pr="lancedb/lancedb#3444">
-                <td class="col-state"><span class="chip chip-merged">merged</span></td>
-                <td class="col-repo">lancedb/lancedb</td>
-                <td class="col-title"><a href="https://github.com/lancedb/lancedb/pull/3444" target="_blank" rel="noopener">feat(rust): support datafusion expressions for merge insert predicates</a></td>
-                <td class="col-why">The same DataFusion capability carried into LanceDB's Rust core.</td>
-                <td class="col-date">2026-06-03</td>
-                <td class="col-action"><button class="btn-verify" type="button">Debug</button></td>
-              </tr>
-              <tr data-pr="lancedb/lancedb#3459">
-                <td class="col-state"><span class="chip chip-merged">merged</span></td>
-                <td class="col-repo">lancedb/lancedb</td>
-                <td class="col-title"><a href="https://github.com/lancedb/lancedb/pull/3459" target="_blank" rel="noopener">fix(python): run AsyncTable.search embeddings on a dedicated executor</a></td>
-                <td class="col-why">Moved embedding search onto a dedicated executor to stop event-loop stalls.</td>
-                <td class="col-date">2026-06-05</td>
-                <td class="col-action"><button class="btn-verify" type="button">Debug</button></td>
-              </tr>
-              <tr data-pr="lightpanda-io/browser#2635">
-                <td class="col-state"><span class="chip chip-merged">merged</span></td>
-                <td class="col-repo">lightpanda-io/browser</td>
-                <td class="col-title"><a href="https://github.com/lightpanda-io/browser/pull/2635" target="_blank" rel="noopener">Implement input type=file support (FileList, input.files/value, DOM.setFileInputFiles)</a></td>
-                <td class="col-why">Completed file-input support, from FileList through DOM.setFileInputFiles.</td>
-                <td class="col-date">2026-06-05</td>
-                <td class="col-action"><button class="btn-verify" type="button">Debug</button></td>
-              </tr>
-              <tr data-pr="BerriAI/litellm#29493">
-                <td class="col-state"><span class="chip chip-merged">merged</span></td>
-                <td class="col-repo">BerriAI/litellm</td>
-                <td class="col-title"><a href="https://github.com/BerriAI/litellm/pull/29493" target="_blank" rel="noopener">feat(proxy): add disable_budget_reservation general setting</a></td>
-                <td class="col-why">Added a proxy-wide setting to disable budget reservation.</td>
-                <td class="col-date">2026-06-08</td>
-                <td class="col-action"><button class="btn-verify" type="button">Debug</button></td>
-              </tr>
-              <tr data-pr="lancedb/lancedb#3511">
-                <td class="col-state"><span class="chip chip-merged">merged</span></td>
-                <td class="col-repo">lancedb/lancedb</td>
-                <td class="col-title"><a href="https://github.com/lancedb/lancedb/pull/3511" target="_blank" rel="noopener">fix(python): raise clear TypeError for bare List/Tuple in pydantic schema conversion</a></td>
-                <td class="col-why">Fixed opaque AttributeError for bare List/Tuple generics in Pydantic schema conversion, raising a clear TypeError instead.</td>
-                <td class="col-date">2026-06-09</td>
-                <td class="col-action"><button class="btn-verify" type="button">Debug</button></td>
-              </tr>
-              <tr data-pr="lancedb/lancedb#3512">
-                <td class="col-state"><span class="chip chip-merged">merged</span></td>
-                <td class="col-repo">lancedb/lancedb</td>
-                <td class="col-title"><a href="https://github.com/lancedb/lancedb/pull/3512" target="_blank" rel="noopener">fix(rust): return typed errors instead of panicking in Bedrock embedding path</a></td>
-                <td class="col-why">Replaced panic paths in the Bedrock embedding provider with typed error returns across serialization, API, and runtime failure modes.</td>
-                <td class="col-date">2026-06-09</td>
-                <td class="col-action"><button class="btn-verify" type="button">Debug</button></td>
-              </tr>
-              <tr data-pr="BerriAI/litellm#30020">
-                <td class="col-state"><span class="chip chip-merged">merged</span></td>
-                <td class="col-repo">BerriAI/litellm</td>
-                <td class="col-title"><a href="https://github.com/BerriAI/litellm/pull/30020" target="_blank" rel="noopener">fix(proxy): release max_parallel_requests slot when a stream is cancelled mid-flight</a></td>
-                <td class="col-why">Stopped a cancelled stream from stranding its max_parallel_requests slot, which had been pinning capped keys at their limit.</td>
-                <td class="col-date">2026-06-11</td>
-                <td class="col-action"><button class="btn-verify" type="button">Debug</button></td>
-              </tr>
-              <tr data-pr="BerriAI/litellm#30272">
-                <td class="col-state"><span class="chip chip-merged">merged</span></td>
-                <td class="col-repo">BerriAI/litellm</td>
-                <td class="col-title"><a href="https://github.com/BerriAI/litellm/pull/30272" target="_blank" rel="noopener">feat(proxy): surface max_input_tokens/max_output_tokens on /v1/models</a></td>
-                <td class="col-why">Surfaced max_input_tokens and max_output_tokens on /v1/models for accurate client-side capacity planning.</td>
-                <td class="col-date">2026-06-13</td>
-                <td class="col-action"><button class="btn-verify" type="button">Debug</button></td>
-              </tr>
-              <tr data-pr="BerriAI/litellm#30273">
-                <td class="col-state"><span class="chip chip-merged">merged</span></td>
-                <td class="col-repo">BerriAI/litellm</td>
-                <td class="col-title"><a href="https://github.com/BerriAI/litellm/pull/30273" target="_blank" rel="noopener">feat(proxy): serve Anthropic-native /v1/models for Claude Code gateway discovery</a></td>
-                <td class="col-why">Enabled Anthropic-native model discovery for Claude Code gateway deployments.</td>
-                <td class="col-date">2026-06-13</td>
-                <td class="col-action"><button class="btn-verify" type="button">Debug</button></td>
-              </tr>
-              <tr data-pr="lightpanda-io/browser#2722">
-                <td class="col-state"><span class="chip chip-merged">merged</span></td>
-                <td class="col-repo">lightpanda-io/browser</td>
-                <td class="col-title"><a href="https://github.com/lightpanda-io/browser/pull/2722" target="_blank" rel="noopener">feat(cdp): implement Browser.setDownloadBehavior file downloads</a></td>
-                <td class="col-why">Implemented Browser.setDownloadBehavior for CDP-driven file download automation.</td>
-                <td class="col-date">2026-06-14</td>
-                <td class="col-action"><button class="btn-verify" type="button">Debug</button></td>
-              </tr>
-              <tr data-pr="lance-format/lance#7246">
-                <td class="col-state"><span class="chip chip-merged">merged</span></td>
-                <td class="col-repo">lance-format/lance</td>
-                <td class="col-title"><a href="https://github.com/lance-format/lance/pull/7246" target="_blank" rel="noopener">fix: evaluate all list-element docs in FTS prefilter walk-the-allowlist branch</a></td>
-                <td class="col-why">Fixed incorrect evaluation of list-element docs in the FTS prefilter walk-the-allowlist branch.</td>
-                <td class="col-date">2026-06-14</td>
-                <td class="col-action"><button class="btn-verify" type="button">Debug</button></td>
-              </tr>
-              <tr data-pr="lance-format/lance#7251">
-                <td class="col-state"><span class="chip chip-merged">merged</span></td>
-                <td class="col-repo">lance-format/lance</td>
-                <td class="col-title"><a href="https://github.com/lance-format/lance/pull/7251" target="_blank" rel="noopener">fix: merge_insert silently drops matches when a leading payload column is all-null</a></td>
-                <td class="col-why">Critical fix: merge_insert silently dropped matched rows when the leading payload column was all-null.</td>
-                <td class="col-date">2026-06-14</td>
-                <td class="col-action"><button class="btn-verify" type="button">Debug</button></td>
-              </tr>
-              <tr data-pr="systemd/systemd#42578">
-                <td class="col-state"><span class="chip chip-merged">merged</span></td>
-                <td class="col-repo">systemd/systemd</td>
-                <td class="col-title"><a href="https://github.com/systemd/systemd/pull/42578" target="_blank" rel="noopener">sysupdate: refuse reboot/pending logic when --component= is used</a></td>
-                <td class="col-why">Fixed incorrect reboot/pending logic in sysupdate when --component= is used. First PR merged into systemd.</td>
-                <td class="col-date">2026-06-15</td>
-                <td class="col-action"><button class="btn-verify" type="button">Debug</button></td>
-              </tr>
-              <tr data-pr="BerriAI/litellm#30387">
-                <td class="col-state"><span class="chip chip-merged">merged</span></td>
-                <td class="col-repo">BerriAI/litellm</td>
-                <td class="col-title"><a href="https://github.com/BerriAI/litellm/pull/30387" target="_blank" rel="noopener">fix(openai): preserve cache_control for openai-compatible custom endpoints</a></td>
-                <td class="col-why">Preserved cache_control headers for OpenAI-compatible custom endpoints, fixing silent cache bypass.</td>
-                <td class="col-date">2026-06-16</td>
-                <td class="col-action"><button class="btn-verify" type="button">Debug</button></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <button class="ledger-more" id="ledger-more" type="button" aria-controls="ledger-table" hidden></button>
-
-        <div id="recent-activity" hidden>
-          <p class="recent-head">Recent activity</p>
-          <div class="ledger-wrap">
-            <table class="ledger">
-              <thead>
-                <tr>
-                  <th scope="col">State</th>
-                  <th scope="col">Repo</th>
-                  <th scope="col">Contribution</th>
-                  <th scope="col">Date</th>
-                </tr>
-              </thead>
-              <tbody id="recent-body"></tbody>
-            </table>
-          </div>
-        </div>
+        <ol class="prs" id="ledger-body">
+            <li class="pr" data-pr="systemd/systemd#43714" data-repo="systemd/systemd">
+              <p class="pr-meta"><span class="col-repo">systemd/systemd</span><span class="col-date">2026-09-23</span></p>
+              <h3 class="col-title"><a href="https://github.com/systemd/systemd/pull/43714" target="_blank" rel="noopener">siphash24: force inlining of the round</a></h3>
+              <p class="col-why">Forced SipHash&#x27;s round inline where gcc -O2 declined, making short-key hashing up to 6.6x faster across systemd&#x27;s hashmaps.</p>
+              <button class="btn-verify" type="button" aria-label="Debug systemd/systemd#43714">Debug</button>
+            </li>
+            <li class="pr" data-pr="systemd/systemd#43663" data-repo="systemd/systemd" data-hl>
+              <p class="pr-meta"><span class="col-repo">systemd/systemd</span><span class="col-date">2026-09-23</span></p>
+              <h3 class="col-title"><a href="https://github.com/systemd/systemd/pull/43663" target="_blank" rel="noopener">journalctl: make the read path 1.7x to 2.5x faster</a></h3>
+              <p class="col-why">Three fixes on journalctl&#x27;s per-entry read path, including a UTF-8 decoder that ran twice per byte. Output is byte-for-byte identical, 1.7x to 2.5x faster.</p>
+              <button class="btn-verify" type="button" aria-label="Debug systemd/systemd#43663">Debug</button>
+            </li>
+            <li class="pr" data-pr="systemd/systemd#43653" data-repo="systemd/systemd">
+              <p class="pr-meta"><span class="col-repo">systemd/systemd</span><span class="col-date">2026-09-22</span></p>
+              <h3 class="col-title"><a href="https://github.com/systemd/systemd/pull/43653" target="_blank" rel="noopener">utf8,format-table: make the console width helpers agree with the UTF-8 validators</a></h3>
+              <p class="col-why">The console-width helper used the permissive UTF-8 decoder, so one invalid cell failed a whole table with a bogus out-of-memory error.</p>
+              <button class="btn-verify" type="button" aria-label="Debug systemd/systemd#43653">Debug</button>
+            </li>
+            <li class="pr" data-pr="util-linux/util-linux#4621" data-repo="util-linux/util-linux">
+              <p class="pr-meta"><span class="col-repo">util-linux/util-linux</span><span class="col-date">2026-09-21</span></p>
+              <h3 class="col-title"><a href="https://github.com/util-linux/util-linux/pull/4621" target="_blank" rel="noopener">mbsalign: skip whole CSI sequences when counting cells</a></h3>
+              <p class="col-why">column(1) mis-measured cells after any non-SGR escape sequence; the scan now stops at a real ECMA-48 CSI final byte.</p>
+              <button class="btn-verify" type="button" aria-label="Debug util-linux/util-linux#4621">Debug</button>
+            </li>
+            <li class="pr" data-pr="systemd/systemd#43753" data-repo="systemd/systemd">
+              <p class="pr-meta"><span class="col-repo">systemd/systemd</span><span class="col-date">2026-09-14</span></p>
+              <h3 class="col-title"><a href="https://github.com/systemd/systemd/pull/43753" target="_blank" rel="noopener">parse-util: fix ineffective overflow guards in store_loadavg_fixed_point()</a></h3>
+              <p class="col-why">Fixed both overflow guards in the load-average parser: one was inverted and one ran after the shift, so values from 2^53 up wrapped to 0.00 instead of being rejected.</p>
+              <button class="btn-verify" type="button" aria-label="Debug systemd/systemd#43753">Debug</button>
+            </li>
+            <li class="pr" data-pr="systemd/systemd#43650" data-repo="systemd/systemd" data-hl>
+              <p class="pr-meta"><span class="col-repo">systemd/systemd</span><span class="col-date">2026-09-04</span></p>
+              <h3 class="col-title"><a href="https://github.com/systemd/systemd/pull/43650" target="_blank" rel="noopener">resolved: don&#x27;t disable the listening socket when a datagram is dropped</a></h3>
+              <p class="col-why">One datagram with a bad checksum, sendable by anyone on the link, disabled resolved&#x27;s mDNS, LLMNR or stub listener until restart.</p>
+              <button class="btn-verify" type="button" aria-label="Debug systemd/systemd#43650">Debug</button>
+            </li>
+            <li class="pr" data-pr="systemd/systemd#43608" data-repo="systemd/systemd" data-hl>
+              <p class="pr-meta"><span class="col-repo">systemd/systemd</span><span class="col-date">2026-09-02</span></p>
+              <h3 class="col-title"><a href="https://github.com/systemd/systemd/pull/43608" target="_blank" rel="noopener">resolve: fix use-after-free of the service browser in mDNS maintenance</a></h3>
+              <p class="col-why">A leaked reference let resolved free an mDNS service browser while its maintenance timer still used it: a use-after-free, fixed in one line.</p>
+              <button class="btn-verify" type="button" aria-label="Debug systemd/systemd#43608">Debug</button>
+            </li>
+            <li class="pr" data-pr="systemd/systemd#43589" data-repo="systemd/systemd">
+              <p class="pr-meta"><span class="col-repo">systemd/systemd</span><span class="col-date">2026-09-02</span></p>
+              <h3 class="col-title"><a href="https://github.com/systemd/systemd/pull/43589" target="_blank" rel="noopener">compress: fix unbounded buffer growth on truncated streams, and fuzz the decompressors</a></h3>
+              <p class="col-why">Stopped unbounded buffer growth on truncated compressed streams, and added fuzzers that feed hostile input to every decompressor and to importd&#x27;s qcow2 path.</p>
+              <button class="btn-verify" type="button" aria-label="Debug systemd/systemd#43589">Debug</button>
+            </li>
+            <li class="pr" data-pr="coreos/afterburn#1294" data-repo="coreos/afterburn">
+              <p class="pr-meta"><span class="col-repo">coreos/afterburn</span><span class="col-date">2026-08-28</span></p>
+              <h3 class="col-title"><a href="https://github.com/coreos/afterburn/pull/1294" target="_blank" rel="noopener">proxmoxve: Emit one nameserver= karg per address</a></h3>
+              <p class="col-why">ProxmoxVE configs with more than one nameserver left DNS unset at boot; now emits one dracut nameserver= per address, IPv6 bracketed.</p>
+              <button class="btn-verify" type="button" aria-label="Debug coreos/afterburn#1294">Debug</button>
+            </li>
+            <li class="pr" data-pr="coreos/afterburn#1295" data-repo="coreos/afterburn">
+              <p class="pr-meta"><span class="col-repo">coreos/afterburn</span><span class="col-date">2026-08-28</span></p>
+              <h3 class="col-title"><a href="https://github.com/coreos/afterburn/pull/1295" target="_blank" rel="noopener">providers: Don&#x27;t panic truncating a multi-byte hostname</a></h3>
+              <p class="col-why">Truncating a long multi-byte hostname split a UTF-8 character and panicked, failing afterburn-hostname.service at boot.</p>
+              <button class="btn-verify" type="button" aria-label="Debug coreos/afterburn#1295">Debug</button>
+            </li>
+            <li class="pr" data-pr="BerriAI/litellm#35455" data-repo="BerriAI/litellm">
+              <p class="pr-meta"><span class="col-repo">BerriAI/litellm</span><span class="col-date">2026-08-14</span></p>
+              <h3 class="col-title"><a href="https://github.com/BerriAI/litellm/pull/35455" target="_blank" rel="noopener">feat(proxy): serve Anthropic-native /v1/models for Claude Code gateway discovery</a></h3>
+              <p class="col-why">Re-landed Anthropic-native /v1/models after a staging revert, so Claude Code&#x27;s model picker populates through a litellm gateway.</p>
+              <button class="btn-verify" type="button" aria-label="Debug BerriAI/litellm#35455">Debug</button>
+            </li>
+            <li class="pr" data-pr="systemd/systemd#43326" data-repo="systemd/systemd">
+              <p class="pr-meta"><span class="col-repo">systemd/systemd</span><span class="col-date">2026-08-12</span></p>
+              <h3 class="col-title"><a href="https://github.com/systemd/systemd/pull/43326" target="_blank" rel="noopener">strv: treat newlines as hard line breaks in strv_rebreak_lines()</a></h3>
+              <p class="col-why">The line re-breaker dropped text before an embedded newline and returned entries spanning lines, which could emit uncommented lines in Varlink IDL output.</p>
+              <button class="btn-verify" type="button" aria-label="Debug systemd/systemd#43326">Debug</button>
+            </li>
+            <li class="pr" data-pr="systemd/systemd#43333" data-repo="systemd/systemd">
+              <p class="pr-meta"><span class="col-repo">systemd/systemd</span><span class="col-date">2026-08-12</span></p>
+              <h3 class="col-title"><a href="https://github.com/systemd/systemd/pull/43333" target="_blank" rel="noopener">options: reject an empty long option name</a></h3>
+              <p class="col-why">An empty long option (--=VALUE) prefix-matched every option, and with only one defined was silently accepted as it. Now rejected.</p>
+              <button class="btn-verify" type="button" aria-label="Debug systemd/systemd#43333">Debug</button>
+            </li>
+            <li class="pr" data-pr="lance-format/lance#7845" data-repo="lance-format/lance">
+              <p class="pr-meta"><span class="col-repo">lance-format/lance</span><span class="col-date">2026-08-04</span></p>
+              <h3 class="col-title"><a href="https://github.com/lance-format/lance/pull/7845" target="_blank" rel="noopener">fix(ngram): recheck contains() with sub-trigram needle instead of dropping rows</a></h3>
+              <p class="col-why">An NGRAM-indexed contains() with a needle under three characters returned zero rows; it now falls back to a full recheck.</p>
+              <button class="btn-verify" type="button" aria-label="Debug lance-format/lance#7845">Debug</button>
+            </li>
+            <li class="pr" data-pr="systemd/systemd#43230" data-repo="systemd/systemd">
+              <p class="pr-meta"><span class="col-repo">systemd/systemd</span><span class="col-date">2026-07-31</span></p>
+              <h3 class="col-title"><a href="https://github.com/systemd/systemd/pull/43230" target="_blank" rel="noopener">string-util: don&#x27;t miss ANSI sequence at the very end in previous_ansi_sequence()</a></h3>
+              <p class="col-why">An off-by-one skipped the last offset a two-byte escape sequence can start at, so ellipsize() over-truncated strings containing ESC M.</p>
+              <button class="btn-verify" type="button" aria-label="Debug systemd/systemd#43230">Debug</button>
+            </li>
+            <li class="pr" data-pr="systemd/systemd#43150" data-repo="systemd/systemd" data-hl>
+              <p class="pr-meta"><span class="col-repo">systemd/systemd</span><span class="col-date">2026-07-25</span></p>
+              <h3 class="col-title"><a href="https://github.com/systemd/systemd/pull/43150" target="_blank" rel="noopener">ask-password: refuse agent requests with unsafe characters in prompt fields</a></h3>
+              <p class="col-why">A newline in an ask-password prompt could inject a Socket= line and send the typed password to another path. Unsafe characters are now refused.</p>
+              <button class="btn-verify" type="button" aria-label="Debug systemd/systemd#43150">Debug</button>
+            </li>
+            <li class="pr" data-pr="systemd/systemd#43102" data-repo="systemd/systemd">
+              <p class="pr-meta"><span class="col-repo">systemd/systemd</span><span class="col-date">2026-07-23</span></p>
+              <h3 class="col-title"><a href="https://github.com/systemd/systemd/pull/43102" target="_blank" rel="noopener">ask-password: reject oversized Plymouth prompts</a></h3>
+              <p class="col-why">Prompts of 255+ bytes wrapped Plymouth&#x27;s one-byte length field, so the rest of the prompt was parsed as protocol data. Now rejected with -EMSGSIZE.</p>
+              <button class="btn-verify" type="button" aria-label="Debug systemd/systemd#43102">Debug</button>
+            </li>
+            <li class="pr" data-pr="systemd/systemd#43078" data-repo="systemd/systemd">
+              <p class="pr-meta"><span class="col-repo">systemd/systemd</span><span class="col-date">2026-07-23</span></p>
+              <h3 class="col-title"><a href="https://github.com/systemd/systemd/pull/43078" target="_blank" rel="noopener">strv: don&#x27;t read past end of string on invalid UTF-8 in strv_rebreak_lines()</a></h3>
+              <p class="col-why">A truncated multi-byte character at the end of a string made the line breaker step past the NUL terminator and read out of bounds.</p>
+              <button class="btn-verify" type="button" aria-label="Debug systemd/systemd#43078">Debug</button>
+            </li>
+            <li class="pr" data-pr="systemd/systemd#43079" data-repo="systemd/systemd">
+              <p class="pr-meta"><span class="col-repo">systemd/systemd</span><span class="col-date">2026-07-21</span></p>
+              <h3 class="col-title"><a href="https://github.com/systemd/systemd/pull/43079" target="_blank" rel="noopener">escape: reject UTF-16 surrogates in \u escapes in cunescape_one()</a></h3>
+              <p class="col-why">\u escapes accepted UTF-16 surrogates and produced invalid UTF-8 downstream; now rejected, matching the \U form.</p>
+              <button class="btn-verify" type="button" aria-label="Debug systemd/systemd#43079">Debug</button>
+            </li>
+            <li class="pr" data-pr="systemd/systemd#43077" data-repo="systemd/systemd">
+              <p class="pr-meta"><span class="col-repo">systemd/systemd</span><span class="col-date">2026-07-20</span></p>
+              <h3 class="col-title"><a href="https://github.com/systemd/systemd/pull/43077" target="_blank" rel="noopener">hostname-util: strip all trailing separators in hostname_cleanup()</a></h3>
+              <p class="col-why">hostname_cleanup() stripped only one trailing separator, so foobar-- came back as the invalid hostname foobar-.</p>
+              <button class="btn-verify" type="button" aria-label="Debug systemd/systemd#43077">Debug</button>
+            </li>
+            <li class="pr" data-pr="lancedb/lancedb#3599" data-repo="lancedb/lancedb">
+              <p class="pr-meta"><span class="col-repo">lancedb/lancedb</span><span class="col-date">2026-07-01</span></p>
+              <h3 class="col-title"><a href="https://github.com/lancedb/lancedb/pull/3599" target="_blank" rel="noopener">fix(python): average MRR reciprocal ranks over all rankings</a></h3>
+              <p class="col-why">MRR fusion averaged only over the rankings a document appeared in, letting a single-system hit outrank a consensus pick.</p>
+              <button class="btn-verify" type="button" aria-label="Debug lancedb/lancedb#3599">Debug</button>
+            </li>
+            <li class="pr" data-pr="systemd/systemd#42578" data-repo="systemd/systemd">
+              <p class="pr-meta"><span class="col-repo">systemd/systemd</span><span class="col-date">2026-06-19</span></p>
+              <h3 class="col-title"><a href="https://github.com/systemd/systemd/pull/42578" target="_blank" rel="noopener">sysupdate: refuse reboot/pending logic when --component= is used</a></h3>
+              <p class="col-why">Fixed incorrect reboot/pending logic in sysupdate when --component= is used. First PR merged into systemd.</p>
+              <button class="btn-verify" type="button" aria-label="Debug systemd/systemd#42578">Debug</button>
+            </li>
+            <li class="pr" data-pr="lightpanda-io/browser#2722" data-repo="lightpanda-io/browser">
+              <p class="pr-meta"><span class="col-repo">lightpanda-io/browser</span><span class="col-date">2026-06-19</span></p>
+              <h3 class="col-title"><a href="https://github.com/lightpanda-io/browser/pull/2722" target="_blank" rel="noopener">feat(cdp): implement Browser.setDownloadBehavior file downloads</a></h3>
+              <p class="col-why">Implemented Browser.setDownloadBehavior for CDP-driven file download automation.</p>
+              <button class="btn-verify" type="button" aria-label="Debug lightpanda-io/browser#2722">Debug</button>
+            </li>
+            <li class="pr" data-pr="lance-format/lance#7246" data-repo="lance-format/lance">
+              <p class="pr-meta"><span class="col-repo">lance-format/lance</span><span class="col-date">2026-06-19</span></p>
+              <h3 class="col-title"><a href="https://github.com/lance-format/lance/pull/7246" target="_blank" rel="noopener">fix: evaluate all list-element docs in FTS prefilter walk-the-allowlist branch</a></h3>
+              <p class="col-why">Fixed incorrect evaluation of list-element docs in the FTS prefilter walk-the-allowlist branch.</p>
+              <button class="btn-verify" type="button" aria-label="Debug lance-format/lance#7246">Debug</button>
+            </li>
+            <li class="pr" data-pr="lancedb/lancedb#3512" data-repo="lancedb/lancedb">
+              <p class="pr-meta"><span class="col-repo">lancedb/lancedb</span><span class="col-date">2026-06-17</span></p>
+              <h3 class="col-title"><a href="https://github.com/lancedb/lancedb/pull/3512" target="_blank" rel="noopener">fix(rust): return typed errors instead of panicking in Bedrock embedding path</a></h3>
+              <p class="col-why">Replaced panic paths in the Bedrock embedding provider with typed error returns across serialization, API, and runtime failure modes.</p>
+              <button class="btn-verify" type="button" aria-label="Debug lancedb/lancedb#3512">Debug</button>
+            </li>
+            <li class="pr" data-pr="lancedb/lancedb#3511" data-repo="lancedb/lancedb">
+              <p class="pr-meta"><span class="col-repo">lancedb/lancedb</span><span class="col-date">2026-06-17</span></p>
+              <h3 class="col-title"><a href="https://github.com/lancedb/lancedb/pull/3511" target="_blank" rel="noopener">fix(python): raise clear TypeError for bare List/Tuple in pydantic schema conversion</a></h3>
+              <p class="col-why">Fixed opaque AttributeError for bare List/Tuple generics in Pydantic schema conversion, raising a clear TypeError instead.</p>
+              <button class="btn-verify" type="button" aria-label="Debug lancedb/lancedb#3511">Debug</button>
+            </li>
+            <li class="pr" data-pr="BerriAI/litellm#30273" data-repo="BerriAI/litellm">
+              <p class="pr-meta"><span class="col-repo">BerriAI/litellm</span><span class="col-date">2026-06-17</span></p>
+              <h3 class="col-title"><a href="https://github.com/BerriAI/litellm/pull/30273" target="_blank" rel="noopener">feat(proxy): serve Anthropic-native /v1/models for Claude Code gateway discovery</a></h3>
+              <p class="col-why">Enabled Anthropic-native model discovery for Claude Code gateway deployments.</p>
+              <button class="btn-verify" type="button" aria-label="Debug BerriAI/litellm#30273">Debug</button>
+            </li>
+            <li class="pr" data-pr="BerriAI/litellm#30387" data-repo="BerriAI/litellm">
+              <p class="pr-meta"><span class="col-repo">BerriAI/litellm</span><span class="col-date">2026-06-17</span></p>
+              <h3 class="col-title"><a href="https://github.com/BerriAI/litellm/pull/30387" target="_blank" rel="noopener">fix(openai): preserve cache_control for openai-compatible custom endpoints</a></h3>
+              <p class="col-why">Preserved cache_control headers for OpenAI-compatible custom endpoints, fixing silent cache bypass.</p>
+              <button class="btn-verify" type="button" aria-label="Debug BerriAI/litellm#30387">Debug</button>
+            </li>
+            <li class="pr" data-pr="BerriAI/litellm#30272" data-repo="BerriAI/litellm">
+              <p class="pr-meta"><span class="col-repo">BerriAI/litellm</span><span class="col-date">2026-06-17</span></p>
+              <h3 class="col-title"><a href="https://github.com/BerriAI/litellm/pull/30272" target="_blank" rel="noopener">feat(proxy): surface max_input_tokens/max_output_tokens on /v1/models</a></h3>
+              <p class="col-why">Surfaced max_input_tokens and max_output_tokens on /v1/models for accurate client-side capacity planning.</p>
+              <button class="btn-verify" type="button" aria-label="Debug BerriAI/litellm#30272">Debug</button>
+            </li>
+            <li class="pr" data-pr="lance-format/lance#7251" data-repo="lance-format/lance" data-hl>
+              <p class="pr-meta"><span class="col-repo">lance-format/lance</span><span class="col-date">2026-06-16</span></p>
+              <h3 class="col-title"><a href="https://github.com/lance-format/lance/pull/7251" target="_blank" rel="noopener">fix: merge_insert silently drops matches when a leading payload column is all-null</a></h3>
+              <p class="col-why">Critical fix: merge_insert silently dropped matched rows when the leading payload column was all-null.</p>
+              <button class="btn-verify" type="button" aria-label="Debug lance-format/lance#7251">Debug</button>
+            </li>
+            <li class="pr" data-pr="BerriAI/litellm#30020" data-repo="BerriAI/litellm" data-hl>
+              <p class="pr-meta"><span class="col-repo">BerriAI/litellm</span><span class="col-date">2026-06-11</span></p>
+              <h3 class="col-title"><a href="https://github.com/BerriAI/litellm/pull/30020" target="_blank" rel="noopener">fix(proxy): release max_parallel_requests slot when a stream is cancelled mid-flight</a></h3>
+              <p class="col-why">Stopped a cancelled stream from stranding its max_parallel_requests slot, which had been pinning capped keys at their limit.</p>
+              <button class="btn-verify" type="button" aria-label="Debug BerriAI/litellm#30020">Debug</button>
+            </li>
+            <li class="pr" data-pr="BerriAI/litellm#29493" data-repo="BerriAI/litellm">
+              <p class="pr-meta"><span class="col-repo">BerriAI/litellm</span><span class="col-date">2026-06-08</span></p>
+              <h3 class="col-title"><a href="https://github.com/BerriAI/litellm/pull/29493" target="_blank" rel="noopener">feat(proxy): add disable_budget_reservation general setting</a></h3>
+              <p class="col-why">Added a proxy-wide setting to disable budget reservation.</p>
+              <button class="btn-verify" type="button" aria-label="Debug BerriAI/litellm#29493">Debug</button>
+            </li>
+            <li class="pr" data-pr="lancedb/lancedb#3459" data-repo="lancedb/lancedb">
+              <p class="pr-meta"><span class="col-repo">lancedb/lancedb</span><span class="col-date">2026-06-05</span></p>
+              <h3 class="col-title"><a href="https://github.com/lancedb/lancedb/pull/3459" target="_blank" rel="noopener">fix(python): run AsyncTable.search embeddings on a dedicated executor</a></h3>
+              <p class="col-why">Moved embedding search onto a dedicated executor to stop event-loop stalls.</p>
+              <button class="btn-verify" type="button" aria-label="Debug lancedb/lancedb#3459">Debug</button>
+            </li>
+            <li class="pr" data-pr="lightpanda-io/browser#2635" data-repo="lightpanda-io/browser">
+              <p class="pr-meta"><span class="col-repo">lightpanda-io/browser</span><span class="col-date">2026-06-05</span></p>
+              <h3 class="col-title"><a href="https://github.com/lightpanda-io/browser/pull/2635" target="_blank" rel="noopener">Implement input type=file support (FileList, input.files/value, DOM.setFileInputFiles)</a></h3>
+              <p class="col-why">Completed file-input support, from FileList through DOM.setFileInputFiles.</p>
+              <button class="btn-verify" type="button" aria-label="Debug lightpanda-io/browser#2635">Debug</button>
+            </li>
+            <li class="pr" data-pr="lancedb/lancedb#3444" data-repo="lancedb/lancedb">
+              <p class="pr-meta"><span class="col-repo">lancedb/lancedb</span><span class="col-date">2026-06-03</span></p>
+              <h3 class="col-title"><a href="https://github.com/lancedb/lancedb/pull/3444" target="_blank" rel="noopener">feat(rust): support datafusion expressions for merge insert predicates</a></h3>
+              <p class="col-why">The same DataFusion capability carried into LanceDB&#x27;s Rust core.</p>
+              <button class="btn-verify" type="button" aria-label="Debug lancedb/lancedb#3444">Debug</button>
+            </li>
+            <li class="pr" data-pr="BerriAI/litellm#29483" data-repo="BerriAI/litellm">
+              <p class="pr-meta"><span class="col-repo">BerriAI/litellm</span><span class="col-date">2026-06-02</span></p>
+              <h3 class="col-title"><a href="https://github.com/BerriAI/litellm/pull/29483" target="_blank" rel="noopener">fix(proxy): don&#x27;t enforce budgets on model-discovery / info routes</a></h3>
+              <p class="col-why">Stopped budget enforcement on model-discovery and info routes.</p>
+              <button class="btn-verify" type="button" aria-label="Debug BerriAI/litellm#29483">Debug</button>
+            </li>
+            <li class="pr" data-pr="python/cpython#150328" data-repo="python/cpython" data-hl>
+              <p class="pr-meta"><span class="col-repo">python/cpython</span><span class="col-date">2026-05-28</span></p>
+              <h3 class="col-title"><a href="https://github.com/python/cpython/pull/150328" target="_blank" rel="noopener">gh-150311: Fix minor issues in configure.ac for the CYGWIN port</a></h3>
+              <p class="col-why">Build-system fix accepted into the reference Python implementation.</p>
+              <button class="btn-verify" type="button" aria-label="Debug python/cpython#150328">Debug</button>
+            </li>
+            <li class="pr" data-pr="lance-format/lance#6934" data-repo="lance-format/lance">
+              <p class="pr-meta"><span class="col-repo">lance-format/lance</span><span class="col-date">2026-05-28</span></p>
+              <h3 class="col-title"><a href="https://github.com/lance-format/lance/pull/6934" target="_blank" rel="noopener">feat(rust): support datafusion expressions for merge insert predicates</a></h3>
+              <p class="col-why">DataFusion expressions for merge-insert predicates in a production columnar format.</p>
+              <button class="btn-verify" type="button" aria-label="Debug lance-format/lance#6934">Debug</button>
+            </li>
+            <li class="pr" data-pr="lightpanda-io/browser#2537" data-repo="lightpanda-io/browser" data-hl>
+              <p class="pr-meta"><span class="col-repo">lightpanda-io/browser</span><span class="col-date">2026-05-25</span></p>
+              <h3 class="col-title"><a href="https://github.com/lightpanda-io/browser/pull/2537" target="_blank" rel="noopener">feat(webapi): implement W3C File API</a></h3>
+              <p class="col-why">W3C File API surface implemented in Zig for an AI-agent headless browser.</p>
+              <button class="btn-verify" type="button" aria-label="Debug lightpanda-io/browser#2537">Debug</button>
+            </li>
+        </ol>
+        <p class="ledger-status" id="ledger-status" aria-live="polite"></p>
+        <button class="ledger-more" id="ledger-more" type="button" hidden></button>
 
         <p class="ledger-foot">
-          <a class="receipt" href="https://github.com/Ar-maan05" target="_blank" rel="noopener">Everything else is on GitHub <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></a>
+          <a class="receipt" href="https://github.com/search?q=author%3AAr-maan05+type%3Apr+is%3Amerged+-user%3AAr-maan05&amp;type=pullrequests&amp;s=created&amp;o=desc" target="_blank" rel="noopener">The same list on GitHub <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></a>
         </p>
       </div>
     </section>
 
-    <!-- ===================== 4. FOUNDATIONS ===================== -->
-    <section id="foundations" aria-labelledby="found-h2">
-      <div class="shell">
-        <div class="section-head">
-          <p class="eyebrow">Foundations</p>
-          <h2 id="found-h2">Systems groundwork.</h2>
-        </div>
-        <div class="foundation" data-index="01">
-          <h4>Binary exploitation</h4>
-          <p>Completed the CS:APP attack and bomb labs end to end, including the hidden phase and a full ROP chain. Then went past the assignment and reverse engineered the lab harnesses themselves with objdump and GDB.</p>
-        </div>
-        <div class="foundation" data-index="02">
-          <h4>Memory systems</h4>
-          <p>Wrote an N-way set-associative cache simulator in C with LRU eviction, then used it to drive a cache-conscious matrix transpose. Valgrind traces guided the access patterns.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- ===================== RUNIXOS ===================== -->
+        <!-- ===================== RUNIXOS ===================== -->
     <section id="runixos" aria-labelledby="runixos-h2">
       <div class="shell">
         <div class="section-head">
-          <p class="eyebrow">Independent study · WPI</p>
           <h2 id="runixos-h2">RunixOS.</h2>
           <p class="case-sub">A capability-based microkernel. CS3013 Operating Systems independent study, advised by Prof. Craig Wills</p>
         </div>
@@ -660,6 +681,17 @@ app = with_persistence(mcp, backend=<span class="s">"redis"</span>, url=<span cl
         <div class="case-links">
           <a class="receipt" href="https://github.com/Ar-maan05/RunixOS" target="_blank" rel="noopener">GitHub <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></a>
         </div>
+        <div class="groundwork" id="foundations">
+          <h3>The groundwork before it</h3>
+          <div class="foundation">
+            <h4>Binary exploitation</h4>
+            <p>Completed the CS:APP attack and bomb labs end to end, including the hidden phase and a full ROP chain. Then went past the assignment and reverse engineered the lab harnesses themselves with objdump and GDB.</p>
+          </div>
+          <div class="foundation">
+            <h4>Memory systems</h4>
+            <p>Wrote an N-way set-associative cache simulator in C with LRU eviction, then used it to drive a cache-conscious matrix transpose. Valgrind traces guided the access patterns.</p>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -667,10 +699,13 @@ app = with_persistence(mcp, backend=<span class="s">"redis"</span>, url=<span cl
     <section id="about" aria-labelledby="now-h2">
       <div class="shell">
         <div class="section-head">
-          <p class="eyebrow">Now</p>
           <h2 id="now-h2">Off the clock, sort of.</h2>
         </div>
-        <p class="now-body">Home for the summer, building in the open: maintaining mcp-persist and landing pull requests across the AI data stack. This summer I'm leading development of mlrouter, an OpenRouter-style agentic platform, which runs mcp-persist in production. The lab next to my desk is a Fedora laptop running a 35B mixture-of-experts model through llama.cpp, wired to a filesystem MCP server, because the fastest way to find what breaks in MCP infrastructure is to live on it. In the fall I'm back at WPI teaching intro systems as a Peer Learning Assistant and serving as a Community Advisor in residence life. Before any of this I spent a decade teaching Shotokan karate as a second-degree black belt, which is where I learned to explain hard things patiently. I'm open to Summer 2027 Software Engineering internships.</p>
+        <div class="now-body">
+          <p>Back at WPI for the fall, teaching intro systems as a Peer Learning Assistant, serving as a Community Advisor in residence life, and building RunixOS as an independent study.</p>
+          <p>Upstream, most of my time now goes into systemd and the Linux userspace around it: a use-after-free in resolved's mDNS path, a password-redirect hole in ask-password, and a journalctl read path that runs 1.7x to 2.5x faster. Over the summer I led development of mlrouter, which runs mcp-persist in production.</p>
+          <p>The lab next to my desk is still a Fedora laptop running a 35B mixture-of-experts model through llama.cpp, wired to a filesystem MCP server, because the fastest way to find what breaks in MCP infrastructure is to live on it. Before any of this I spent a decade teaching Shotokan karate as a second-degree black belt, which is where I learned to explain hard things patiently. I'm open to Summer 2027 Software Engineering internships.</p>
+        </div>
         <!-- NOTE FOR ARMAAN (decide later): one optional human line that is genuinely memorable: "I once built a five-game puzzle suite for an audience of one." Include only if you are comfortable and your partner is too. -->
         <p class="now-meta meta">BS/MS Computer Science, WPI · 4.0 GPA · Worcester, MA · EST · asandhu@wpi.edu</p>
       </div>
@@ -680,38 +715,26 @@ app = with_persistence(mcp, backend=<span class="s">"redis"</span>, url=<span cl
     <section id="console" aria-labelledby="console-h2">
       <div class="shell">
         <div class="section-head">
-          <p class="eyebrow">Terminal</p>
-          <h2 id="console-h2">Execute commands.</h2>
-          <p class="lead">Query systems data, check server stats, or execute tasks interactively.</p>
+          <h2 id="console-h2">The site, as a shell.</h2>
+          <p class="lead">Everything on this page is a command away. Replay any fix from the ledger with debug, or start with help.</p>
         </div>
-        <div class="terminal-box glow-card">
-          <div class="terminal-header">
-            <div class="terminal-dots">
-              <span class="dot red"></span>
-              <span class="dot yellow"></span>
-              <span class="dot green"></span>
-            </div>
-            <span class="terminal-title">asandhu@wpi: ~</span>
-            <span class="terminal-status"><span class="status-dot"></span><span class="status-text">CONNECTED</span></span>
-          </div>
-          <div class="terminal-body" id="term-body">
-            <div class="term-line term-banner"><span class="text-merge">WPI SYSTEMS TERMINAL</span> · v1.0.0
-<span data-merged-count>39</span> merged upstream · mcp-persist live · <span data-bake="downloads-short">18k+</span> installs
-type <span class="text-merge">help</span> · or tap a command below</div>
-            <div class="term-line prompt-line">
-              <span class="term-prompt">asandhu@wpi:~$</span>
-              <span class="term-render"><span class="term-echo" id="term-echo"></span><span class="term-cursor" aria-hidden="true">█</span></span>
-              <input type="text" id="term-input" autocomplete="off" spellcheck="false" aria-label="Terminal Input">
+        <!-- terminal.js drives this: the input is real, the rendering is ours. -->
+        <div class="term" data-term data-mode="shell">
+          <div class="t-bar">
+            <div class="t-tabs" role="tablist" aria-label="Terminal sessions" data-tabs>
+              <button class="t-tab" id="t-tab-shell" type="button" role="tab" aria-selected="true" aria-controls="t-shell" data-tab="shell"><span class="t-tab-kind">zsh</span> ~/armaan</button>
             </div>
           </div>
-        </div>
-        <div class="term-hints" aria-label="Try a command">
-          <span class="term-hints-label">try</span>
-          <button class="term-chip" type="button" data-cmd="help">help</button>
-          <button class="term-chip" type="button" data-cmd="merged">merged</button>
-          <button class="term-chip" type="button" data-cmd="debug cpython">debug cpython</button>
-          <button class="term-chip" type="button" data-cmd="ls">ls</button>
-          <button class="term-chip term-chip-accent" type="button" data-cmd="sudo hire-me">sudo hire-me</button>
+          <div class="t-screen" id="t-shell" role="tabpanel" aria-labelledby="t-tab-shell" data-screen="shell" aria-live="polite">
+            <div class="t-line t-dim" data-static>This terminal needs JavaScript. Everything it shows is also on the page above.</div>
+            <div class="t-input-line">
+              <span class="t-path">~</span><span class="t-char"> ❯ </span>
+              <span class="t-render" aria-hidden="true"></span>
+              <input type="text" id="term-input" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Terminal command">
+            </div>
+          </div>
+          <div class="t-screen t-replay" id="t-replay" role="tabpanel" data-screen="replay" hidden></div>
+          <div class="t-status" data-status></div>
         </div>
       </div>
     </section>
@@ -723,10 +746,8 @@ type <span class="text-merge">help</span> · or tap a command below</div>
           <h2 id="contact-h2">Get in touch.</h2>
         </div>
         <p class="contact-lead">Email is fastest. I read everything.</p>
+        <a class="contact-mail" href="mailto:asandhu@wpi.edu">asandhu@wpi.edu</a>
         <div class="channels">
-          <a class="btn btn-primary" href="mailto:asandhu@wpi.edu">
-            <svg class="icon" aria-hidden="true"><use href="#i-mail"/></svg>Email asandhu@wpi.edu
-          </a>
           <a class="receipt" href="https://github.com/Ar-maan05" target="_blank" rel="noopener">GitHub @Ar-maan05 <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></a>
           <a class="receipt" href="https://www.linkedin.com/in/asandhu05" target="_blank" rel="noopener">LinkedIn /in/asandhu05 <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></a>
           <a class="receipt" href="Resume.pdf" target="_blank" rel="noopener">Resume PDF <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></a>
@@ -737,8 +758,8 @@ type <span class="text-merge">help</span> · or tap a command below</div>
     <!-- ===================== COLOPHON ===================== -->
     <section class="colophon" id="colophon" aria-label="Colophon">
       <div class="shell">
-        <p class="eyebrow">Colophon</p>
-        <p>Built by hand. Vanilla HTML and CSS with lightweight, zero-dependency JavaScript. No framework, no build step for the pages. PR statuses refresh daily through a GitHub Action that commits static JSON, so nothing on this page depends on a third-party API at view time. Type is IBM Plex. Hosted on GitHub Pages. <a href="https://github.com/Ar-maan05/ar-maan05.github.io" target="_blank" rel="noopener">Source <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></a></p>
+        <h2 class="colophon-h">Colophon</h2>
+        <p>Built by hand: HTML, CSS and zero-dependency JavaScript, with no framework and no build step. The backdrop is a 3D graph of merges drawn on a canvas: main runs into the screen, branches fork off and merge back, and scrolling flies you down it. The terminal reads every answer off this page, and PR states refresh daily through a GitHub Action that commits static JSON, so nothing here calls a third-party API while you read. Type is IBM Plex. Hosted on GitHub Pages. <a href="https://github.com/Ar-maan05/ar-maan05.github.io" target="_blank" rel="noopener">Source <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></a></p>
         <p class="meta"><a class="receipt" href="https://pagespeed.web.dev/analysis?url=https://ar-maan05.github.io/" target="_blank" rel="noopener">Lighthouse: run it yourself <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></a></p>
       </div>
     </section>
@@ -753,8 +774,11 @@ type <span class="text-merge">help</span> · or tap a command below</div>
     </div>
   </footer>
 
+  <script src="sims.js" defer></script>
   <script src="script.js" defer></script>
+  <script src="terminal.js" defer></script>
   <script src="demo.js" defer></script>
+  <script src="depth.js" defer></script>
   <script src="fx.js" defer></script>
 </body>
 </html>

@@ -1,0 +1,157 @@
+/* depth.css — the 3D layer. Every rule is gated on .depth-on, which depth.js
+   sets only when motion is allowed, so reduced-motion and no-JS visitors get
+   the original deck unchanged. */
+
+/* ---- Stage: the merge graph sits behind everything ---------------------- */
+.depth-smooth { scroll-behavior: auto; }
+
+.depth-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  display: block;
+  animation: depth-boot 1400ms ease both;
+}
+@keyframes depth-boot { from { opacity: 0; } }
+
+.depth-on .nav { z-index: 100; }
+.depth-on main,
+.depth-on .site-footer { position: relative; z-index: 1; }
+
+/* The hero drops its solid slab so the graph shows through; the old flat
+   streak canvas and scan beam are replaced by the 3D scene. */
+.depth-on .hero,
+[data-theme="dark"].depth-on .hero,
+[data-theme="light"].depth-on .hero { background: transparent; }
+.depth-on #fx-canvas,
+.depth-on .stage-scan { display: none; }
+.depth-on .hero-stage::after {
+  box-shadow: inset 0 -160px 140px -90px var(--paper);
+}
+[data-theme="light"].depth-on body {
+  background:
+    radial-gradient(1100px 700px at 78% -10%, rgba(130, 80, 223, 0.14), transparent 60%),
+    linear-gradient(180deg, #F3F0FB 0%, var(--paper) 60%);
+  background-attachment: fixed;
+}
+
+/* ---- Scroll-driven depth: depth.js writes transform/opacity per frame --- */
+.depth-on main > section:not(.hero),
+.depth-on main > section:not(.hero).in { opacity: 1; transform: none; transition: none; }
+.depth-on main > section:not(.hero) > .shell,
+.depth-on .hero-shell {
+  transform-origin: 50% 0%;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+}
+.depth-on .hero-shell { transform-origin: 50% 100%; }
+
+/* ---- Panels live in 3D -------------------------------------------------- */
+/* fx.js writes --rx/--ry from the pointer; --bx/--by is each panel's resting
+   pose, --lift pulls it toward the viewer on hover. */
+.depth-on [data-tilt] {
+  transform:
+    perspective(1100px)
+    rotateX(calc(var(--bx, 0deg) + var(--rx, 0deg)))
+    rotateY(calc(var(--by, 0deg) + var(--ry, 0deg)))
+    translateZ(var(--lift, 0px));
+  transform-style: preserve-3d;
+  transition: transform 700ms cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 500ms ease;
+}
+.depth-on [data-tilt]:hover { --lift: 26px; }
+
+/* The merge log floats angled toward the headline, like a monitor on a desk. */
+@media (min-width: 861px) {
+  .depth-on .hero-figure {
+    --bx: 7deg; --by: -17deg;
+    animation: depth-float 9s ease-in-out infinite;
+  }
+  .depth-on .hero-figure:hover { --bx: 2deg; --by: -6deg; }
+}
+@keyframes depth-float {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -10px; }
+}
+.depth-on .hero-figure .mergefeed {
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.07) inset,
+    -30px 50px 80px -30px rgba(0, 0, 0, 0.75),
+    0 0 90px -20px rgba(124, 77, 255, 0.55);
+}
+[data-theme="light"].depth-on .hero-figure .mergefeed {
+  box-shadow:
+    0 1px 0 #fff inset,
+    -30px 50px 80px -34px rgba(40, 20, 90, 0.35),
+    0 0 80px -24px rgba(110, 62, 214, 0.35);
+}
+
+/* Cards: content hovers above the card face, so tilting shows parallax. */
+.depth-on .ship-card {
+  border-radius: var(--r-lg);
+  background: color-mix(in srgb, var(--paper-raised) 88%, transparent);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.05) inset,
+    0 24px 50px -28px rgba(0, 0, 0, 0.7),
+    0 10px 30px -22px var(--merge-glow);
+}
+[data-theme="light"].depth-on .ship-card {
+  box-shadow:
+    0 1px 0 #fff inset,
+    0 24px 48px -30px rgba(30, 20, 70, 0.28),
+    0 8px 24px -20px var(--merge-glow);
+}
+.depth-on .ship-card:hover {
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.07) inset,
+    0 40px 70px -30px rgba(0, 0, 0, 0.8),
+    0 18px 50px -20px var(--merge-glow);
+}
+.depth-on .ship-card > * {
+  transform: translateZ(22px);
+  transition: transform 700ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.depth-on .ship-card:hover > * { transform: translateZ(40px); }
+
+/* Other surfaces get real elevation instead of flat outlines. */
+.depth-on .term,
+.depth-on .demo,
+.depth-on .prs,
+.depth-on .code {
+  box-shadow:
+    0 30px 60px -36px rgba(0, 0, 0, 0.75),
+    0 12px 40px -30px var(--merge-glow);
+}
+[data-theme="light"].depth-on .term,
+[data-theme="light"].depth-on .demo,
+[data-theme="light"].depth-on .prs,
+[data-theme="light"].depth-on .code {
+  box-shadow: 0 26px 50px -34px rgba(30, 20, 70, 0.3);
+}
+
+/* The ledger list gets a solid face so lines never cross text. */
+.depth-on .prs {
+  background: color-mix(in srgb, var(--paper-raised) 94%, transparent);
+  border-radius: var(--r-lg);
+}
+.depth-on .prs { border: 1px solid var(--rule); overflow: hidden; }
+.depth-on .pr:last-child { border-bottom: 0; }
+
+/* Buttons press in and out of the page. */
+.depth-on .btn {
+  transition: transform 260ms var(--ease-out), box-shadow 260ms var(--ease-out), background-color var(--t-fast), color var(--t-fast);
+}
+.depth-on .btn-primary {
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.25) inset, 0 10px 24px -10px rgba(124, 77, 255, 0.7);
+}
+.depth-on .btn-primary:hover {
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.3) inset, 0 16px 34px -12px rgba(124, 77, 255, 0.85);
+}
+.depth-on .btn:active { transform: translateY(1px) scale(0.98); }
+
+/* Small screens: keep the depth moves, drop per-card 3D (no hover there). */
+@media (pointer: coarse) {
+  .depth-on .ship-card > * { transform: none; }
+}

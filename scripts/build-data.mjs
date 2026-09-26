@@ -2,7 +2,7 @@
 /* Build-time data for the Proof of Work site (§11 v1.1).
  * Fetches live PR states from GitHub, pepy download total, PyPI version,
  * and hero PR diffs. Writes:
- *   data/activity.json
+ *   data/activity.json (every merged PR: curated with notes, plus any newer)
  *   data/stats.json     (downloads, downloads_display, version)
  *   data/diffs.json     (hero diff lines for the 4-tab switcher)
  * Also rewrites every data-bake span/attribute in index.html so the static HTML
@@ -18,7 +18,7 @@ import { dirname, join } from "node:path";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const DATA = join(ROOT, "data");
 const AUTHOR = "Ar-maan05";
-const OWN_REPOS = ["Ar-maan05/mcp-persist"]; // exclude from recent activity
+const OWN_REPOS = ["Ar-maan05/mcp-persist"]; // never listed in the ledger
 const FLOOR = 8000;
 
 // Hero diff tabs: which PRs to fetch diffs for (§7.1)
@@ -53,11 +53,6 @@ function repoFromUrl(u) {
   return u.replace(/^https:\/\/api\.github\.com\/repos\//, "");
 }
 
-function stateOf(merged_at, state) {
-  if (merged_at) return "merged";
-  return state === "open" ? "open" : "closed";
-}
-
 function truncLine(text) {
   return text.length > LINE_MAX ? text.slice(0, LINE_MAX) + "\u2026" : text;
 }
@@ -77,36 +72,36 @@ async function buildActivity() {
       merged_at: pr.merged_at,
       url: pr.html_url,
       note: c.note,
+      ...(c.highlight ? { highlight: true } : {}),
     });
   }
 
-  // Recent activity: author's most-recently-updated PRs, excluding own package
-  // repos and anything already curated. Show only open or merged (no rejections).
+  // Every other merged upstream PR (merges newer than curated.json). The
+  // ledger inserts these by date with a generic Debug replay, so a new merge is
+  // on the page the day it lands, before anyone writes it a note.
   const curatedKeys = new Set(curatedCfg.map((c) => `${c.repo}#${c.number}`));
-  const search = await ghJSON(
-    `search/issues?q=author:${AUTHOR}+type:pr&sort=updated&per_page=50`
-  );
-  const recent = [];
-  for (const it of search.items || []) {
-    const repo = repoFromUrl(it.repository_url);
-    const key = `${repo}#${it.number}`;
-    if (OWN_REPOS.includes(repo) || curatedKeys.has(key)) continue;
-    const merged_at = it.pull_request ? it.pull_request.merged_at : null;
-    const state = stateOf(merged_at, it.state);
-    if (state !== "merged") continue; // only showcase merged PRs
-    recent.push({
-      repo,
-      number: it.number,
-      title: (it.title || "").trim(),
-      state,
-      url: it.html_url,
-      updated_at: it.updated_at,
-      merged_at,
-    });
-    if (recent.length >= 6) break;
+  const q = `author:${AUTHOR} type:pr is:merged -user:${AUTHOR}`;
+  const extra = [];
+  for (let page = 1; page <= 5; page++) {
+    const res = await ghJSON(`search/issues?q=${encodeURIComponent(q)}&per_page=100&page=${page}`);
+    const items = res.items || [];
+    for (const it of items) {
+      const repo = repoFromUrl(it.repository_url);
+      if (OWN_REPOS.includes(repo) || curatedKeys.has(`${repo}#${it.number}`)) continue;
+      extra.push({
+        repo,
+        number: it.number,
+        title: (it.title || "").trim(),
+        state: "merged",
+        url: it.html_url,
+        merged_at: it.pull_request ? it.pull_request.merged_at : it.closed_at,
+      });
+    }
+    if (items.length < 100) break;
   }
+  extra.sort((x, y) => String(y.merged_at).localeCompare(String(x.merged_at)));
 
-  return { generated: new Date().toISOString(), curated, recent };
+  return { generated: new Date().toISOString(), curated, extra };
 }
 
 function parseBadge(svg) {
