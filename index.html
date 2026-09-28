@@ -17,13 +17,13 @@
   </script>
 
   <title>Armaan Sandhu | Open source, merged upstream</title>
-  <meta name="description" content="CS student at WPI. Author of mcp-persist (18,000+ downloads, in production). Pull requests merged upstream in CPython, systemd, and across AI infrastructure.">
+  <meta name="description" content="CS student at WPI. Author of mcp-persist (19,000+ downloads, in production). Pull requests merged upstream in CPython, systemd, and across AI infrastructure.">
   <link rel="canonical" href="https://ar-maan05.github.io/">
   <meta name="theme-color" content="#06070B" media="(prefers-color-scheme: dark)">
   <meta name="theme-color" content="#06070B">
 
   <meta property="og:title" content="Armaan Sandhu | Open source, merged upstream">
-  <meta property="og:description" content="CS student at WPI. Author of mcp-persist (18,000+ downloads, in production). Pull requests merged upstream in CPython, systemd, and across AI infrastructure.">
+  <meta property="og:description" content="CS student at WPI. Author of mcp-persist (19,000+ downloads, in production). Pull requests merged upstream in CPython, systemd, and across AI infrastructure.">
   <meta property="og:image" content="https://ar-maan05.github.io/og.png">
   <meta property="og:url" content="https://ar-maan05.github.io/">
   <meta property="og:type" content="website">
@@ -138,7 +138,7 @@
         <div class="hero-text">
           <p class="hero-kicker" data-anim style="--d:0ms">WPI Computer Science, BS/MS ’29, 4.0 GPA</p>
           <h1 id="hero-h1" data-anim style="--d:0ms">Merged upstream.</h1>
-          <p class="hero-lede" data-anim style="--d:80ms">I build infrastructure for AI tooling, and fix the Linux and Python layers it runs on. My event store for MCP servers, mcp-persist, has <span class="tnum" data-bake="downloads" data-downloads>18,000+</span> downloads and runs in production inside mlrouter, the LLM gateway I'm shipping. My fixes are merged upstream in systemd, CPython and across the AI data stack.</p>
+          <p class="hero-lede" data-anim style="--d:80ms">I build infrastructure for AI tooling, and fix the Linux and Python layers it runs on. My event store for MCP servers, mcp-persist, has <span class="tnum" data-bake="downloads" data-downloads>19,000+</span> downloads and runs in production inside mlrouter, the LLM gateway I'm shipping. My fixes are merged upstream in systemd, CPython and across the AI data stack.</p>
           <div class="hero-cta" data-anim style="--d:80ms">
             <a class="btn btn-primary" href="#work">Read the case study</a>
             <a class="btn btn-ghost" href="#ledger">See the ledger</a>
@@ -174,7 +174,7 @@
 
       <div class="proofbar" aria-label="Proof">
         <a class="receipt" href="https://pepy.tech/project/mcp-persist" target="_blank" rel="noopener" data-anim style="--d:600ms">
-          <b class="tnum" data-bake="downloads" data-downloads>18,000+</b>&nbsp;PyPI downloads <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg>
+          <b class="tnum" data-bake="downloads" data-downloads>19,000+</b>&nbsp;PyPI downloads <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg>
         </a>
         <a class="receipt" href="#ledger" data-anim style="--d:660ms">
           <b class="tnum" data-merged-count data-countup>39</b>&nbsp;PRs merged upstream
@@ -238,7 +238,7 @@
         <div class="case-body prose">
           <p><span class="runin">The design.</span> mcp-persist replaces that single point of loss with swappable, durable EventStore backends. Redis covers production fleets. SQLite covers single-node deployments. PostgreSQL slots into stacks that already run it. The Redis layout is built for replay. An INCR counter issues monotonic event IDs and the events themselves live in HASHes. A per-stream ZSET supports ranged reads so a reconnecting client can resume from any point. TTLs bound storage. A key_prefix namespace makes one Redis safe for many tenants.</p>
           <!-- NOTE FOR ARMAAN (decide later): naming a production adopter here, with their permission, would outweigh every award the old site listed. -->
-          <p id="adoption"><span class="runin">Adoption.</span> Shipped at v1.0.0 and versioned steadily forward through real usage: <span class="dl tnum" data-bake="downloads" data-downloads>18,000+</span> downloads on PyPI and confirmed production deployments. The test suite runs 300+ async tests against fakeredis and real backends, with CI across Python 3.10 through 3.13.</p>
+          <p id="adoption"><span class="runin">Adoption.</span> Shipped at v1.0.0 and versioned steadily forward through real usage: <span class="dl tnum" data-bake="downloads" data-downloads>19,000+</span> downloads on PyPI and confirmed production deployments. The test suite runs 300+ async tests against fakeredis and real backends, with CI across Python 3.10 through 3.13.</p>
           <p><span class="runin">Positioning.</span> mcp-persist plugs into the official SDK's EventStore interface, so it tracks upstream releases and existing servers adopt it unchanged. Where a server can't be modified at all, the PersistenceProxy adds durability from the outside.</p>
         </div>
 
