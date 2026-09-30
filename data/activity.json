@@ -1,6 +1,15 @@
 {
-  "generated": "2026-09-30T11:33:37.119Z",
+  "generated": "2026-09-30T14:21:01.372Z",
   "curated": [
+    {
+      "repo": "util-linux/util-linux",
+      "number": 4653,
+      "title": "setpriv: match Landlock fs rights exactly",
+      "state": "merged",
+      "merged_at": "2026-09-29T12:09:48Z",
+      "url": "https://github.com/util-linux/util-linux/pull/4653",
+      "note": "setpriv accepted any prefix of a Landlock filesystem right, so a typo like fs:remove quietly gave a weaker sandbox than the one asked for. Now rejected."
+    },
     {
       "repo": "systemd/systemd",
       "number": 43714,
@@ -361,14 +370,5 @@
       "highlight": true
     }
   ],
-  "extra": [
-    {
-      "repo": "util-linux/util-linux",
-      "number": 4653,
-      "title": "setpriv: match Landlock fs rights exactly",
-      "state": "merged",
-      "url": "https://github.com/util-linux/util-linux/pull/4653",
-      "merged_at": "2026-09-29T12:09:48Z"
-    }
-  ]
+  "extra": []
 }

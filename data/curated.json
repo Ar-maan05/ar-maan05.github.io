@@ -1,6 +1,7 @@
 {
   "comment": "Every merged upstream PR, newest first, with the note shown in the ledger. highlight marks the default 'Highlights' view. The pipeline re-verifies every state daily and appends merges not listed here automatically (without a note).",
   "curated": [
+    {"repo": "util-linux/util-linux", "number": 4653, "note": "setpriv accepted any prefix of a Landlock filesystem right, so a typo like fs:remove quietly gave a weaker sandbox than the one asked for. Now rejected."},
     {"repo": "systemd/systemd", "number": 43714, "note": "Forced SipHash's round inline where gcc -O2 declined, making short-key hashing up to 6.6x faster across systemd's hashmaps."},
     {"repo": "systemd/systemd", "number": 43663, "note": "Three fixes on journalctl's per-entry read path, including a UTF-8 decoder that ran twice per byte. Output is byte-for-byte identical, 1.7x to 2.5x faster.", "highlight": true},
     {"repo": "systemd/systemd", "number": 43653, "note": "The console-width helper used the permissive UTF-8 decoder, so one invalid cell failed a whole table with a bogus out-of-memory error."},

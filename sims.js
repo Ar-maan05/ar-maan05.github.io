@@ -40,6 +40,25 @@ window.DECK_SIMS = {
       "+All 408 tests PASSED" ] }
   ],
 
+  "util-linux/util-linux#4653": [
+    { c: "setpriv --landlock-access fs:remove rm -v victim", o: [
+      "!removed 'victim'",
+      "# \"remove\" matched as a prefix: strncmp() used the length of what was typed,",
+      "# so it resolved to remove-dir and removing files was never restricted" ] },
+    { c: "setpriv --landlock-access fs:make mkdir newdir", o: [
+      "!(mkdir succeeds: only make-char was handled)" ] },
+    { c: "setpriv --landlock-access net:bind true", o: [
+      "setpriv: could not parse Landlock net access: bind",
+      "# the net and scope parsers in the same file already compared the full name" ] },
+    { c: "git switch fix/landlock-fs-exact   # match filesystem rights exactly", o: [] },
+    { c: "setpriv --landlock-access fs:remove rm -v victim", o: [
+      "+setpriv: could not parse Landlock fs access: remove",
+      "# a typo is now an error, not a weaker sandbox than you asked for" ] },
+    { c: "./tests/run.sh setpriv/landlock", o: [
+      "+abbreviated-fs-right ... OK   (fails without the fix)",
+      "+all 21 subtests passed   (Linux 7.2, Landlock ABI 10)" ] }
+  ],
+
   "systemd/systemd#43714": [
     { c: "nm -C build/src/shared/libsystemd-shared.so | grep sipround", o: [
       "t sipround   (a local, out-of-line function)",

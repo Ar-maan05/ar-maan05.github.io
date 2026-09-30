@@ -423,6 +423,12 @@ app = with_persistence(mcp, backend=<span class="s">"redis"</span>, url=<span cl
         </div>
 
         <ol class="prs" id="ledger-body">
+            <li class="pr" data-pr="util-linux/util-linux#4653" data-repo="util-linux/util-linux">
+              <p class="pr-meta"><span class="col-repo">util-linux/util-linux</span><span class="col-date">2026-09-29</span></p>
+              <h3 class="col-title"><a href="https://github.com/util-linux/util-linux/pull/4653" target="_blank" rel="noopener">setpriv: match Landlock fs rights exactly</a></h3>
+              <p class="col-why">setpriv accepted any prefix of a Landlock filesystem right, so a typo like fs:remove quietly gave a weaker sandbox than the one asked for. Now rejected.</p>
+              <button class="btn-verify" type="button" aria-label="Debug util-linux/util-linux#4653">Debug</button>
+            </li>
             <li class="pr" data-pr="systemd/systemd#43714" data-repo="systemd/systemd">
               <p class="pr-meta"><span class="col-repo">systemd/systemd</span><span class="col-date">2026-09-23</span></p>
               <h3 class="col-title"><a href="https://github.com/systemd/systemd/pull/43714" target="_blank" rel="noopener">siphash24: force inlining of the round</a></h3>
