@@ -1,5 +1,5 @@
 {
-  "generated": "2026-09-29T11:46:59.189Z",
+  "generated": "2026-09-30T11:33:37.119Z",
   "curated": [
     {
       "repo": "systemd/systemd",
@@ -361,5 +361,14 @@
       "highlight": true
     }
   ],
-  "extra": []
+  "extra": [
+    {
+      "repo": "util-linux/util-linux",
+      "number": 4653,
+      "title": "setpriv: match Landlock fs rights exactly",
+      "state": "merged",
+      "url": "https://github.com/util-linux/util-linux/pull/4653",
+      "merged_at": "2026-09-29T12:09:48Z"
+    }
+  ]
 }
