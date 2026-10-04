@@ -2,12 +2,12 @@
   "downloads": 19000,
   "downloads_display": "19,000+",
   "downloads_short": "19k+",
-  "version": "2.1.1",
-  "merged_prs": 40,
+  "version": "2.2.0",
+  "merged_prs": 41,
   "repos_merged": 8,
   "repo_merged": {
+    "systemd/systemd": 17,
     "util-linux/util-linux": 2,
-    "systemd/systemd": 16,
     "coreos/afterburn": 2,
     "BerriAI/litellm": 7,
     "lance-format/lance": 4,
@@ -15,5 +15,5 @@
     "lightpanda-io/browser": 3,
     "python/cpython": 1
   },
-  "generated": "2026-10-03T10:47:46.813Z"
+  "generated": "2026-10-04T11:30:24.832Z"
 }

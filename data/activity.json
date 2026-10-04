@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-03T10:47:58.369Z",
+  "generated": "2026-10-04T11:30:34.257Z",
   "curated": [
     {
       "repo": "util-linux/util-linux",
@@ -370,5 +370,14 @@
       "highlight": true
     }
   ],
-  "extra": []
+  "extra": [
+    {
+      "repo": "systemd/systemd",
+      "number": 43872,
+      "title": "report: make report-files listing and lookup agree on masked entries",
+      "state": "merged",
+      "url": "https://github.com/systemd/systemd/pull/43872",
+      "merged_at": "2026-10-03T11:57:07Z"
+    }
+  ]
 }
