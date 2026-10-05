@@ -362,6 +362,28 @@ app = with_persistence(mcp, backend=<span class="s">"redis"</span>, url=<span cl
 
           <article class="ship-card" data-tilt>
             <div class="ship-top">
+              <h3>agentfence</h3>
+              <span class="chip chip-draft">v0.1.0</span>
+            </div>
+            <p class="ship-desc">Least-privilege sandboxing for AI coding agents, learned instead of hand-written. Run Claude Code, aider or any command under <em>learn</em>, and agentfence synthesizes the smallest Landlock policy that covers what it actually did, never granting credentials or persistence paths, then enforces it without root. Across 21 real agent workflows: 252/252 attack attempts blocked and the writable surface cut 68-457x.</p>
+            <div class="case-links ship-links">
+              <a class="receipt" href="https://github.com/Ar-maan05/agentfence" target="_blank" rel="noopener">GitHub <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></a>
+            </div>
+          </article>
+
+          <article class="ship-card" data-tilt>
+            <div class="ship-top">
+              <h3>patchproof</h3>
+              <span class="chip chip-draft">v0.1.0</span>
+            </div>
+            <p class="ship-desc">Is this review suggestion actually necessary? A blind LLM writes a reproducer for the reviewer's claim through public entry points only, then patchproof runs it against the PR with and without the suggestion and returns a verdict: NECESSARY, NOT_SHOWN, HARMFUL. Born from a systemd fix that CI proved was a no-op; tested on real review threads from my own upstream PRs.</p>
+            <div class="case-links ship-links">
+              <a class="receipt" href="https://github.com/Ar-maan05/patchproof" target="_blank" rel="noopener">GitHub <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></a>
+            </div>
+          </article>
+
+          <article class="ship-card" data-tilt>
+            <div class="ship-top">
               <h3>codebase-rag</h3>
               <span class="chip chip-draft">v1.0.1</span>
             </div>
