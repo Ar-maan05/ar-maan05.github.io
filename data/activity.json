@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-04T11:30:34.257Z",
+  "generated": "2026-10-05T12:59:05.035Z",
   "curated": [
     {
       "repo": "util-linux/util-linux",
@@ -371,6 +371,14 @@
     }
   ],
   "extra": [
+    {
+      "repo": "util-linux/util-linux",
+      "number": 4664,
+      "title": "cal: do not span before year 1 and fix month 0 in --span",
+      "state": "merged",
+      "url": "https://github.com/util-linux/util-linux/pull/4664",
+      "merged_at": "2026-10-05T11:35:01Z"
+    },
     {
       "repo": "systemd/systemd",
       "number": 43872,
