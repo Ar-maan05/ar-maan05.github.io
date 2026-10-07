@@ -3,9 +3,10 @@
   "downloads_display": "19,000+",
   "downloads_short": "19k+",
   "version": "2.2.0",
-  "merged_prs": 42,
-  "repos_merged": 8,
+  "merged_prs": 45,
+  "repos_merged": 9,
   "repo_merged": {
+    "storytold/photocraft": 3,
     "util-linux/util-linux": 3,
     "systemd/systemd": 17,
     "coreos/afterburn": 2,
@@ -15,5 +16,5 @@
     "lightpanda-io/browser": 3,
     "python/cpython": 1
   },
-  "generated": "2026-10-06T12:23:58.449Z"
+  "generated": "2026-10-07T12:16:41.087Z"
 }

@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-06T12:24:10.286Z",
+  "generated": "2026-10-07T12:16:51.368Z",
   "curated": [
     {
       "repo": "util-linux/util-linux",
@@ -371,6 +371,30 @@
     }
   ],
   "extra": [
+    {
+      "repo": "storytold/photocraft",
+      "number": 385,
+      "title": "Content-Aware Scale: 13x faster seam removal, bit-identical output (part of #211)",
+      "state": "merged",
+      "url": "https://github.com/storytold/photocraft/pull/385",
+      "merged_at": "2026-10-07T11:39:50Z"
+    },
+    {
+      "repo": "storytold/photocraft",
+      "number": 384,
+      "title": "Paste: a copied image file pastes its pixels (part of #338)",
+      "state": "merged",
+      "url": "https://github.com/storytold/photocraft/pull/384",
+      "merged_at": "2026-10-07T11:39:30Z"
+    },
+    {
+      "repo": "storytold/photocraft",
+      "number": 387,
+      "title": "Content-Aware Scale: enlarging a 1 px wide or tall layer no longer panics",
+      "state": "merged",
+      "url": "https://github.com/storytold/photocraft/pull/387",
+      "merged_at": "2026-10-07T03:34:45Z"
+    },
     {
       "repo": "util-linux/util-linux",
       "number": 4664,
