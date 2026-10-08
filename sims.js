@@ -546,3 +546,200 @@ Object.assign(window.DECK_SIMS, {
       "# present on the system block; real api.openai.com still gets it stripped" ] }
   ]
 });
+
+/* Merges the pipeline picked up after the replays above were written. Same
+   rule: each follows the reproduction and numbers in its own PR description. */
+Object.assign(window.DECK_SIMS, {
+
+  "systemd/systemd#43952": [
+    { c: "time systemctl list-dependencies --all | wc -l", o: [
+      "96627", "real\t1m3.63s",
+      "# ~260 distinct units on a stock Fedora 44 desktop, printed once per path" ] },
+    { c: "# the units strv is only the current path, popped on the way back up", o: [
+      "!so every repeat of a unit re-asked PID 1: a GetAll() and a Get() over D-Bus" ] },
+    { c: "git switch --detach 43952   # cache deps and state per unit, sort each list once", o: [
+      "# D-Bus calls now bounded by the distinct units, not the size of the tree" ] },
+    { c: "time systemctl list-dependencies --all | wc -l", o: [
+      "96627", "+real\t0m0.34s   187x" ] },
+    { c: "time systemctl list-dependencies --all sockets.target > /dev/null", o: [
+      "+real\t0m0.12s   170x (was 20.45s)" ] },
+    { c: "cmp <(systemctl.old list-dependencies --all) <(systemctl list-dependencies --all) && echo identical", o: [
+      "+identical   (also --after, --plain, --type=, --state=)" ] }
+  ],
+
+  "systemd/systemd#43872": [
+    { c: "ls -l /run/systemd/report.files/", o: [
+      "bar/", "baz -> /nonexistent", "foo -> /dev/null   # masked, the usual way",
+      "# regular files of the same names sit in /var/lib/systemd/report.files/" ] },
+    { c: "varlinkctl call $REPORT io.systemd.Metrics.Describe '{}'", o: [
+      "io.systemd.Files.bar  io.systemd.Files.baz  io.systemd.Files.foo" ] },
+    { c: "varlinkctl call $REPORT io.systemd.Metrics.List '{}'", o: [
+      "io.systemd.Files.baz",
+      "!Failed to open '/run/systemd/report.files/bar', skipping: Is a directory",
+      "!Failed to open '/run/systemd/report.files/foo', skipping: File descriptor in bad state",
+      "# the listing skipped them; the lookup walked the dirs itself and stopped there" ] },
+    { c: "git switch --detach 43872   # filter masked symlinks, skip -EISDIR/-EBADFD in the lookup", o: [] },
+    { c: "varlinkctl call $REPORT io.systemd.Metrics.Describe '{}'", o: [
+      "+io.systemd.Files.bar  io.systemd.Files.baz   (foo is masked)" ] },
+    { c: "varlinkctl call $REPORT io.systemd.Metrics.List '{}'", o: [
+      "+bar = vendor-bar   baz = vendor-baz   (no warnings)" ] },
+    { c: "mkosi -f qemu TEST-74-AUX-UTILS", o: [ "+report: masked and non-regular entries covered" ] }
+  ],
+
+  "util-linux/util-linux#4663": [
+    { c: "fallocate -l 1.7G f && stat -c %s f", o: [
+      "2147483648",
+      "!2 GiB: digit d at position n counted as 1/floor(10^n/d), so .7 became a whole G" ] },
+    { c: "fallocate -l 1.10G f && stat -c %s f", o: [
+      "2147483648",
+      "!while (frac_div < frac) stops one step early when the digits are 1 then zeros" ] },
+    { c: "./tests/run.sh misc/strtosize   # with the new fractional cases", o: [
+      "!0.4G -> 512 MiB (want 409.6 MiB)   0.10MiB -> 1 MiB (want 102.4 KiB)",
+      "!18.9EB -> 491 PiB (wrapped)        0.5ZiB -> 2^59 (scale error ignored)" ] },
+    { c: "git switch fix/strtosize-exact   # fixes #2213", o: [
+      "# walk the digits from the last: (digit * frac_base + previous) / 10",
+      "# the floors nest, so it is exactly floor(frac_base * 0.<digits>), in 64 bits" ] },
+    { c: "fallocate -l 1.7G f && stat -c %s f", o: [ "+1825361100" ] },
+    { c: "./tests/run.sh misc/strtosize", o: [
+      "+misc: strtosize ... OK   (fails on master)",
+      "+18.9EB and 0.5ZiB -> ERANGE",
+      "# 4000 random inputs against exact rationals: every result is the exact floor" ] }
+  ],
+
+  "util-linux/util-linux#4664": [
+    { c: "cal -3 1 1 | head -1", o: [
+      "!   December 0000          January 0001          February 0001",
+      "# cal rejects years below 1 everywhere else" ] },
+    { c: "cal -S -n 26 1 2025 | head -1", o: [
+      "!     (null) 2023          January 2023          February 2023",
+      "# month 0: full_month[-1] read out of bounds; the span should start at December 2023" ] },
+    { c: "git switch fix/cal-span   # fixes #1553", o: [
+      "# one month index, year * 12 + month - 1 - num_months / 2, clamped to January 0001",
+      "# int64_t, so a large -n or year cannot overflow" ] },
+    { c: "cal -3 1 1 | head -1", o: [
+      "+    January 0001          February 0001           March 0001" ] },
+    { c: "cal -S -n 26 1 2025 | head -1", o: [
+      "+   December 2023          January 2024          February 2024" ] },
+    { c: "./tests/run.sh cal", o: [
+      "+all 11 cal tests passed   (the 3 new subtests fail on master)",
+      "# 3528 old-vs-new runs: all 545 differences are one of the two bugs" ] }
+  ],
+
+  "storytold/photocraft#629": [
+    { c: "ctl document.pixel '{\"x\": 2147483647, \"y\": 0}'", o: [
+      "!thread '...' panicked at crates/engine/src/commands.rs:830:92:",
+      "!index out of bounds: the len is 0 but the index is 0",
+      "# from_xywh(x, y, 1, 1) saturates x + 1 to i32::MAX: an empty rect, no pixels" ] },
+    { c: "ctl document.pixel '{\"x\": 4294967296, \"y\": 0}'", o: [
+      "!returns the pixel at column 0: `as i32` wrapped 2^32 to 0" ] },
+    { c: "git switch fix/document-pixel-limits   # i32::try_from, then .px.first()", o: [] },
+    { c: "ctl document.pixel '{\"x\": 2147483647, \"y\": 0}'", o: [
+      "+transparent   (like every other off-canvas pixel)" ] },
+    { c: "ctl document.pixel '{\"x\": 4294967296, \"y\": 0}'", o: [
+      "+BadParams: x must fit in 32 bits" ] },
+    { c: "cargo test -p photocraft-engine --lib", o: [
+      "+document_pixel_at_the_coordinate_limits ... ok   (panics on main)",
+      "+test result: ok. 653 passed" ] }
+  ],
+
+  "storytold/photocraft#628": [
+    { c: "./bench box-blur 2000x1500 --threads 2 --radius 10,50,150,400", o: [
+      "  r=10    132 ms", "  r=50    617 ms", "  r=150   2.54 s", "!  r=400   6.97 s",
+      "# a 2r+1 tap kernel along each axis: the cost grows with the radius" ] },
+    { c: "rg -n 'fn gaussian_boxes' crates/algo/src/blur.rs", o: [
+      "# Gaussian Blur, same file, already uses running-sum boxes: cost independent of radius" ] },
+    { c: "git switch perf/box-blur   # share box_passes(), one box of width 2r+1", o: [
+      "# radius 1..4 keeps the direct kernel: slightly quicker there, output unchanged" ] },
+    { c: "./bench box-blur 2000x1500 --threads 2 --radius 10,50,150,400", o: [
+      "+  r=10     50 ms   2.7x", "+  r=50     72 ms   8.6x",
+      "+  r=150   192 ms   13x", "+  r=400   269 ms   26x" ] },
+    { c: "cargo test -p photocraft-algo", o: [
+      "+box_passes_match_the_direct_box_kernel ... ok   (within 1e-5)",
+      "# only the summation order changed: no 16-bit sample moves more than one level",
+      "+test result: ok. 238 passed" ] }
+  ],
+
+  "storytold/photocraft#630": [
+    { c: "./bench maximum --preserve squareness 2000x1500 --threads 2 --radius 3,10,50,200", o: [
+      "  r=3     141 ms", "  r=10    443 ms", "  r=50    2.80 s", "!  r=200  14.27 s",
+      "# every pixel scans all 2r+1 samples, once along rows and once along columns" ] },
+    { c: "rg -n 'running_extreme' crates/algo/src/other.rs", o: [
+      "# Preserve: Roundness already uses it (van Herk / Gil-Werman, constant per pixel)" ] },
+    { c: "git switch perf/min-max-square   # running_extreme for both passes", o: [] },
+    { c: "./bench maximum --preserve squareness 2000x1500 --threads 2 --radius 3,10,50,200", o: [
+      "  r=3     139 ms   same", "+  r=10    153 ms   2.9x",
+      "+  r=50    234 ms   12x", "+  r=200   384 ms   37x" ] },
+    { c: "cargo test -p photocraft-algo", o: [
+      "+square_min_max_matches_the_direct_window_exactly ... ok   (assert_eq! on f32)",
+      "# a min or max is one of the window's samples: bit-identical by construction",
+      "+test result: ok. 238 passed" ] }
+  ],
+
+  "storytold/photocraft#631": [
+    { c: "./bench surface-blur 1000x750 --threads 2 --threshold 15 --radius 5,15,30", o: [
+      "  r=5     214 ms", "  r=15    1.48 s", "!  r=30    6.10 s",
+      "# the full (2r+1)^2 window per pixel and channel: 40,401 samples at radius 100" ] },
+    { c: "git switch perf/surface-blur-histogram", o: [
+      "# a weight depends only on the value and the centre: 1 - |v - v0| / t",
+      "# so on 8-bit tiles, slide a 256-bin histogram and sum only levels within t" ] },
+    { c: "./bench surface-blur 1000x750 --threads 2 --threshold 15 --radius 5,15,30,100", o: [
+      "  r=5     229 ms   same (direct sum)", "+  r=15    112 ms   13x",
+      "+  r=30    143 ms   43x", "+  r=100   421 ms   ~150x (was ~66 s)" ] },
+    { c: "cargo test -p photocraft-algo", o: [
+      "+surface_blur_8bit_histogram_matches_the_direct_sum ... ok   (within 1e-5)",
+      "# sums per level in f64: at most 0.023% of 8-bit samples move, by one level",
+      "+test result: ok. 238 passed" ] }
+  ],
+
+  "storytold/photocraft#385": [
+    { c: "./bench content-aware-scale 6000x4000 --seams 20 --threads 16", o: [
+      "find_seam 85-89 ms   energy 133 ms (full map)   removal: new 384 MB buffer",
+      "!319 ms per seam   600 seams ~191 s",
+      "# scorecard row P28: 954 s against a 3 s budget (#211)" ] },
+    { c: "git switch perf/seam-carving   # part of #211", o: [
+      "# energy only changes within one pixel of the removed seam: recompute just that",
+      "# shift each row in place, in parallel; reuse the seam search buffers" ] },
+    { c: "./bench content-aware-scale 6000x4000 --seams 20 --threads 16", o: [
+      "find_seam 10-13 ms   energy 2-5 px per row   removal: in place",
+      "+23.6 ms per seam   600 seams in 14.1 s   13x" ] },
+    { c: "cargo test -p photocraft-algo", o: [
+      "+output_bits_are_pinned ... ok   (FNV hash of 8 carves from the old code)",
+      "+test result: ok. 224 passed" ] },
+    { c: "# old vs new carve on 4,685 random shapes and the full 24 MP case", o: [
+      "+bit-identical, ties still broken in the same order" ] }
+  ],
+
+  "storytold/photocraft#387": [
+    { c: "ctl edit.contentAwareScale '{\"width\": 5, \"height\": 48}'   # a 1x48 layer", o: [
+      "!edit.contentAwareScale failed with an internal error (logged); the document is unchanged",
+      "!panicked in write_region: region data length mismatch (192 vs 960)" ] },
+    { c: "ctl edit.contentAwareScale '{\"width\": 6, \"height\": 10}'   # a 1x5 layer", o: [
+      "!panicked in seam::transpose: index out of range" ] },
+    { c: "rg -n 'tw <= 1' crates/algo/src/seam.rs", o: [
+      "if tw <= 1 { break; }",
+      "# a 1 px wide copy found no seam, so the image came back at its old width" ] },
+    { c: "git switch fix/seam-one-pixel   # stop only at width 0", o: [
+      "# the last column's right neighbour is itself: duplicating it repeats it exactly" ] },
+    { c: "ctl edit.contentAwareScale '{\"width\": 5, \"height\": 48}'   # a 1x48 layer", o: [
+      "+5x48   (the column, repeated)" ] },
+    { c: "cargo test -p photocraft-algo -p photocraft-engine", o: [
+      "+one_pixel_lines_enlarge_by_repeating ... ok",
+      "+content_aware_scale_enlarges_a_one_pixel_line ... ok   (panicked before)",
+      "# 5,045 random shapes: bit-identical in all 4,595 the old code handled" ] }
+  ],
+
+  "storytold/photocraft#384": [
+    { c: "wl-copy --type text/uri-list $'file:///home/me/red%20copy.png\\r\\n'   # as GNOME Files does", o: [] },
+    { c: "ctl edit.paste", o: [
+      "!the clipboard is empty",
+      "# file managers copy the path, not pixels; only get_image() was asked" ] },
+    { c: "git switch fix/paste-copied-file   # part of #338", o: [
+      "# no image? fall back to get().file_list() and take the first file that decodes",
+      "# trim the trailing \\r: text/uri-list is CRLF, arboard splits on \\n only" ] },
+    { c: "ctl edit.paste", o: [
+      "+{\"layer\": 3, \"offset\": [80, 30]}   # 40x40, centred in a 200x100 document" ] },
+    { c: "cargo test -p photocraft --bin photocraft", o: [
+      "+non-images skipped after a 256-byte header; a truncated PNG is skipped, not a panic",
+      "+test result: ok. 40 passed" ] }
+  ]
+});
