@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-07T12:16:51.368Z",
+  "generated": "2026-10-08T12:26:54.616Z",
   "curated": [
     {
       "repo": "util-linux/util-linux",
@@ -371,6 +371,54 @@
     }
   ],
   "extra": [
+    {
+      "repo": "util-linux/util-linux",
+      "number": 4663,
+      "title": "lib: (strutils.c) compute fractional sizes exactly in ul_parse_size()",
+      "state": "merged",
+      "url": "https://github.com/util-linux/util-linux/pull/4663",
+      "merged_at": "2026-10-08T09:52:59Z"
+    },
+    {
+      "repo": "systemd/systemd",
+      "number": 43952,
+      "title": "systemctl: make list-dependencies --all over 100x faster",
+      "state": "merged",
+      "url": "https://github.com/systemd/systemd/pull/43952",
+      "merged_at": "2026-10-08T08:21:22Z"
+    },
+    {
+      "repo": "storytold/photocraft",
+      "number": 629,
+      "title": "document.pixel: no panic at x or y = i32::MAX, and no wrap-around past it",
+      "state": "merged",
+      "url": "https://github.com/storytold/photocraft/pull/629",
+      "merged_at": "2026-10-07T20:30:52Z"
+    },
+    {
+      "repo": "storytold/photocraft",
+      "number": 631,
+      "title": "Surface Blur: 13x to 40x+ faster on 8-bit layers (sliding histogram)",
+      "state": "merged",
+      "url": "https://github.com/storytold/photocraft/pull/631",
+      "merged_at": "2026-10-07T20:06:24Z"
+    },
+    {
+      "repo": "storytold/photocraft",
+      "number": 630,
+      "title": "Minimum / Maximum (Squareness): up to 37x faster at large radii, bit-identical output",
+      "state": "merged",
+      "url": "https://github.com/storytold/photocraft/pull/630",
+      "merged_at": "2026-10-07T20:05:38Z"
+    },
+    {
+      "repo": "storytold/photocraft",
+      "number": 628,
+      "title": "Box Blur: up to 26x faster at large radii (same running-sum boxes as Gaussian Blur)",
+      "state": "merged",
+      "url": "https://github.com/storytold/photocraft/pull/628",
+      "merged_at": "2026-10-07T20:00:29Z"
+    },
     {
       "repo": "storytold/photocraft",
       "number": 385,
