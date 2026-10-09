@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-08T12:26:54.616Z",
+  "generated": "2026-10-09T12:16:02.077Z",
   "curated": [
     {
       "repo": "util-linux/util-linux",
@@ -371,6 +371,22 @@
     }
   ],
   "extra": [
+    {
+      "repo": "storytold/photocraft",
+      "number": 901,
+      "title": "Median, Dust & Scratches: run time grows linearly with the radius, identical output at 8, 16 and 32-bit (#498)",
+      "state": "merged",
+      "url": "https://github.com/storytold/photocraft/pull/901",
+      "merged_at": "2026-10-08T19:32:37Z"
+    },
+    {
+      "repo": "storytold/photocraft",
+      "number": 902,
+      "title": "Motion Blur: 6x to 70x faster (one merged kernel applied over whole rows)",
+      "state": "merged",
+      "url": "https://github.com/storytold/photocraft/pull/902",
+      "merged_at": "2026-10-08T18:30:43Z"
+    },
     {
       "repo": "util-linux/util-linux",
       "number": 4663,
