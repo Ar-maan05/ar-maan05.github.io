@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-11T11:47:12.710Z",
+  "generated": "2026-10-12T13:51:14.836Z",
   "curated": [
     {
       "repo": "util-linux/util-linux",
@@ -371,6 +371,14 @@
     }
   ],
   "extra": [
+    {
+      "repo": "crmne/spotifast",
+      "number": 777,
+      "title": "Load Liked Songs a page at a time instead of rebuilding it per page",
+      "state": "merged",
+      "url": "https://github.com/crmne/spotifast/pull/777",
+      "merged_at": "2026-10-11T18:40:13Z"
+    },
     {
       "repo": "storytold/photocraft",
       "number": 901,
