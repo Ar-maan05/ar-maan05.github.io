@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-12T13:51:14.836Z",
+  "generated": "2026-10-13T13:09:19.306Z",
   "curated": [
     {
       "repo": "util-linux/util-linux",
@@ -371,6 +371,14 @@
     }
   ],
   "extra": [
+    {
+      "repo": "crmne/spotifast",
+      "number": 778,
+      "title": "Find a recording's other URIs from an index instead of every saved song",
+      "state": "merged",
+      "url": "https://github.com/crmne/spotifast/pull/778",
+      "merged_at": "2026-10-13T10:07:01Z"
+    },
     {
       "repo": "crmne/spotifast",
       "number": 777,
