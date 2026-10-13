@@ -1,6 +1,141 @@
 {
-  "generated": "2026-10-13T13:09:19.306Z",
+  "generated": "2026-10-13T23:38:27.408Z",
   "curated": [
+    {
+      "repo": "crmne/spotifast",
+      "number": 778,
+      "title": "Find a recording's other URIs from an index instead of every saved song",
+      "state": "merged",
+      "merged_at": "2026-10-13T10:07:01Z",
+      "url": "https://github.com/crmne/spotifast/pull/778",
+      "note": "Checking whether another URI of a liked recording was saved walked every saved song, for every track on every page. It now asks the recording's own few URIs: a 50-track page after 20k likes drops from 46.7 ms to 0.04 ms."
+    },
+    {
+      "repo": "crmne/spotifast",
+      "number": 777,
+      "title": "Load Liked Songs a page at a time instead of rebuilding it per page",
+      "state": "merged",
+      "merged_at": "2026-10-11T18:40:13Z",
+      "url": "https://github.com/crmne/spotifast/pull/777",
+      "note": "Loading Liked Songs cloned, compared and rebuilt the whole list for every 50-song page. Pages that land at the end are now appended, taking 20,000 songs from 3.95 s to 0.44 s."
+    },
+    {
+      "repo": "storytold/photocraft",
+      "number": 901,
+      "title": "Median, Dust & Scratches: run time grows linearly with the radius, identical output at 8, 16 and 32-bit (#498)",
+      "state": "merged",
+      "merged_at": "2026-10-08T19:32:37Z",
+      "url": "https://github.com/storytold/photocraft/pull/901",
+      "note": "Median and Dust & Scratches gathered a whole disc of samples per pixel, so each doubling of the radius cost 4x. A rank histogram sliding over each tile makes it linear: radius 32 on 1920x1280 drops from 48 s to 0.84 s, bit-identical."
+    },
+    {
+      "repo": "storytold/photocraft",
+      "number": 902,
+      "title": "Motion Blur: 6x to 70x faster (one merged kernel applied over whole rows)",
+      "state": "merged",
+      "merged_at": "2026-10-08T18:30:43Z",
+      "url": "https://github.com/storytold/photocraft/pull/902",
+      "note": "Motion Blur took an edge-checked bilinear sample per step for every pixel. One merged kernel now runs over whole rows: 6x to 71x faster, with at most one 8-bit level of difference."
+    },
+    {
+      "repo": "util-linux/util-linux",
+      "number": 4663,
+      "title": "lib: (strutils.c) compute fractional sizes exactly in ul_parse_size()",
+      "state": "merged",
+      "merged_at": "2026-10-08T09:52:59Z",
+      "url": "https://github.com/util-linux/util-linux/pull/4663",
+      "note": "Fractional sizes were summed digit by digit with truncating division, so fallocate -l 1.7G made a 2 GiB file, and a fraction like .10 was off by 10x. The fraction is now computed exactly."
+    },
+    {
+      "repo": "systemd/systemd",
+      "number": 43952,
+      "title": "systemctl: make list-dependencies --all over 100x faster",
+      "state": "merged",
+      "merged_at": "2026-10-08T08:21:22Z",
+      "url": "https://github.com/systemd/systemd/pull/43952",
+      "note": "Tree mode asked PID 1 about the same unit again for every path that reached it. Caching each answer per unit takes systemctl list-dependencies --all from 63.6 s to 0.34 s, byte-for-byte identical output."
+    },
+    {
+      "repo": "storytold/photocraft",
+      "number": 629,
+      "title": "document.pixel: no panic at x or y = i32::MAX, and no wrap-around past it",
+      "state": "merged",
+      "merged_at": "2026-10-07T20:30:52Z",
+      "url": "https://github.com/storytold/photocraft/pull/629",
+      "note": "document.pixel panicked at x or y = i32::MAX, and coordinates past 32 bits silently wrapped to column 0. Out-of-range coordinates are now an error and the edge pixel reads as transparent."
+    },
+    {
+      "repo": "storytold/photocraft",
+      "number": 631,
+      "title": "Surface Blur: 13x to 40x+ faster on 8-bit layers (sliding histogram)",
+      "state": "merged",
+      "merged_at": "2026-10-07T20:06:24Z",
+      "url": "https://github.com/storytold/photocraft/pull/631",
+      "note": "Surface Blur summed the full window for every pixel, over a minute at radius 100. On 8-bit layers a sliding 256-bin histogram does it in O(radius): 13x to about 150x faster."
+    },
+    {
+      "repo": "storytold/photocraft",
+      "number": 630,
+      "title": "Minimum / Maximum (Squareness): up to 37x faster at large radii, bit-identical output",
+      "state": "merged",
+      "merged_at": "2026-10-07T20:05:38Z",
+      "url": "https://github.com/storytold/photocraft/pull/630",
+      "note": "Minimum and Maximum with Squareness scanned every sample in the window per pixel. Reusing the constant-time running extreme from Roundness makes it up to 37x faster at large radii, bit-identical."
+    },
+    {
+      "repo": "storytold/photocraft",
+      "number": 628,
+      "title": "Box Blur: up to 26x faster at large radii (same running-sum boxes as Gaussian Blur)",
+      "state": "merged",
+      "merged_at": "2026-10-07T20:00:29Z",
+      "url": "https://github.com/storytold/photocraft/pull/628",
+      "note": "Box Blur convolved a 2r+1 kernel per pixel, so cost grew with the radius. It now shares Gaussian Blur's running-sum passes: 26x faster at radius 400."
+    },
+    {
+      "repo": "storytold/photocraft",
+      "number": 385,
+      "title": "Content-Aware Scale: 13x faster seam removal, bit-identical output (part of #211)",
+      "state": "merged",
+      "merged_at": "2026-10-07T11:39:50Z",
+      "url": "https://github.com/storytold/photocraft/pull/385",
+      "note": "Every removed seam recomputed the full energy map and copied the whole image. Recomputing only the pixels beside the seam and shifting rows in place takes a seam from 319 ms to 23.6 ms, output unchanged."
+    },
+    {
+      "repo": "storytold/photocraft",
+      "number": 384,
+      "title": "Paste: a copied image file pastes its pixels (part of #338)",
+      "state": "merged",
+      "merged_at": "2026-10-07T11:39:30Z",
+      "url": "https://github.com/storytold/photocraft/pull/384",
+      "note": "Copying an image file in a file manager and pressing Ctrl+V did nothing, because only the path is on the clipboard. Paste now falls back to decoding the first image in the copied file list."
+    },
+    {
+      "repo": "storytold/photocraft",
+      "number": 387,
+      "title": "Content-Aware Scale: enlarging a 1 px wide or tall layer no longer panics",
+      "state": "merged",
+      "merged_at": "2026-10-07T03:34:45Z",
+      "url": "https://github.com/storytold/photocraft/pull/387",
+      "note": "Enlarging a 1 px wide or tall layer in Content-Aware Scale panicked, because the seam loop gave up at width 1. A one-line guard fix lets that last column be duplicated."
+    },
+    {
+      "repo": "util-linux/util-linux",
+      "number": 4664,
+      "title": "cal: do not span before year 1 and fix month 0 in --span",
+      "state": "merged",
+      "merged_at": "2026-10-05T11:35:01Z",
+      "url": "https://github.com/util-linux/util-linux/pull/4664",
+      "note": "cal -3 1 1 started at December 0000, and a span beginning exactly 12 months back read full_month[-1] and printed (null). One month index, clamped to January of year 1, fixes both."
+    },
+    {
+      "repo": "systemd/systemd",
+      "number": 43872,
+      "title": "report: make report-files listing and lookup agree on masked entries",
+      "state": "merged",
+      "merged_at": "2026-10-03T11:57:07Z",
+      "url": "https://github.com/systemd/systemd/pull/43872",
+      "note": "report-files listed and looked up entries by different rules, so masking a vendor file with a /dev/null symlink dropped entries and logged warnings. The listing now filters masked entries and the lookup skips non-regular ones the same way."
+    },
     {
       "repo": "util-linux/util-linux",
       "number": 4653,
@@ -370,126 +505,5 @@
       "highlight": true
     }
   ],
-  "extra": [
-    {
-      "repo": "crmne/spotifast",
-      "number": 778,
-      "title": "Find a recording's other URIs from an index instead of every saved song",
-      "state": "merged",
-      "url": "https://github.com/crmne/spotifast/pull/778",
-      "merged_at": "2026-10-13T10:07:01Z"
-    },
-    {
-      "repo": "crmne/spotifast",
-      "number": 777,
-      "title": "Load Liked Songs a page at a time instead of rebuilding it per page",
-      "state": "merged",
-      "url": "https://github.com/crmne/spotifast/pull/777",
-      "merged_at": "2026-10-11T18:40:13Z"
-    },
-    {
-      "repo": "storytold/photocraft",
-      "number": 901,
-      "title": "Median, Dust & Scratches: run time grows linearly with the radius, identical output at 8, 16 and 32-bit (#498)",
-      "state": "merged",
-      "url": "https://github.com/storytold/photocraft/pull/901",
-      "merged_at": "2026-10-08T19:32:37Z"
-    },
-    {
-      "repo": "storytold/photocraft",
-      "number": 902,
-      "title": "Motion Blur: 6x to 70x faster (one merged kernel applied over whole rows)",
-      "state": "merged",
-      "url": "https://github.com/storytold/photocraft/pull/902",
-      "merged_at": "2026-10-08T18:30:43Z"
-    },
-    {
-      "repo": "util-linux/util-linux",
-      "number": 4663,
-      "title": "lib: (strutils.c) compute fractional sizes exactly in ul_parse_size()",
-      "state": "merged",
-      "url": "https://github.com/util-linux/util-linux/pull/4663",
-      "merged_at": "2026-10-08T09:52:59Z"
-    },
-    {
-      "repo": "systemd/systemd",
-      "number": 43952,
-      "title": "systemctl: make list-dependencies --all over 100x faster",
-      "state": "merged",
-      "url": "https://github.com/systemd/systemd/pull/43952",
-      "merged_at": "2026-10-08T08:21:22Z"
-    },
-    {
-      "repo": "storytold/photocraft",
-      "number": 629,
-      "title": "document.pixel: no panic at x or y = i32::MAX, and no wrap-around past it",
-      "state": "merged",
-      "url": "https://github.com/storytold/photocraft/pull/629",
-      "merged_at": "2026-10-07T20:30:52Z"
-    },
-    {
-      "repo": "storytold/photocraft",
-      "number": 631,
-      "title": "Surface Blur: 13x to 40x+ faster on 8-bit layers (sliding histogram)",
-      "state": "merged",
-      "url": "https://github.com/storytold/photocraft/pull/631",
-      "merged_at": "2026-10-07T20:06:24Z"
-    },
-    {
-      "repo": "storytold/photocraft",
-      "number": 630,
-      "title": "Minimum / Maximum (Squareness): up to 37x faster at large radii, bit-identical output",
-      "state": "merged",
-      "url": "https://github.com/storytold/photocraft/pull/630",
-      "merged_at": "2026-10-07T20:05:38Z"
-    },
-    {
-      "repo": "storytold/photocraft",
-      "number": 628,
-      "title": "Box Blur: up to 26x faster at large radii (same running-sum boxes as Gaussian Blur)",
-      "state": "merged",
-      "url": "https://github.com/storytold/photocraft/pull/628",
-      "merged_at": "2026-10-07T20:00:29Z"
-    },
-    {
-      "repo": "storytold/photocraft",
-      "number": 385,
-      "title": "Content-Aware Scale: 13x faster seam removal, bit-identical output (part of #211)",
-      "state": "merged",
-      "url": "https://github.com/storytold/photocraft/pull/385",
-      "merged_at": "2026-10-07T11:39:50Z"
-    },
-    {
-      "repo": "storytold/photocraft",
-      "number": 384,
-      "title": "Paste: a copied image file pastes its pixels (part of #338)",
-      "state": "merged",
-      "url": "https://github.com/storytold/photocraft/pull/384",
-      "merged_at": "2026-10-07T11:39:30Z"
-    },
-    {
-      "repo": "storytold/photocraft",
-      "number": 387,
-      "title": "Content-Aware Scale: enlarging a 1 px wide or tall layer no longer panics",
-      "state": "merged",
-      "url": "https://github.com/storytold/photocraft/pull/387",
-      "merged_at": "2026-10-07T03:34:45Z"
-    },
-    {
-      "repo": "util-linux/util-linux",
-      "number": 4664,
-      "title": "cal: do not span before year 1 and fix month 0 in --span",
-      "state": "merged",
-      "url": "https://github.com/util-linux/util-linux/pull/4664",
-      "merged_at": "2026-10-05T11:35:01Z"
-    },
-    {
-      "repo": "systemd/systemd",
-      "number": 43872,
-      "title": "report: make report-files listing and lookup agree on masked entries",
-      "state": "merged",
-      "url": "https://github.com/systemd/systemd/pull/43872",
-      "merged_at": "2026-10-03T11:57:07Z"
-    }
-  ]
+  "extra": []
 }
