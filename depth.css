@@ -63,13 +63,11 @@
 }
 .depth-on [data-tilt]:hover { --lift: 26px; }
 
-/* The merge log floats angled toward the headline, like a monitor on a desk. */
+/* The merge log floats level; it only leans toward the cursor (fx.js). */
 @media (min-width: 861px) {
   .depth-on .hero-figure {
-    --bx: 7deg; --by: -17deg;
     animation: depth-float 9s ease-in-out infinite;
   }
-  .depth-on .hero-figure:hover { --bx: 2deg; --by: -6deg; }
 }
 @keyframes depth-float {
   0%, 100% { translate: 0 0; }
@@ -78,13 +76,13 @@
 .depth-on .hero-figure .mergefeed {
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.07) inset,
-    -30px 50px 80px -30px rgba(0, 0, 0, 0.75),
+    0 50px 80px -30px rgba(0, 0, 0, 0.75),
     0 0 90px -20px rgba(124, 77, 255, 0.55);
 }
 [data-theme="light"].depth-on .hero-figure .mergefeed {
   box-shadow:
     0 1px 0 #fff inset,
-    -30px 50px 80px -34px rgba(40, 20, 90, 0.35),
+    0 50px 80px -34px rgba(40, 20, 90, 0.35),
     0 0 80px -24px rgba(110, 62, 214, 0.35);
 }
 
