@@ -743,3 +743,82 @@ Object.assign(window.DECK_SIMS, {
       "+test result: ok. 40 passed" ] }
   ]
 });
+
+/* Replays for the Spotifast and PhotoCraft merges of 8 to 13 October. */
+Object.assign(window.DECK_SIMS, {
+
+  "crmne/spotifast#777": [
+    { c: "cargo run --release --example load_liked -- --songs 5000 10000 20000", o: [
+      "  5,000   model 0.22 s   page shown, sorted by title 0.47 s",
+      "  10,000  model 0.95 s   page shown, sorted by title 1.89 s",
+      "!  20,000  model 3.95 s   page shown, sorted by title 7.54 s",
+      "# sync_view cloned and deep-compared the whole list for every 50-song page,",
+      "# then the table rebuilt a row for every song: ~400 times at 20k" ] },
+    { c: "git switch perf/liked-songs-append", o: [
+      "# remember what sync_view last made of the view; if only a page landed at the end",
+      "# and no pending like or unlike touches it, append. Anything else: full rebuild" ] },
+    { c: "cargo run --release --example load_liked -- --songs 5000 10000 20000", o: [
+      "+  5,000   model 0.035 s   page shown 0.10 s",
+      "+  10,000  model 0.12 s    page shown 0.31 s",
+      "+  20,000  model 0.44 s    page shown 1.10 s   (was 7.54 s)" ] },
+    { c: "cargo test appended_pages_show_what_a_full_sync_shows liked_rows_added_page_by_page", o: [
+      "+appended_pages_show_what_a_full_sync_shows ... ok   (view == full rebuild after every step)",
+      "+liked_rows_added_page_by_page_match_rows_made_at_once ... ok",
+      "# both fail if either guard is removed" ] }
+  ],
+
+  "crmne/spotifast#778": [
+    { c: "cargo run --release --example recordings -- --liked 20000 --page 50", o: [
+      "remember_track_recording, 50-track page after 20k liked songs:",
+      "!46.7 ms   walked every URI in `saved`, looked each up in track_recordings",
+      "# set_saved_state and saved_toggle_targets did the same scan" ] },
+    { c: "git switch perf/recording-index   # keep the reverse of track_recordings", o: [
+      "# recording key -> its URIs, kept in step through one helper;",
+      "# ask the recording's own few URIs, still read the live `saved` map" ] },
+    { c: "cargo run --release --example recordings -- --liked 20000 --page 50", o: [
+      "+0.04 ms   (was 46.7 ms)",
+      "+loading 20k liked songs: 13.6 s -> 4.1 s   (0.47 s together with #777)" ] },
+    { c: "cargo test a_recording_follows_its_uris_when_they_move_or_change", o: [
+      "+a_recording_follows_its_uris_when_they_move_or_change ... ok",
+      "# a URI moving recording, unliking the last URI, a direct write to `saved`, sign-out reset" ] }
+  ],
+
+  "storytold/photocraft#901": [
+    { c: "./bench median 1920x1280 --depth 8 --radius 2,8,32", o: [
+      "  r=2    0.70 s", "  r=8    3.73 s", "!  r=32   47.8 s",
+      "# every sample of a disc (~pi r^2) gathered and selected per pixel and channel:",
+      "# each doubling of the radius is ~4x the work" ] },
+    { c: "git switch perf/median-histogram   # fixes #498", o: [
+      "# replace samples with their rank among the window's distinct values (total_cmp order)",
+      "# move a rank histogram in a serpentine over the tile: O(radius) per pixel (Huang)" ] },
+    { c: "./bench median 1920x1280 --depth 8,16,32 --radius 32", o: [
+      "+ 8-bit   0.84 s   57x",
+      "+16-bit   1.09 s   44x",
+      "+32-bit   1.34 s   36x",
+      "# output hashes identical to main in every row" ] },
+    { c: "cargo test -p photocraft-algo median_histogram_matches_the_direct_selection", o: [
+      "+ok: median_ranked == median_direct, bit for bit, radii 2, 3, 7, 16",
+      "# 8-bit ties, 16-bit levels, floats with -0.0, out-of-range values and a NaN",
+      "+test result: ok. 262 passed" ] }
+  ],
+
+  "storytold/photocraft#902": [
+    { c: "./bench motion-blur 2000x1500 --angle 0 --distance 10,2000", o: [
+      "  d=10     0.233 s",
+      "!  d=2000   130 s",
+      "# distance + 1 bilinear samples per pixel, each through Image::sample,",
+      "# which checks the edge policy on all four taps" ] },
+    { c: "git switch perf/motion-blur-kernel", o: [
+      "# offsets and bilinear weights are the same for every pixel: merge the taps once per tile",
+      "# premultiply the window once, then row[x] += w * window[x + dx, y + dy] over whole rows" ] },
+    { c: "./bench motion-blur 2000x1500 --angle 0 --distance 10,2000", o: [
+      "+  d=10     0.039 s   6x",
+      "+  d=2000   1.83 s    71x   (was 130 s)" ] },
+    { c: "./bench motion-blur --compare-main --angle 30 --distance 100", o: [
+      "# not bit-identical: the f32 sums are added in a different order",
+      "+0.0037% of 8-bit samples differ, largest difference 1 level" ] },
+    { c: "cargo test -p photocraft-algo motion_kernel_matches_the_per_pixel_samples", o: [
+      "+ok: within 1e-5 of average_samples, seven angle/distance pairs, with and without alpha",
+      "+test result: ok. 262 passed" ] }
+  ]
+});
