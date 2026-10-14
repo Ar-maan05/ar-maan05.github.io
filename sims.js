@@ -822,3 +822,26 @@ Object.assign(window.DECK_SIMS, {
       "+test result: ok. 262 passed" ] }
   ]
 });
+
+Object.assign(window.DECK_SIMS, {
+
+  "systemd/systemd#43953": [
+    { c: "./build/test-journal-verify --make /tmp/j.journal && flip-offset /tmp/j.journal data.next_hash_offset --to-self", o: [
+      "# one data object's next_hash_offset now points at the object itself" ] },
+    { c: "timeout 60 journalctl --file=/tmp/j.journal --verify", o: [
+      "!(still running at 100% CPU when killed after 60 s)",
+      "# every walker that follows hash chains trusts the link; nothing checked it on read" ] },
+    { c: "timeout 10 journalctl --file=/tmp/j.journal -F MESSAGE | head -3", o: [
+      "!hello", "!hello", "!hello",
+      "# a data object whose next_field_offset points at itself: the same value, forever" ] },
+    { c: "git switch --detach 43953   # reject links that loop back, in check_object()", o: [
+      "# objects are only appended: a valid next_hash_offset is 0 or past the object's own offset,",
+      "# and next_field_offset (new data is prepended to its field) is always below it" ] },
+    { c: "journalctl --file=/tmp/j.journal --verify", o: [
+      "+reported as corrupted straight away: the object is refused with EBADMSG, not looped on" ] },
+    { c: "meson test -C build test-journal-verify", o: [
+      "+4 new cases: hash chain loop, field loop, self-pointing field list, archive punch-holes",
+      "# each hangs or fails without the fix",
+      "+journalctl --verify, --fields and -F unchanged on real journals" ] }
+  ]
+});

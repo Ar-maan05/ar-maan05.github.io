@@ -487,7 +487,7 @@ app = with_persistence(mcp, backend=<span class="s">"redis"</span>, url=<span cl
               <p class="col-why">One datagram with a bad checksum, sendable by anyone on the link, disabled resolved&#x27;s mDNS, LLMNR or stub listener until restart.</p>
               <button class="btn-verify" type="button" aria-label="Debug systemd/systemd#43650">Debug</button>
             </li>
-            <li class="pr" data-pr="systemd/systemd#43608" data-repo="systemd/systemd" data-hl>
+            <li class="pr" data-pr="systemd/systemd#43608" data-repo="systemd/systemd">
               <p class="pr-meta"><span class="col-repo">systemd/systemd</span><span class="col-date">2026-09-02</span></p>
               <h3 class="col-title"><a href="https://github.com/systemd/systemd/pull/43608" target="_blank" rel="noopener">resolve: fix use-after-free of the service browser in mDNS maintenance</a></h3>
               <p class="col-why">A leaked reference let resolved free an mDNS service browser while its maintenance timer still used it: a use-after-free, fixed in one line.</p>
@@ -580,49 +580,49 @@ app = with_persistence(mcp, backend=<span class="s">"redis"</span>, url=<span cl
             <li class="pr" data-pr="systemd/systemd#42578" data-repo="systemd/systemd">
               <p class="pr-meta"><span class="col-repo">systemd/systemd</span><span class="col-date">2026-06-19</span></p>
               <h3 class="col-title"><a href="https://github.com/systemd/systemd/pull/42578" target="_blank" rel="noopener">sysupdate: refuse reboot/pending logic when --component= is used</a></h3>
-              <p class="col-why">Fixed incorrect reboot/pending logic in sysupdate when --component= is used. First PR merged into systemd.</p>
+              <p class="col-why">sysupdate&#x27;s pending and reboot compared a component&#x27;s version against the host OS version, an unrelated version space, so reboot decisions were arbitrary. --component= is now refused with them. My first PR merged into systemd.</p>
               <button class="btn-verify" type="button" aria-label="Debug systemd/systemd#42578">Debug</button>
             </li>
-            <li class="pr" data-pr="lightpanda-io/browser#2722" data-repo="lightpanda-io/browser">
+            <li class="pr" data-pr="lightpanda-io/browser#2722" data-repo="lightpanda-io/browser" data-hl>
               <p class="pr-meta"><span class="col-repo">lightpanda-io/browser</span><span class="col-date">2026-06-19</span></p>
               <h3 class="col-title"><a href="https://github.com/lightpanda-io/browser/pull/2722" target="_blank" rel="noopener">feat(cdp): implement Browser.setDownloadBehavior file downloads</a></h3>
-              <p class="col-why">Implemented Browser.setDownloadBehavior for CDP-driven file download automation.</p>
+              <p class="col-why">Browser.setDownloadBehavior was a no-op, so attachment responses were rendered as pages and their bodies discarded. Downloads now stream to disk under downloadPath, with downloadWillBegin and downloadProgress events.</p>
               <button class="btn-verify" type="button" aria-label="Debug lightpanda-io/browser#2722">Debug</button>
             </li>
             <li class="pr" data-pr="lance-format/lance#7246" data-repo="lance-format/lance">
               <p class="pr-meta"><span class="col-repo">lance-format/lance</span><span class="col-date">2026-06-19</span></p>
               <h3 class="col-title"><a href="https://github.com/lance-format/lance/pull/7246" target="_blank" rel="noopener">fix: evaluate all list-element docs in FTS prefilter walk-the-allowlist branch</a></h3>
-              <p class="col-why">Fixed incorrect evaluation of list-element docs in the FTS prefilter walk-the-allowlist branch.</p>
+              <p class="col-why">FTS search with a where() prefilter on a list column dropped any row whose match wasn&#x27;t the last element, because a row resolved to just one of its doc_ids. The prefilter walk now checks all of them.</p>
               <button class="btn-verify" type="button" aria-label="Debug lance-format/lance#7246">Debug</button>
             </li>
             <li class="pr" data-pr="lancedb/lancedb#3512" data-repo="lancedb/lancedb">
               <p class="pr-meta"><span class="col-repo">lancedb/lancedb</span><span class="col-date">2026-06-17</span></p>
               <h3 class="col-title"><a href="https://github.com/lancedb/lancedb/pull/3512" target="_blank" rel="noopener">fix(rust): return typed errors instead of panicking in Bedrock embedding path</a></h3>
-              <p class="col-why">Replaced panic paths in the Bedrock embedding provider with typed error returns across serialization, API, and runtime failure modes.</p>
+              <p class="col-why">The Bedrock embedding path unwrapped serialization, API and JSON-parsing results and assumed a multi-threaded Tokio runtime, so bad input panicked. Each failure now returns a typed error.</p>
               <button class="btn-verify" type="button" aria-label="Debug lancedb/lancedb#3512">Debug</button>
             </li>
             <li class="pr" data-pr="lancedb/lancedb#3511" data-repo="lancedb/lancedb">
               <p class="pr-meta"><span class="col-repo">lancedb/lancedb</span><span class="col-date">2026-06-17</span></p>
               <h3 class="col-title"><a href="https://github.com/lancedb/lancedb/pull/3511" target="_blank" rel="noopener">fix(python): raise clear TypeError for bare List/Tuple in pydantic schema conversion</a></h3>
-              <p class="col-why">Fixed opaque AttributeError for bare List/Tuple generics in Pydantic schema conversion, raising a clear TypeError instead.</p>
+              <p class="col-why">A bare List or Tuple field crashed to_arrow_schema with an opaque AttributeError: __args__. It now raises a clear TypeError, like other unsupported types.</p>
               <button class="btn-verify" type="button" aria-label="Debug lancedb/lancedb#3511">Debug</button>
             </li>
             <li class="pr" data-pr="BerriAI/litellm#30273" data-repo="BerriAI/litellm">
               <p class="pr-meta"><span class="col-repo">BerriAI/litellm</span><span class="col-date">2026-06-17</span></p>
               <h3 class="col-title"><a href="https://github.com/BerriAI/litellm/pull/30273" target="_blank" rel="noopener">feat(proxy): serve Anthropic-native /v1/models for Claude Code gateway discovery</a></h3>
-              <p class="col-why">Enabled Anthropic-native model discovery for Claude Code gateway deployments.</p>
+              <p class="col-why">Claude Code&#x27;s /model picker came up empty behind a litellm gateway, because it only parses Anthropic&#x27;s Models API shape. /v1/models now returns that shape when the anthropic-version header is sent, and the OpenAI shape otherwise.</p>
               <button class="btn-verify" type="button" aria-label="Debug BerriAI/litellm#30273">Debug</button>
             </li>
             <li class="pr" data-pr="BerriAI/litellm#30387" data-repo="BerriAI/litellm">
               <p class="pr-meta"><span class="col-repo">BerriAI/litellm</span><span class="col-date">2026-06-17</span></p>
               <h3 class="col-title"><a href="https://github.com/BerriAI/litellm/pull/30387" target="_blank" rel="noopener">fix(openai): preserve cache_control for openai-compatible custom endpoints</a></h3>
-              <p class="col-why">Preserved cache_control headers for OpenAI-compatible custom endpoints, fixing silent cache bypass.</p>
+              <p class="col-why">OpenAI-compatible custom endpoints silently lost cache_control in the SDK transform, so Anthropic prompt caching behind a litellm proxy never engaged. It is now preserved.</p>
               <button class="btn-verify" type="button" aria-label="Debug BerriAI/litellm#30387">Debug</button>
             </li>
             <li class="pr" data-pr="BerriAI/litellm#30272" data-repo="BerriAI/litellm">
               <p class="pr-meta"><span class="col-repo">BerriAI/litellm</span><span class="col-date">2026-06-17</span></p>
               <h3 class="col-title"><a href="https://github.com/BerriAI/litellm/pull/30272" target="_blank" rel="noopener">feat(proxy): surface max_input_tokens/max_output_tokens on /v1/models</a></h3>
-              <p class="col-why">Surfaced max_input_tokens and max_output_tokens on /v1/models for accurate client-side capacity planning.</p>
+              <p class="col-why">/v1/models gave clients no context limits, so they hardcoded them or scraped /model/info. It now includes max_input_tokens and max_output_tokens wherever the router knows them.</p>
               <button class="btn-verify" type="button" aria-label="Debug BerriAI/litellm#30272">Debug</button>
             </li>
             <li class="pr" data-pr="lance-format/lance#7251" data-repo="lance-format/lance" data-hl>
@@ -640,49 +640,49 @@ app = with_persistence(mcp, backend=<span class="s">"redis"</span>, url=<span cl
             <li class="pr" data-pr="BerriAI/litellm#29493" data-repo="BerriAI/litellm">
               <p class="pr-meta"><span class="col-repo">BerriAI/litellm</span><span class="col-date">2026-06-08</span></p>
               <h3 class="col-title"><a href="https://github.com/BerriAI/litellm/pull/29493" target="_blank" rel="noopener">feat(proxy): add disable_budget_reservation general setting</a></h3>
-              <p class="col-why">Added a proxy-wide setting to disable budget reservation.</p>
+              <p class="col-why">Phantom budget reservations on multi-replica Redis setups caused intermittent 429s for keys well under budget. Added a general setting, disable_budget_reservation, to turn the reservation off.</p>
               <button class="btn-verify" type="button" aria-label="Debug BerriAI/litellm#29493">Debug</button>
             </li>
             <li class="pr" data-pr="lancedb/lancedb#3459" data-repo="lancedb/lancedb">
               <p class="pr-meta"><span class="col-repo">lancedb/lancedb</span><span class="col-date">2026-06-05</span></p>
               <h3 class="col-title"><a href="https://github.com/lancedb/lancedb/pull/3459" target="_blank" rel="noopener">fix(python): run AsyncTable.search embeddings on a dedicated executor</a></h3>
-              <p class="col-why">Moved embedding search onto a dedicated executor to stop event-loop stalls.</p>
+              <p class="col-why">AsyncTable.search ran query embeddings on asyncio&#x27;s shared default thread pool, so one slow embedding call starved unrelated async I/O. They now run on a dedicated executor that is reset after fork.</p>
               <button class="btn-verify" type="button" aria-label="Debug lancedb/lancedb#3459">Debug</button>
             </li>
             <li class="pr" data-pr="lightpanda-io/browser#2635" data-repo="lightpanda-io/browser">
               <p class="pr-meta"><span class="col-repo">lightpanda-io/browser</span><span class="col-date">2026-06-05</span></p>
               <h3 class="col-title"><a href="https://github.com/lightpanda-io/browser/pull/2635" target="_blank" rel="noopener">Implement input type=file support (FileList, input.files/value, DOM.setFileInputFiles)</a></h3>
-              <p class="col-why">Completed file-input support, from FileList through DOM.setFileInputFiles.</p>
+              <p class="col-why">Real input type=file support: FileList, input.files and the fakepath value, plus CDP DOM.setFileInputFiles to load files from disk and fire input and change, the upload entry point for automation.</p>
               <button class="btn-verify" type="button" aria-label="Debug lightpanda-io/browser#2635">Debug</button>
             </li>
             <li class="pr" data-pr="lancedb/lancedb#3444" data-repo="lancedb/lancedb">
               <p class="pr-meta"><span class="col-repo">lancedb/lancedb</span><span class="col-date">2026-06-03</span></p>
               <h3 class="col-title"><a href="https://github.com/lancedb/lancedb/pull/3444" target="_blank" rel="noopener">feat(rust): support datafusion expressions for merge insert predicates</a></h3>
-              <p class="col-why">The same DataFusion capability carried into LanceDB&#x27;s Rust core.</p>
+              <p class="col-why">The Rust merge-insert builder now takes DataFusion expressions directly (when_matched_update_all_expr, when_not_matched_by_source_delete_expr), skipping the SQL-string round trip. Remote tables return NotSupported.</p>
               <button class="btn-verify" type="button" aria-label="Debug lancedb/lancedb#3444">Debug</button>
             </li>
             <li class="pr" data-pr="BerriAI/litellm#29483" data-repo="BerriAI/litellm">
               <p class="pr-meta"><span class="col-repo">BerriAI/litellm</span><span class="col-date">2026-06-02</span></p>
               <h3 class="col-title"><a href="https://github.com/BerriAI/litellm/pull/29483" target="_blank" rel="noopener">fix(proxy): don&#x27;t enforce budgets on model-discovery / info routes</a></h3>
-              <p class="col-why">Stopped budget enforcement on model-discovery and info routes.</p>
+              <p class="col-why">An exhausted budget returned 429 on GET /v1/models, hiding every model from clients such as Cursor and Open WebUI at startup. Model-discovery and info routes now skip the budget checks.</p>
               <button class="btn-verify" type="button" aria-label="Debug BerriAI/litellm#29483">Debug</button>
             </li>
             <li class="pr" data-pr="python/cpython#150328" data-repo="python/cpython" data-hl>
               <p class="pr-meta"><span class="col-repo">python/cpython</span><span class="col-date">2026-05-28</span></p>
               <h3 class="col-title"><a href="https://github.com/python/cpython/pull/150328" target="_blank" rel="noopener">gh-150311: Fix minor issues in configure.ac for the CYGWIN port</a></h3>
-              <p class="col-why">Build-system fix accepted into the reference Python implementation.</p>
+              <p class="col-why">Three Cygwin fixes in configure.ac: the system name was set to Cygwin while every case matched CYGWIN*, static builds named their library as a DLL import library (.dll.a), and the shared link hardcoded gcc and g++ instead of the configured compiler.</p>
               <button class="btn-verify" type="button" aria-label="Debug python/cpython#150328">Debug</button>
             </li>
             <li class="pr" data-pr="lance-format/lance#6934" data-repo="lance-format/lance">
               <p class="pr-meta"><span class="col-repo">lance-format/lance</span><span class="col-date">2026-05-28</span></p>
               <h3 class="col-title"><a href="https://github.com/lance-format/lance/pull/6934" target="_blank" rel="noopener">feat(rust): support datafusion expressions for merge insert predicates</a></h3>
-              <p class="col-why">DataFusion expressions for merge-insert predicates in a production columnar format.</p>
+              <p class="col-why">Merge-insert&#x27;s conditional-update predicate only took SQL strings, parsed at plan time. Added WhenMatched::UpdateIfExpr so callers can hand the planner a DataFusion Expr directly.</p>
               <button class="btn-verify" type="button" aria-label="Debug lance-format/lance#6934">Debug</button>
             </li>
-            <li class="pr" data-pr="lightpanda-io/browser#2537" data-repo="lightpanda-io/browser" data-hl>
+            <li class="pr" data-pr="lightpanda-io/browser#2537" data-repo="lightpanda-io/browser">
               <p class="pr-meta"><span class="col-repo">lightpanda-io/browser</span><span class="col-date">2026-05-25</span></p>
               <h3 class="col-title"><a href="https://github.com/lightpanda-io/browser/pull/2537" target="_blank" rel="noopener">feat(webapi): implement W3C File API</a></h3>
-              <p class="col-why">W3C File API surface implemented in Zig for an AI-agent headless browser.</p>
+              <p class="col-why">Implemented the File class in Zig, a Blob subclass with a constructor, name and lastModified. lastModified is kept as a double so JavaScript doesn&#x27;t see a bigint.</p>
               <button class="btn-verify" type="button" aria-label="Debug lightpanda-io/browser#2537">Debug</button>
             </li>
         </ol>
