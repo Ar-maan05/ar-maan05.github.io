@@ -3,13 +3,13 @@
   "downloads_display": "20,000+",
   "downloads_short": "20k+",
   "version": "2.2.0",
-  "merged_prs": 55,
+  "merged_prs": 56,
   "repos_merged": 10,
   "repo_merged": {
     "crmne/spotifast": 2,
     "storytold/photocraft": 9,
     "util-linux/util-linux": 4,
-    "systemd/systemd": 18,
+    "systemd/systemd": 19,
     "coreos/afterburn": 2,
     "BerriAI/litellm": 7,
     "lance-format/lance": 4,
@@ -17,5 +17,5 @@
     "lightpanda-io/browser": 3,
     "python/cpython": 1
   },
-  "generated": "2026-10-13T23:38:13.538Z"
+  "generated": "2026-10-14T10:49:36.513Z"
 }

@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-13T23:38:27.408Z",
+  "generated": "2026-10-14T10:49:55.795Z",
   "curated": [
     {
       "repo": "crmne/spotifast",
@@ -505,5 +505,14 @@
       "highlight": true
     }
   ],
-  "extra": []
+  "extra": [
+    {
+      "repo": "systemd/systemd",
+      "number": 43953,
+      "title": "journal-file: refuse hash chains and field lists that loop back",
+      "state": "merged",
+      "url": "https://github.com/systemd/systemd/pull/43953",
+      "merged_at": "2026-10-14T10:38:32Z"
+    }
+  ]
 }
