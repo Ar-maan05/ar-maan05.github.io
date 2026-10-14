@@ -1,6 +1,15 @@
 {
-  "generated": "2026-10-14T10:49:55.795Z",
+  "generated": "2026-10-14T16:19:05.302Z",
   "curated": [
+    {
+      "repo": "systemd/systemd",
+      "number": 43953,
+      "title": "journal-file: refuse hash chains and field lists that loop back",
+      "state": "merged",
+      "merged_at": "2026-10-14T10:38:32Z",
+      "url": "https://github.com/systemd/systemd/pull/43953",
+      "note": "A single flipped bit in a data object's next_hash_offset made journalctl --verify spin forever instead of reporting corruption, and field and data lists could loop the same way. Offsets that point backward are now refused as invalid."
+    },
     {
       "repo": "crmne/spotifast",
       "number": 778,
@@ -53,7 +62,8 @@
       "state": "merged",
       "merged_at": "2026-10-08T08:21:22Z",
       "url": "https://github.com/systemd/systemd/pull/43952",
-      "note": "Tree mode asked PID 1 about the same unit again for every path that reached it. Caching each answer per unit takes systemctl list-dependencies --all from 63.6 s to 0.34 s, byte-for-byte identical output."
+      "note": "Tree mode asked PID 1 about the same unit again for every path that reached it. Caching each answer per unit takes systemctl list-dependencies --all from 63.6 s to 0.34 s, byte-for-byte identical output.",
+      "highlight": true
     },
     {
       "repo": "storytold/photocraft",
@@ -208,8 +218,7 @@
       "state": "merged",
       "merged_at": "2026-09-02T21:37:53Z",
       "url": "https://github.com/systemd/systemd/pull/43608",
-      "note": "A leaked reference let resolved free an mDNS service browser while its maintenance timer still used it: a use-after-free, fixed in one line.",
-      "highlight": true
+      "note": "A leaked reference let resolved free an mDNS service browser while its maintenance timer still used it: a use-after-free, fixed in one line."
     },
     {
       "repo": "systemd/systemd",
@@ -345,7 +354,7 @@
       "state": "merged",
       "merged_at": "2026-06-19T20:11:28Z",
       "url": "https://github.com/systemd/systemd/pull/42578",
-      "note": "Fixed incorrect reboot/pending logic in sysupdate when --component= is used. First PR merged into systemd."
+      "note": "sysupdate's pending and reboot compared a component's version against the host OS version, an unrelated version space, so reboot decisions were arbitrary. --component= is now refused with them. My first PR merged into systemd."
     },
     {
       "repo": "lightpanda-io/browser",
@@ -354,7 +363,8 @@
       "state": "merged",
       "merged_at": "2026-06-19T12:57:42Z",
       "url": "https://github.com/lightpanda-io/browser/pull/2722",
-      "note": "Implemented Browser.setDownloadBehavior for CDP-driven file download automation."
+      "note": "Browser.setDownloadBehavior was a no-op, so attachment responses were rendered as pages and their bodies discarded. Downloads now stream to disk under downloadPath, with downloadWillBegin and downloadProgress events.",
+      "highlight": true
     },
     {
       "repo": "lance-format/lance",
@@ -363,7 +373,7 @@
       "state": "merged",
       "merged_at": "2026-06-19T07:56:18Z",
       "url": "https://github.com/lance-format/lance/pull/7246",
-      "note": "Fixed incorrect evaluation of list-element docs in the FTS prefilter walk-the-allowlist branch."
+      "note": "FTS search with a where() prefilter on a list column dropped any row whose match wasn't the last element, because a row resolved to just one of its doc_ids. The prefilter walk now checks all of them."
     },
     {
       "repo": "lancedb/lancedb",
@@ -372,7 +382,7 @@
       "state": "merged",
       "merged_at": "2026-06-17T22:06:45Z",
       "url": "https://github.com/lancedb/lancedb/pull/3512",
-      "note": "Replaced panic paths in the Bedrock embedding provider with typed error returns across serialization, API, and runtime failure modes."
+      "note": "The Bedrock embedding path unwrapped serialization, API and JSON-parsing results and assumed a multi-threaded Tokio runtime, so bad input panicked. Each failure now returns a typed error."
     },
     {
       "repo": "lancedb/lancedb",
@@ -381,7 +391,7 @@
       "state": "merged",
       "merged_at": "2026-06-17T18:58:48Z",
       "url": "https://github.com/lancedb/lancedb/pull/3511",
-      "note": "Fixed opaque AttributeError for bare List/Tuple generics in Pydantic schema conversion, raising a clear TypeError instead."
+      "note": "A bare List or Tuple field crashed to_arrow_schema with an opaque AttributeError: __args__. It now raises a clear TypeError, like other unsupported types."
     },
     {
       "repo": "BerriAI/litellm",
@@ -390,7 +400,7 @@
       "state": "merged",
       "merged_at": "2026-06-17T11:23:21Z",
       "url": "https://github.com/BerriAI/litellm/pull/30273",
-      "note": "Enabled Anthropic-native model discovery for Claude Code gateway deployments."
+      "note": "Claude Code's /model picker came up empty behind a litellm gateway, because it only parses Anthropic's Models API shape. /v1/models now returns that shape when the anthropic-version header is sent, and the OpenAI shape otherwise."
     },
     {
       "repo": "BerriAI/litellm",
@@ -399,7 +409,7 @@
       "state": "merged",
       "merged_at": "2026-06-17T11:03:48Z",
       "url": "https://github.com/BerriAI/litellm/pull/30387",
-      "note": "Preserved cache_control headers for OpenAI-compatible custom endpoints, fixing silent cache bypass."
+      "note": "OpenAI-compatible custom endpoints silently lost cache_control in the SDK transform, so Anthropic prompt caching behind a litellm proxy never engaged. It is now preserved."
     },
     {
       "repo": "BerriAI/litellm",
@@ -408,7 +418,7 @@
       "state": "merged",
       "merged_at": "2026-06-17T10:59:23Z",
       "url": "https://github.com/BerriAI/litellm/pull/30272",
-      "note": "Surfaced max_input_tokens and max_output_tokens on /v1/models for accurate client-side capacity planning."
+      "note": "/v1/models gave clients no context limits, so they hardcoded them or scraped /model/info. It now includes max_input_tokens and max_output_tokens wherever the router knows them."
     },
     {
       "repo": "lance-format/lance",
@@ -437,7 +447,7 @@
       "state": "merged",
       "merged_at": "2026-06-08T12:36:51Z",
       "url": "https://github.com/BerriAI/litellm/pull/29493",
-      "note": "Added a proxy-wide setting to disable budget reservation."
+      "note": "Phantom budget reservations on multi-replica Redis setups caused intermittent 429s for keys well under budget. Added a general setting, disable_budget_reservation, to turn the reservation off."
     },
     {
       "repo": "lancedb/lancedb",
@@ -446,7 +456,7 @@
       "state": "merged",
       "merged_at": "2026-06-05T04:57:16Z",
       "url": "https://github.com/lancedb/lancedb/pull/3459",
-      "note": "Moved embedding search onto a dedicated executor to stop event-loop stalls."
+      "note": "AsyncTable.search ran query embeddings on asyncio's shared default thread pool, so one slow embedding call starved unrelated async I/O. They now run on a dedicated executor that is reset after fork."
     },
     {
       "repo": "lightpanda-io/browser",
@@ -455,7 +465,7 @@
       "state": "merged",
       "merged_at": "2026-06-05T02:52:24Z",
       "url": "https://github.com/lightpanda-io/browser/pull/2635",
-      "note": "Completed file-input support, from FileList through DOM.setFileInputFiles."
+      "note": "Real input type=file support: FileList, input.files and the fakepath value, plus CDP DOM.setFileInputFiles to load files from disk and fire input and change, the upload entry point for automation."
     },
     {
       "repo": "lancedb/lancedb",
@@ -464,7 +474,7 @@
       "state": "merged",
       "merged_at": "2026-06-03T22:47:51Z",
       "url": "https://github.com/lancedb/lancedb/pull/3444",
-      "note": "The same DataFusion capability carried into LanceDB's Rust core."
+      "note": "The Rust merge-insert builder now takes DataFusion expressions directly (when_matched_update_all_expr, when_not_matched_by_source_delete_expr), skipping the SQL-string round trip. Remote tables return NotSupported."
     },
     {
       "repo": "BerriAI/litellm",
@@ -473,7 +483,7 @@
       "state": "merged",
       "merged_at": "2026-06-02T11:18:50Z",
       "url": "https://github.com/BerriAI/litellm/pull/29483",
-      "note": "Stopped budget enforcement on model-discovery and info routes."
+      "note": "An exhausted budget returned 429 on GET /v1/models, hiding every model from clients such as Cursor and Open WebUI at startup. Model-discovery and info routes now skip the budget checks."
     },
     {
       "repo": "python/cpython",
@@ -482,7 +492,7 @@
       "state": "merged",
       "merged_at": "2026-05-28T12:38:39Z",
       "url": "https://github.com/python/cpython/pull/150328",
-      "note": "Build-system fix accepted into the reference Python implementation.",
+      "note": "Three Cygwin fixes in configure.ac: the system name was set to Cygwin while every case matched CYGWIN*, static builds named their library as a DLL import library (.dll.a), and the shared link hardcoded gcc and g++ instead of the configured compiler.",
       "highlight": true
     },
     {
@@ -492,7 +502,7 @@
       "state": "merged",
       "merged_at": "2026-05-28T04:13:33Z",
       "url": "https://github.com/lance-format/lance/pull/6934",
-      "note": "DataFusion expressions for merge-insert predicates in a production columnar format."
+      "note": "Merge-insert's conditional-update predicate only took SQL strings, parsed at plan time. Added WhenMatched::UpdateIfExpr so callers can hand the planner a DataFusion Expr directly."
     },
     {
       "repo": "lightpanda-io/browser",
@@ -501,18 +511,8 @@
       "state": "merged",
       "merged_at": "2026-05-25T04:10:43Z",
       "url": "https://github.com/lightpanda-io/browser/pull/2537",
-      "note": "W3C File API surface implemented in Zig for an AI-agent headless browser.",
-      "highlight": true
+      "note": "Implemented the File class in Zig, a Blob subclass with a constructor, name and lastModified. lastModified is kept as a double so JavaScript doesn't see a bigint."
     }
   ],
-  "extra": [
-    {
-      "repo": "systemd/systemd",
-      "number": 43953,
-      "title": "journal-file: refuse hash chains and field lists that loop back",
-      "state": "merged",
-      "url": "https://github.com/systemd/systemd/pull/43953",
-      "merged_at": "2026-10-14T10:38:32Z"
-    }
-  ]
+  "extra": []
 }
