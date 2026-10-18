@@ -3,9 +3,10 @@
   "downloads_display": "20,000+",
   "downloads_short": "20k+",
   "version": "2.2.0",
-  "merged_prs": 56,
-  "repos_merged": 10,
+  "merged_prs": 57,
+  "repos_merged": 11,
   "repo_merged": {
+    "avahi/avahi": 1,
     "crmne/spotifast": 2,
     "storytold/photocraft": 9,
     "util-linux/util-linux": 4,
@@ -17,5 +18,5 @@
     "lightpanda-io/browser": 3,
     "python/cpython": 1
   },
-  "generated": "2026-10-17T09:52:38.692Z"
+  "generated": "2026-10-18T10:04:30.617Z"
 }
