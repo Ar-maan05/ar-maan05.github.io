@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-18T10:04:46.299Z",
+  "generated": "2026-10-19T11:31:52.762Z",
   "curated": [
     {
       "repo": "systemd/systemd",
@@ -515,6 +515,46 @@
     }
   ],
   "extra": [
+    {
+      "repo": "NLnetLabs/unbound",
+      "number": 1532,
+      "title": "Fix packet position after a short RRSIG in pkt_rrsig_covered",
+      "state": "merged",
+      "url": "https://github.com/NLnetLabs/unbound/pull/1532",
+      "merged_at": "2026-10-19T08:54:14Z"
+    },
+    {
+      "repo": "NLnetLabs/unbound",
+      "number": 1528,
+      "title": "Fix NSEC at apex detection for short type bitmaps",
+      "state": "merged",
+      "url": "https://github.com/NLnetLabs/unbound/pull/1528",
+      "merged_at": "2026-10-19T07:21:52Z"
+    },
+    {
+      "repo": "avahi/avahi",
+      "number": 998,
+      "title": "core: check the record allocation before filling it in",
+      "state": "merged",
+      "url": "https://github.com/avahi/avahi/pull/998",
+      "merged_at": "2026-10-18T21:44:29Z"
+    },
+    {
+      "repo": "OpenPrinting/cups",
+      "number": 1769,
+      "title": "Fix ippValidateAttribute accepting over-long URI values",
+      "state": "merged",
+      "url": "https://github.com/OpenPrinting/cups/pull/1769",
+      "merged_at": "2026-10-18T17:42:11Z"
+    },
+    {
+      "repo": "OpenPrinting/cups",
+      "number": 1770,
+      "title": "Fix PassEnv separator skipping",
+      "state": "merged",
+      "url": "https://github.com/OpenPrinting/cups/pull/1770",
+      "merged_at": "2026-10-18T17:38:17Z"
+    },
     {
       "repo": "avahi/avahi",
       "number": 997,

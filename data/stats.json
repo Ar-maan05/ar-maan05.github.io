@@ -3,10 +3,12 @@
   "downloads_display": "20,000+",
   "downloads_short": "20k+",
   "version": "2.2.0",
-  "merged_prs": 57,
-  "repos_merged": 11,
+  "merged_prs": 62,
+  "repos_merged": 13,
   "repo_merged": {
-    "avahi/avahi": 1,
+    "avahi/avahi": 2,
+    "NLnetLabs/unbound": 2,
+    "OpenPrinting/cups": 2,
     "crmne/spotifast": 2,
     "storytold/photocraft": 9,
     "util-linux/util-linux": 4,
@@ -18,5 +20,5 @@
     "lightpanda-io/browser": 3,
     "python/cpython": 1
   },
-  "generated": "2026-10-18T10:04:30.617Z"
+  "generated": "2026-10-19T11:31:36.762Z"
 }
