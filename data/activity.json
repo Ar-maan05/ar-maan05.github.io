@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-19T11:31:52.762Z",
+  "generated": "2026-10-20T10:37:13.285Z",
   "curated": [
     {
       "repo": "systemd/systemd",
@@ -515,6 +515,14 @@
     }
   ],
   "extra": [
+    {
+      "repo": "util-linux/util-linux",
+      "number": 4692,
+      "title": "libmount: index the path cache by hash",
+      "state": "merged",
+      "url": "https://github.com/util-linux/util-linux/pull/4692",
+      "merged_at": "2026-10-19T11:50:48Z"
+    },
     {
       "repo": "NLnetLabs/unbound",
       "number": 1532,
