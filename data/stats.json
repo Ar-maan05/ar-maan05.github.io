@@ -3,9 +3,10 @@
   "downloads_display": "20,000+",
   "downloads_short": "20k+",
   "version": "2.2.0",
-  "merged_prs": 63,
-  "repos_merged": 13,
+  "merged_prs": 65,
+  "repos_merged": 14,
   "repo_merged": {
+    "sudo-project/sudo": 2,
     "avahi/avahi": 2,
     "NLnetLabs/unbound": 2,
     "OpenPrinting/cups": 2,
@@ -20,5 +21,5 @@
     "lightpanda-io/browser": 3,
     "python/cpython": 1
   },
-  "generated": "2026-10-21T10:48:28.197Z"
+  "generated": "2026-10-22T10:49:22.279Z"
 }

@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-21T10:48:45.263Z",
+  "generated": "2026-10-22T10:49:40.546Z",
   "curated": [
     {
       "repo": "systemd/systemd",
@@ -515,6 +515,22 @@
     }
   ],
   "extra": [
+    {
+      "repo": "sudo-project/sudo",
+      "number": 573,
+      "title": "toke.l: check the whole argument regex in strict mode",
+      "state": "merged",
+      "url": "https://github.com/sudo-project/sudo/pull/573",
+      "merged_at": "2026-10-22T00:18:52Z"
+    },
+    {
+      "repo": "sudo-project/sudo",
+      "number": 574,
+      "title": "parse_ldif: keep the full length when joining folded lines",
+      "state": "merged",
+      "url": "https://github.com/sudo-project/sudo/pull/574",
+      "merged_at": "2026-10-22T00:13:30Z"
+    },
     {
       "repo": "util-linux/util-linux",
       "number": 4692,
