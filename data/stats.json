@@ -1,15 +1,16 @@
 {
-  "downloads": 20000,
-  "downloads_display": "20,000+",
-  "downloads_short": "20k+",
+  "downloads": 21000,
+  "downloads_display": "21,000+",
+  "downloads_short": "21k+",
   "version": "2.2.0",
-  "merged_prs": 65,
-  "repos_merged": 14,
+  "merged_prs": 69,
+  "repos_merged": 15,
   "repo_merged": {
-    "sudo-project/sudo": 2,
+    "sudo-project/sudo": 3,
+    "OpenPrinting/cups": 3,
     "avahi/avahi": 2,
     "NLnetLabs/unbound": 2,
-    "OpenPrinting/cups": 2,
+    "ppp-project/ppp": 2,
     "util-linux/util-linux": 5,
     "crmne/spotifast": 2,
     "storytold/photocraft": 9,
@@ -21,5 +22,5 @@
     "lightpanda-io/browser": 3,
     "python/cpython": 1
   },
-  "generated": "2026-10-22T10:49:22.279Z"
+  "generated": "2026-10-23T10:41:23.642Z"
 }

@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-22T10:49:40.546Z",
+  "generated": "2026-10-23T10:41:42.619Z",
   "curated": [
     {
       "repo": "systemd/systemd",
@@ -515,6 +515,38 @@
     }
   ],
   "extra": [
+    {
+      "repo": "ppp-project/ppp",
+      "number": 648,
+      "title": "plugins/pppoe: Log the Relay-ID bytes with pppoe-verbose again",
+      "state": "merged",
+      "url": "https://github.com/ppp-project/ppp/pull/648",
+      "merged_at": "2026-10-23T01:31:53Z"
+    },
+    {
+      "repo": "ppp-project/ppp",
+      "number": 647,
+      "title": "pppd: Make +ua set the password from the file again",
+      "state": "merged",
+      "url": "https://github.com/ppp-project/ppp/pull/647",
+      "merged_at": "2026-10-23T01:31:34Z"
+    },
+    {
+      "repo": "sudo-project/sudo",
+      "number": 575,
+      "title": "parse_ldif: don't merge user and group lists that differ only in case",
+      "state": "merged",
+      "url": "https://github.com/sudo-project/sudo/pull/575",
+      "merged_at": "2026-10-22T19:27:05Z"
+    },
+    {
+      "repo": "OpenPrinting/cups",
+      "number": 1782,
+      "title": "Show the rejected device-uri in CUPS-Create-Local-Printer errors",
+      "state": "merged",
+      "url": "https://github.com/OpenPrinting/cups/pull/1782",
+      "merged_at": "2026-10-22T14:09:20Z"
+    },
     {
       "repo": "sudo-project/sudo",
       "number": 573,
