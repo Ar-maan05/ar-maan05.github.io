@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-23T10:41:42.619Z",
+  "generated": "2026-10-24T09:58:18.981Z",
   "curated": [
     {
       "repo": "systemd/systemd",
@@ -515,6 +515,14 @@
     }
   ],
   "extra": [
+    {
+      "repo": "fwupd/fwupd",
+      "number": 11248,
+      "title": "devlink: Bound netlink string reads by the attribute length",
+      "state": "merged",
+      "url": "https://github.com/fwupd/fwupd/pull/11248",
+      "merged_at": "2026-10-23T21:58:21Z"
+    },
     {
       "repo": "ppp-project/ppp",
       "number": 648,

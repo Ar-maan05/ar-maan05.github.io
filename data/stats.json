@@ -3,9 +3,10 @@
   "downloads_display": "21,000+",
   "downloads_short": "21k+",
   "version": "2.2.0",
-  "merged_prs": 69,
-  "repos_merged": 15,
+  "merged_prs": 70,
+  "repos_merged": 16,
   "repo_merged": {
+    "fwupd/fwupd": 1,
     "sudo-project/sudo": 3,
     "OpenPrinting/cups": 3,
     "avahi/avahi": 2,
@@ -22,5 +23,5 @@
     "lightpanda-io/browser": 3,
     "python/cpython": 1
   },
-  "generated": "2026-10-23T10:41:23.642Z"
+  "generated": "2026-10-24T09:58:04.526Z"
 }
