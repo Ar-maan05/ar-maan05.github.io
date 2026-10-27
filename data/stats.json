@@ -3,19 +3,19 @@
   "downloads_display": "21,000+",
   "downloads_short": "21k+",
   "version": "2.2.0",
-  "merged_prs": 70,
+  "merged_prs": 72,
   "repos_merged": 16,
   "repo_merged": {
+    "ppp-project/ppp": 3,
     "fwupd/fwupd": 1,
     "sudo-project/sudo": 3,
     "OpenPrinting/cups": 3,
     "avahi/avahi": 2,
     "NLnetLabs/unbound": 2,
-    "ppp-project/ppp": 2,
     "util-linux/util-linux": 5,
     "crmne/spotifast": 2,
     "storytold/photocraft": 9,
-    "systemd/systemd": 19,
+    "systemd/systemd": 20,
     "coreos/afterburn": 2,
     "BerriAI/litellm": 7,
     "lance-format/lance": 4,
@@ -23,5 +23,5 @@
     "lightpanda-io/browser": 3,
     "python/cpython": 1
   },
-  "generated": "2026-10-26T11:50:24.439Z"
+  "generated": "2026-10-27T11:14:47.296Z"
 }

@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-26T11:50:40.571Z",
+  "generated": "2026-10-27T11:15:06.570Z",
   "curated": [
     {
       "repo": "systemd/systemd",
@@ -515,6 +515,22 @@
     }
   ],
   "extra": [
+    {
+      "repo": "systemd/systemd",
+      "number": 43954,
+      "title": "journal-verify: make journalctl --verify 2.65x faster",
+      "state": "merged",
+      "url": "https://github.com/systemd/systemd/pull/43954",
+      "merged_at": "2026-10-27T07:27:31Z"
+    },
+    {
+      "repo": "ppp-project/ppp",
+      "number": 652,
+      "title": "pppd: Check the permissions of the EAP-TLS client secrets file",
+      "state": "merged",
+      "url": "https://github.com/ppp-project/ppp/pull/652",
+      "merged_at": "2026-10-26T23:25:00Z"
+    },
     {
       "repo": "fwupd/fwupd",
       "number": 11248,
