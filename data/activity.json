@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-27T11:15:06.570Z",
+  "generated": "2026-10-28T11:49:11.777Z",
   "curated": [
     {
       "repo": "systemd/systemd",
@@ -515,6 +515,30 @@
     }
   ],
   "extra": [
+    {
+      "repo": "OpenPrinting/libcupsfilters",
+      "number": 305,
+      "title": "image: compare the tile cache limit in tiles, not bytes",
+      "state": "merged",
+      "url": "https://github.com/OpenPrinting/libcupsfilters/pull/305",
+      "merged_at": "2026-10-27T23:55:58Z"
+    },
+    {
+      "repo": "OpenPrinting/libcupsfilters",
+      "number": 306,
+      "title": "fontembed, raster: fix signed shifts and unchecked log calls",
+      "state": "merged",
+      "url": "https://github.com/OpenPrinting/libcupsfilters/pull/306",
+      "merged_at": "2026-10-27T23:30:40Z"
+    },
+    {
+      "repo": "OpenPrinting/libcupsfilters",
+      "number": 303,
+      "title": "fontembed: copy the right number of tail bytes for the table checksum",
+      "state": "merged",
+      "url": "https://github.com/OpenPrinting/libcupsfilters/pull/303",
+      "merged_at": "2026-10-27T18:16:38Z"
+    },
     {
       "repo": "systemd/systemd",
       "number": 43954,
