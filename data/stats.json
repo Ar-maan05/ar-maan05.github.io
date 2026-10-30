@@ -3,7 +3,7 @@
   "downloads_display": "21,000+",
   "downloads_short": "21k+",
   "version": "2.2.0",
-  "merged_prs": 75,
+  "merged_prs": 76,
   "repos_merged": 17,
   "repo_merged": {
     "OpenPrinting/libcupsfilters": 3,
@@ -13,6 +13,7 @@
     "OpenPrinting/cups": 3,
     "avahi/avahi": 2,
     "NLnetLabs/unbound": 2,
+    "python/cpython": 2,
     "util-linux/util-linux": 5,
     "crmne/spotifast": 2,
     "storytold/photocraft": 9,
@@ -21,8 +22,7 @@
     "BerriAI/litellm": 7,
     "lance-format/lance": 4,
     "lancedb/lancedb": 5,
-    "lightpanda-io/browser": 3,
-    "python/cpython": 1
+    "lightpanda-io/browser": 3
   },
-  "generated": "2026-10-29T11:56:45.353Z"
+  "generated": "2026-10-30T11:50:53.819Z"
 }
