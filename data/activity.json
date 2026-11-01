@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-31T11:24:26.875Z",
+  "generated": "2026-11-01T12:16:55.981Z",
   "curated": [
     {
       "repo": "systemd/systemd",
@@ -515,6 +515,14 @@
     }
   ],
   "extra": [
+    {
+      "repo": "lance-format/lance",
+      "number": 6975,
+      "title": "feat(namespace-dir): support manifest-backed table renames",
+      "state": "merged",
+      "url": "https://github.com/lance-format/lance/pull/6975",
+      "merged_at": "2026-11-01T00:32:18Z"
+    },
     {
       "repo": "python/cpython",
       "number": 159504,

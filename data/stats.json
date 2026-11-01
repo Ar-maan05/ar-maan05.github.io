@@ -3,7 +3,7 @@
   "downloads_display": "21,000+",
   "downloads_short": "21k+",
   "version": "2.2.0",
-  "merged_prs": 76,
+  "merged_prs": 77,
   "repos_merged": 17,
   "repo_merged": {
     "OpenPrinting/libcupsfilters": 3,
@@ -20,9 +20,9 @@
     "systemd/systemd": 20,
     "coreos/afterburn": 2,
     "BerriAI/litellm": 7,
-    "lance-format/lance": 4,
+    "lance-format/lance": 5,
     "lancedb/lancedb": 5,
     "lightpanda-io/browser": 3
   },
-  "generated": "2026-10-31T11:24:09.827Z"
+  "generated": "2026-11-01T12:16:37.372Z"
 }
