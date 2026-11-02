@@ -1,5 +1,5 @@
 {
-  "generated": "2026-11-01T12:16:55.981Z",
+  "generated": "2026-11-02T14:09:27.890Z",
   "curated": [
     {
       "repo": "systemd/systemd",
@@ -515,6 +515,94 @@
     }
   ],
   "extra": [
+    {
+      "repo": "fwupd/fwupd",
+      "number": 11309,
+      "title": "Respect the buffer size in fu_strsplit_full()",
+      "state": "merged",
+      "url": "https://github.com/fwupd/fwupd/pull/11309",
+      "merged_at": "2026-11-02T10:28:47Z"
+    },
+    {
+      "repo": "fwupd/fwupd",
+      "number": 11310,
+      "title": "Strip all leading whitespace in fu_strstrip()",
+      "state": "merged",
+      "url": "https://github.com/fwupd/fwupd/pull/11310",
+      "merged_at": "2026-11-02T10:28:30Z"
+    },
+    {
+      "repo": "util-linux/util-linux",
+      "number": 4690,
+      "title": "agetty: parse os-release line by line",
+      "state": "merged",
+      "url": "https://github.com/util-linux/util-linux/pull/4690",
+      "merged_at": "2026-11-02T10:06:25Z"
+    },
+    {
+      "repo": "OpenPrinting/cups-browsed",
+      "number": 79,
+      "title": "cups-browsed: fix BrowseAllow /0, link-local check and overwritten queue result",
+      "state": "merged",
+      "url": "https://github.com/OpenPrinting/cups-browsed/pull/79",
+      "merged_at": "2026-11-02T09:07:04Z"
+    },
+    {
+      "repo": "OpenPrinting/cups-browsed",
+      "number": 78,
+      "title": "cups-browsed: don't use name@host for IPP printers with DNS-SD naming",
+      "state": "merged",
+      "url": "https://github.com/OpenPrinting/cups-browsed/pull/78",
+      "merged_at": "2026-11-02T09:06:42Z"
+    },
+    {
+      "repo": "OpenPrinting/cups-filters",
+      "number": 786,
+      "title": "foomatic-rip: keep NUL bytes when saving PostScript for re-feeding",
+      "state": "merged",
+      "url": "https://github.com/OpenPrinting/cups-filters/pull/786",
+      "merged_at": "2026-11-02T09:04:27Z"
+    },
+    {
+      "repo": "OpenPrinting/libppd",
+      "number": 98,
+      "title": "ppd-generator: drop the broken URF default resolution check",
+      "state": "merged",
+      "url": "https://github.com/OpenPrinting/libppd/pull/98",
+      "merged_at": "2026-11-02T08:09:11Z"
+    },
+    {
+      "repo": "OpenPrinting/libppd",
+      "number": 97,
+      "title": "pdftops: fix the printer make and model used for quirks",
+      "state": "merged",
+      "url": "https://github.com/OpenPrinting/libppd/pull/97",
+      "merged_at": "2026-11-02T08:05:23Z"
+    },
+    {
+      "repo": "lsof-org/lsof",
+      "number": 375,
+      "title": "main: don't parse the -r repeat count again as a -c option",
+      "state": "merged",
+      "url": "https://github.com/lsof-org/lsof/pull/375",
+      "merged_at": "2026-11-02T05:58:45Z"
+    },
+    {
+      "repo": "OpenPrinting/libcupsfilters",
+      "number": 313,
+      "title": "ieee1284: keep the last device ID field when it has no trailing semicolon",
+      "state": "merged",
+      "url": "https://github.com/OpenPrinting/libcupsfilters/pull/313",
+      "merged_at": "2026-11-02T00:36:22Z"
+    },
+    {
+      "repo": "OpenPrinting/libcupsfilters",
+      "number": 312,
+      "title": "ieee1284: fix inverted compare for makes with a space in their name",
+      "state": "merged",
+      "url": "https://github.com/OpenPrinting/libcupsfilters/pull/312",
+      "merged_at": "2026-11-01T23:54:24Z"
+    },
     {
       "repo": "lance-format/lance",
       "number": 6975,
