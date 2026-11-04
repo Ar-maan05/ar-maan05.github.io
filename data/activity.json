@@ -1,5 +1,5 @@
 {
-  "generated": "2026-11-02T14:09:27.890Z",
+  "generated": "2026-11-04T13:27:44.860Z",
   "curated": [
     {
       "repo": "systemd/systemd",
@@ -515,6 +515,118 @@
     }
   ],
   "extra": [
+    {
+      "repo": "AcademySoftwareFoundation/openexr",
+      "number": 2802,
+      "title": "Use unaligned stores in the flat unpack fast paths",
+      "state": "merged",
+      "url": "https://github.com/AcademySoftwareFoundation/openexr/pull/2802",
+      "merged_at": "2026-11-03T15:05:52Z"
+    },
+    {
+      "repo": "systemd/systemd",
+      "number": 43762,
+      "title": "mount-util: don't re-parse the mount table after every single unmount",
+      "state": "merged",
+      "url": "https://github.com/systemd/systemd/pull/43762",
+      "merged_at": "2026-11-03T15:00:21Z"
+    },
+    {
+      "repo": "fwupd/fwupd",
+      "number": 11324,
+      "title": "Do not truncate the address in fu_firmware_strparse_uint24_safe()",
+      "state": "merged",
+      "url": "https://github.com/fwupd/fwupd/pull/11324",
+      "merged_at": "2026-11-03T08:00:33Z"
+    },
+    {
+      "repo": "fwupd/fwupd",
+      "number": 11325,
+      "title": "Pad holes after a one byte record at address zero in ihex files",
+      "state": "merged",
+      "url": "https://github.com/fwupd/fwupd/pull/11325",
+      "merged_at": "2026-11-03T08:00:32Z"
+    },
+    {
+      "repo": "lsof-org/lsof",
+      "number": 376,
+      "title": "linux: apply -s UDP state lists to UDP sockets",
+      "state": "merged",
+      "url": "https://github.com/lsof-org/lsof/pull/376",
+      "merged_at": "2026-11-03T06:12:50Z"
+    },
+    {
+      "repo": "lsof-org/lsof",
+      "number": 377,
+      "title": "reject an empty entry in the -u list",
+      "state": "merged",
+      "url": "https://github.com/lsof-org/lsof/pull/377",
+      "merged_at": "2026-11-03T00:58:29Z"
+    },
+    {
+      "repo": "OpenPrinting/cups-filters",
+      "number": 790,
+      "title": "foomatic-rip: stop the PPD reader at EOF, log unhexify errors",
+      "state": "merged",
+      "url": "https://github.com/OpenPrinting/cups-filters/pull/790",
+      "merged_at": "2026-11-03T00:21:51Z"
+    },
+    {
+      "repo": "OpenPrinting/libppd",
+      "number": 102,
+      "title": "ppd-filter: fix & typo in the filter-streaming-mode check",
+      "state": "merged",
+      "url": "https://github.com/OpenPrinting/libppd/pull/102",
+      "merged_at": "2026-11-03T00:20:26Z"
+    },
+    {
+      "repo": "OpenPrinting/libcupsfilters",
+      "number": 318,
+      "title": "image-zoom: fix vertical flip in nearest-neighbour zoom",
+      "state": "merged",
+      "url": "https://github.com/OpenPrinting/libcupsfilters/pull/318",
+      "merged_at": "2026-11-03T00:17:28Z"
+    },
+    {
+      "repo": "OpenPrinting/libcupsfilters",
+      "number": 314,
+      "title": "ipp-options: fix \"overrides\" parsing when built against CUPS 2.4",
+      "state": "merged",
+      "url": "https://github.com/OpenPrinting/libcupsfilters/pull/314",
+      "merged_at": "2026-11-02T23:07:32Z"
+    },
+    {
+      "repo": "OpenPrinting/cups-browsed",
+      "number": 80,
+      "title": "cups-browsed: fix Cluster default member, stale frees and BrowseInterval 0",
+      "state": "merged",
+      "url": "https://github.com/OpenPrinting/cups-browsed/pull/80",
+      "merged_at": "2026-11-02T23:06:06Z"
+    },
+    {
+      "repo": "OpenPrinting/libppd",
+      "number": 101,
+      "title": "pdftops: don't crash on PDFTOPDF comments without a colon",
+      "state": "merged",
+      "url": "https://github.com/OpenPrinting/libppd/pull/101",
+      "merged_at": "2026-11-02T23:00:42Z"
+    },
+    {
+      "repo": "OpenPrinting/cups-filters",
+      "number": 789,
+      "title": "foomatic-rip: run ghostscript without a shell and quote file names",
+      "state": "merged",
+      "url": "https://github.com/OpenPrinting/cups-filters/pull/789",
+      "merged_at": "2026-11-02T22:48:51Z"
+    },
+    {
+      "repo": "OpenPrinting/cups-filters",
+      "number": 788,
+      "title": "foomatic-rip: fix PDF printing with page-specific options",
+      "state": "merged",
+      "url": "https://github.com/OpenPrinting/cups-filters/pull/788",
+      "merged_at": "2026-11-02T20:22:02Z"
+    },
     {
       "repo": "fwupd/fwupd",
       "number": 11309,
