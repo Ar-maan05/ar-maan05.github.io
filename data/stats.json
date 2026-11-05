@@ -3,7 +3,7 @@
   "downloads_display": "21,000+",
   "downloads_short": "21k+",
   "version": "2.2.0",
-  "merged_prs": 102,
+  "merged_prs": 103,
   "repos_merged": 22,
   "repo_merged": {
     "OpenPrinting/cups-filters": 4,
@@ -14,12 +14,12 @@
     "fwupd/fwupd": 5,
     "AcademySoftwareFoundation/openexr": 1,
     "ppp-project/ppp": 3,
+    "util-linux/util-linux": 7,
     "sudo-project/sudo": 3,
     "OpenPrinting/cups": 3,
     "avahi/avahi": 2,
     "NLnetLabs/unbound": 2,
     "python/cpython": 2,
-    "util-linux/util-linux": 6,
     "crmne/spotifast": 2,
     "storytold/photocraft": 9,
     "systemd/systemd": 21,
@@ -29,5 +29,5 @@
     "lancedb/lancedb": 5,
     "lightpanda-io/browser": 3
   },
-  "generated": "2026-11-04T13:27:27.434Z"
+  "generated": "2026-11-05T13:41:29.648Z"
 }

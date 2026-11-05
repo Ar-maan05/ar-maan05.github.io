@@ -1,5 +1,5 @@
 {
-  "generated": "2026-11-04T13:27:44.860Z",
+  "generated": "2026-11-05T13:41:47.003Z",
   "curated": [
     {
       "repo": "systemd/systemd",
@@ -515,6 +515,14 @@
     }
   ],
   "extra": [
+    {
+      "repo": "util-linux/util-linux",
+      "number": 4727,
+      "title": "column: make --tree linear",
+      "state": "merged",
+      "url": "https://github.com/util-linux/util-linux/pull/4727",
+      "merged_at": "2026-11-05T12:57:27Z"
+    },
     {
       "repo": "AcademySoftwareFoundation/openexr",
       "number": 2802,
