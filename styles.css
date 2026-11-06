@@ -939,6 +939,12 @@ a.diff:hover {
 [data-theme="light"] .ledger-more:not([hidden]) { color: var(--merge); }
 .ledger-foot { margin-top: var(--s-5); }
 
+/* Advisories reuse the ledger row, keyed to the deletion red. */
+.pr .col-sev { color: var(--del); font-size: 12px; white-space: nowrap; }
+.advisory::before { background: var(--del); }
+.advisory:hover { background: color-mix(in srgb, var(--del) 5%, transparent); }
+.advisory .col-title a:hover { color: var(--del); }
+
 @media (max-width: 720px) {
   .ledger-search { flex-basis: 100%; }
   /* One swipeable row of chips instead of four wrapped lines. */

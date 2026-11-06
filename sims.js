@@ -845,3 +845,557 @@ Object.assign(window.DECK_SIMS, {
       "+journalctl --verify, --fields and -F unchanged on real journals" ] }
   ]
 });
+
+/* Replays for the merges of mid-October to early November, and for the
+   published security advisories (keyed by GHSA ID). Same rule as above:
+   each follows the reproduction and numbers in its own description. */
+Object.assign(window.DECK_SIMS, {
+
+  "GHSA-3jpq-xwf3-rwr6": [
+    { c: "zig build -Doptimize=ReleaseFast   # v1.0.1: release builds strip assertions", o: [] },
+    { c: "printf '<svg><%s></svg>' \"$(head -c 1050 /dev/zero | tr '\\0' a)\" > long-tag.html", o: [
+      "# no script needed: the parser takes the SVG path while it builds the DOM" ] },
+    { c: "./zig-out/bin/lightpanda fetch --dump file://$PWD/long-tag.html", o: [
+      "!Segmentation fault (core dumped)" ] },
+    { c: "# std.ascii.lowerString(&frame.buf, name): a 1,024-byte buffer, a 1,050-byte name", o: [
+      "# the only length check was a std.debug.assert inside lowerString",
+      "!the overflow rewrites frame.js and the page and call arena pointers that follow buf" ] },
+    { c: "cdp Runtime.evaluate \"document.createElement('a'.repeat(1050))\"   # lightpanda serve", o: [
+      "!connection closed: the server process died, every other CDP session with it" ] },
+    { c: "git switch --detach 1.0.2   # the patched release", o: [] },
+    { c: "./zig-out/bin/lightpanda fetch --dump file://$PWD/long-tag.html > /dev/null; echo $?", o: [
+      "+0   (no SEGV)" ] },
+    { c: "cdp Runtime.evaluate \"document.createElement('a'.repeat(1050))\"", o: [
+      "+server still up; the other sessions never notice" ] }
+  ],
+
+  "util-linux/util-linux#4727": [
+    { c: "time column -t --tree-id 1 --tree-parent 2 --tree 3 tree-30k.txt > /dev/null", o: [
+      "real\t0m6.29s",
+      "# 100,000 lines: ~205 s. quadratic in the number of lines" ] },
+    { c: "# two causes", o: [
+      "!create_tree() scans every line for each ID to find its children",
+      "!each cell reset memsets the whole print buffer, which grows with the lines" ] },
+    { c: "git switch perf/column-tree   # clear only the used part; sort once, binary search", o: [] },
+    { c: "time column -t --tree-id 1 --tree-parent 2 --tree 3 tree-30k.txt > /dev/null", o: [
+      "+real\t0m0.06s   ~100x",
+      "+100,000 lines: 0.31 s" ] },
+    { c: "./compare-old-new.sh trees stars chains dup-ids missing-parents -J -o -c -R -N", o: [
+      "+identical output and exit codes; tests/run.sh column passes" ] }
+  ],
+
+  "AcademySoftwareFoundation/openexr#2802": [
+    { c: "cmake -B build -DCMAKE_C_FLAGS=-fsanitize=undefined && cmake --build build", o: [] },
+    { c: "./harness --user-pixel-stride 3 half.exr   # a packed float+short struct", o: [
+      "!unpack.c:993:21: runtime error: store to misaligned address for type 'uint16_t'",
+      "!(also lines 534, 536, 538, 916, 918, 920, 922 and 1068)",
+      "# #2763 fixed the deep paths; the flat fast paths had the same stores" ] },
+    { c: "git switch fix/flat-unaligned-stores   # store_native16 / store_native32", o: [] },
+    { c: "./harness --user-pixel-stride 3 half.exr && ./harness --user-pixel-stride 6 float.exr", o: [
+      "+clean under UBSan",
+      "+decoded values unchanged: 1/3/4-channel half, 1/2-channel float and uint" ] }
+  ],
+
+  "systemd/systemd#43762": [
+    { c: "./build/bench-umount --below /tmp/p --mounts 600 --unrelated 600", o: [
+      "!umount_recursive_full(): 538.2 ms",
+      "# it breaks out after the first umount2() and re-parses all of /proc/self/mountinfo" ] },
+    { c: "git switch --detach 43762   # one pass per snapshot, re-parse only on progress", o: [
+      "# each path is checked against the snapshot's mount ID first, so a stale path",
+      "# can't follow a symlink out of the prefix or onto the keep list" ] },
+    { c: "./build/bench-umount --below /tmp/p --mounts 100,300,600 --unrelated =", o: [
+      "+100 mounts    1.6 ms   (was 20.0 ms)",
+      "+300 mounts    4.0 ms   (was 145.1 ms)",
+      "+600 mounts    8.0 ms   (was 538.2 ms)" ] },
+    { c: "unshare -Urm ./build/test-mount-util", o: [
+      "+all tests passed   (the new mount-ID check test fails without it)" ] }
+  ],
+
+  "fwupd/fwupd#11324": [
+    { c: "fwupdtool firmware-parse s2.srec srec | grep addr   # S205123456AAB4", o: [
+      "!addr 0x3456",
+      "# fu_firmware_strparse_uint24_safe() cast its result to guint16" ] },
+    { c: "git switch fix/srec-uint24   # keep all 24 bits", o: [] },
+    { c: "fwupdtool firmware-parse s2.srec srec | grep addr", o: [ "+addr 0x123456" ] },
+    { c: "meson test -C build fwupd-self-test", o: [
+      "+S2 record tokenization ... OK   (fails before)", "+all tests passed" ] }
+  ],
+
+  "fwupd/fwupd#11325": [
+    { c: "cat gap.hex", o: [ ":01000000AA55", ":01000400BB40", ":00000001FF" ] },
+    { c: "fwupdtool firmware-parse gap.hex ihex | xxd", o: [
+      "!aa bb   (2 bytes: the gap was never padded)",
+      "# addr_last > 0 meant \"have data\", but after a 1-byte record at 0 it is still 0" ] },
+    { c: "git switch fix/ihex-pad-after-zero   # a got_data flag instead", o: [] },
+    { c: "fwupdtool firmware-parse gap.hex ihex | xxd", o: [ "+aa 00 00 00 bb   (5 bytes)" ] },
+    { c: "meson test -C build fwupd-self-test", o: [ "+new ihex case fails before, all tests pass after" ] }
+  ],
+
+  "lsof-org/lsof#376": [
+    { c: "lsof -iUDP -sUDP:ESTABLISHED   # one connected, one unconnected UDP socket", o: [
+      "nc  4242 me  3u IPv4  UDP 127.0.0.1:38535->127.0.0.1:9",
+      "!nc  4243 me  3u IPv4  UDP *:41000   (should have been filtered out)",
+      "# every record was checked against the TCP state tables, even UDP ones" ] },
+    { c: "git switch fix/udp-state-filter   # pick the tables by protocol", o: [] },
+    { c: "lsof -iUDP -sUDP:ESTABLISHED", o: [
+      "+nc  4242 me  3u IPv4  UDP 127.0.0.1:38535->127.0.0.1:9 (ESTABLISHED)" ] },
+    { c: "make check", o: [
+      "+case-20-udp-socket-state ... ok   (covers ^ESTABLISHED; fails before)" ] }
+  ],
+
+  "lsof-org/lsof#377": [
+    { c: "lsof -u ,99999 | awk '$3 == \"root\"' | wc -l", o: [
+      "!1352",
+      "# the empty first entry went through enter_uid() with nothing parsed: uid 0" ] },
+    { c: "git switch fix/u-empty-entry", o: [] },
+    { c: "lsof -u ,99999", o: [ "+lsof: empty -u UID or login name: ,99999" ] },
+    { c: "make check", o: [ "+case-20-uid-empty-entry ... ok   (also a lone -u ^)" ] }
+  ],
+
+  "OpenPrinting/cups-filters#790": [
+    { c: "tail -1 unclosed.ppd", o: [ "*FoomaticRIPCommandLine: \"gs -q -dBATCH" ] },
+    { c: "timeout 10 foomatic-rip --ppd unclosed.ppd < job.ps", o: [
+      "!(hangs, memory climbing; killed by timeout)",
+      "# the continuation loop never checked fgets(): it re-appended the last line forever" ] },
+    { c: "foomatic-rip --ppd bad-hex.ppd < job.ps | head -c 60   # *JCLBegin: \"<1B>%-12345X<ZZ>\"", o: [
+      "!Error replacing hex notation in <1B>%-12345X<ZZ>!   (in the data sent to the printer)" ] },
+    { c: "git switch fix/ppd-eof-unhexify-log", o: [] },
+    { c: "foomatic-rip --ppd unclosed.ppd < job.ps", o: [
+      "+Invalid line: \"FoomaticRIPCommandLine: ...\"   (rejected, no hang)" ] },
+    { c: "foomatic-rip --ppd bad-hex.ppd < job.ps 2>&1 >/dev/null | head -1", o: [
+      "+Error replacing hex notation in <1B>%-12345X<ZZ>!   (stderr: the log, not the printer)" ] }
+  ],
+
+  "OpenPrinting/libppd#102": [
+    { c: "./harness filter-streaming-mode on off yes no true false", o: [
+      "!on     0   (treated as off)", "off    0", "yes    1", "no     0", "true   1", "false  0",
+      "# strcasecmp(\"on\",\"off\") & strcasecmp(\"on\",\"no\") is 8 & 1 == 0 with glibc" ] },
+    { c: "git switch fix/streaming-mode-and   # & -> &&", o: [] },
+    { c: "./harness filter-streaming-mode on off yes no true false", o: [
+      "+on     1", "off    0", "yes    1", "no     0", "true   1", "false  0" ] }
+  ],
+
+  "OpenPrinting/libcupsfilters#318": [
+    { c: "./harness zoom 3x3.img --xsize -3 --ysize -3   # pixels 1..9", o: [
+      "bilinear  9 8 7  6 5 4  3 2 1",
+      "!nearest   3 2 1  6 5 4  9 8 7   (mirrored, not turned)",
+      "# zoom_nearest() tested yflip < 0, but it is only ever 0 or 1" ] },
+    { c: "git switch fix/zoom-nearest-yflip", o: [] },
+    { c: "./harness zoom 3x3.img --xsize -3 --ysize -3", o: [
+      "bilinear  9 8 7  6 5 4  3 2 1",
+      "+nearest   9 8 7  6 5 4  3 2 1",
+      "# so 1/2/4-bit imagetoraster output at orientation 5 or 6 turns 180 degrees again" ] }
+  ],
+
+  "OpenPrinting/libcupsfilters#314": [
+    { c: "./harness options 'overrides={page-numbers=1-2 orientation-requests=4},{page-numbers=3}'", o: [
+      "!(hangs, memory climbing)   # built against CUPS 2.4.19",
+      "# since ff7392c8 the 2.4 cupsParseOptions macro dropped the end pointer" ] },
+    { c: "git switch fix/overrides-cups-2.4", o: [
+      "# on 2.4, find each {...} value's end and hand only that piece to the parser" ] },
+    { c: "ASAN_OPTIONS=detect_leaks=1 ./harness options 'overrides={...},{page-numbers=3}'", o: [
+      "+2 overrides: pages 1-2 orient 4 / pages 3-3",
+      "+no ASan report   (the array had been storing a pointer to a stack variable)" ] }
+  ],
+
+  "OpenPrinting/cups-browsed#80": [
+    { c: "./harness conf 'Cluster office'", o: [
+      "!cluster office members=0:",
+      "# the documented default member was passed as ptr2 right after ptr2 = NULL" ] },
+    { c: "./harness conf 'Cluster lab: hp1 hp2' 'Cluster :x'", o: [
+      "!==ERROR: AddressSanitizer: heap-use-after-free",
+      "# a broken line's goto ..._fail freed the previous line's entry" ] },
+    { c: "git switch fix/conf-cluster-frees-interval", o: [
+      "# also: BrowseInterval 0 made browse_poll() re-arm itself in a busy loop" ] },
+    { c: "./harness conf 'Cluster office'", o: [ "+cluster office members=1: office" ] },
+    { c: "./harness conf 'Cluster lab: hp1 hp2' 'Cluster :x'", o: [
+      "+cluster lab members=2: hp1 hp2   (no ASan report)" ] },
+    { c: "# BrowseInterval 0 needs a BrowsePoll server: checked by reading the code", o: [
+      "+BrowseInterval must now be positive; BrowseTimeout 0 still accepted" ] }
+  ],
+
+  "OpenPrinting/libppd#101": [
+    { c: "./harness pdftopdf-comments '%%PDFTOPDFNumCopies 3'", o: [
+      "!SEGV on unknown address 0x000000000001",
+      "# strchr(line, ':') + 1 with no colon on the line" ] },
+    { c: "./harness pdftopdf-comments '%%PDFTOPDFNumCopies:'   # at EOF, no value", o: [
+      "!stack-buffer-overflow, reads before deviceCopies" ] },
+    { c: "git switch fix/pdftopdf-comment-colon", o: [] },
+    { c: "./harness pdftopdf-comments '%%PDFTOPDFNumCopies 3' '%%PDFTOPDFCollate' '%%PDFTOPDFNumCopies:'", o: [
+      "+applied=0 copies=[1]", "+applied=0 copies=[1]", "+applied=1 copies=[1]" ] },
+    { c: "./harness pdftopdf-comments '%%PDFTOPDFNumCopies: 4' '%%PDFTOPDFCollate: true'", o: [
+      "applied=1 copies=[4] collate=1   # well-formed comments unchanged" ] }
+  ],
+
+  "OpenPrinting/cups-filters#789": [
+    { c: "TMPDIR=\"/tmp/a b'c)\" foomatic-rip -o 'Tone=Light 2:Tone=Dark' 3pages.pdf", o: [
+      "!sh: -c: line 1: syntax error near unexpected token `)'",
+      "!Unable to determine number of pages, page count: -1",
+      "# the gs helpers ran through popen(): TMPDIR went through a shell and into PostScript" ] },
+    { c: "cd job && TMPDIR='|touch PWNED;:' foomatic-rip ... && ls PWNED", o: [
+      "!PWNED" ] },
+    { c: "git switch fix/gs-no-shell   # follow-up to #788: fork+exec gs with an argv", o: [
+      "# PDF name passed as a string parameter; ./ before relative names, % doubled" ] },
+    { c: "TMPDIR=\"/tmp/a b'c)\" foomatic-rip -o 'Tone=Light 2:Tone=Dark' 3pages.pdf", o: [
+      "+light: page 1 / dark: page 2 / light: page 3" ] },
+    { c: "cd job && TMPDIR='|touch PWNED;:' foomatic-rip ... && ls PWNED", o: [
+      "+ls: cannot access 'PWNED': No such file or directory" ] }
+  ],
+
+  "OpenPrinting/cups-filters#788": [
+    { c: "foomatic-rip --ppd tone.ppd -o 'Tone=Light 2:Tone=Dark' 3pages.pdf   # non-gs renderer", o: [
+      "!gs: Invalid value for option -dNOMEDIAATTRS-sDEVICE=pdfwrite",
+      "!/tmp/foomatic-O0Dtpk: No such file or directory" ] },
+    { c: "foomatic-rip --ppd tone-gs.ppd -o 'Tone=Light 2:Tone=Dark' 3pages.pdf", o: [
+      "!dark: pages 1-3, then dark: pages 2-3 again" ] },
+    { c: "# four bugs together", o: [
+      "# rendered through page i with page i's options; options never reset per page;",
+      "# ranges from page 1 printed it all; a missing space emptied the extract" ] },
+    { c: "git switch fix/pdf-page-options", o: [] },
+    { c: "foomatic-rip --ppd tone.ppd -o 'Tone=Light 2:Tone=Dark' 3pages.pdf", o: [
+      "+light: page 1 / dark: page 2 / light: page 3   (both renderer paths)" ] }
+  ],
+
+  "fwupd/fwupd#11309": [
+    { c: "./harness strsplit-full 'abc' --size 1 --delim '\\r\\n'", o: [
+      "![\"abc\"]   (delimiter longer than the buffer: copied the whole string)" ] },
+    { c: "./harness strsplit-full 'a\\r\\n' --size 2 --delim '\\r\\n'", o: [
+      "![\"a\"]     (matched a delimiter running past the end)",
+      "# fu_strsplit_bytes() buffers aren't NUL terminated, e.g. modem responses" ] },
+    { c: "git switch fix/strsplit-full-size", o: [] },
+    { c: "./harness strsplit-full 'abc' --size 1 --delim '\\r\\n' && ./harness strsplit-full 'a\\r\\n' --size 2 --delim '\\r\\n'", o: [
+      "+[\"a\"]", "+[\"a\\r\"]" ] },
+    { c: "meson test -C build fwupd-self-test", o: [ "+strnsplit cases fail before, all string tests pass" ] }
+  ],
+
+  "fwupd/fwupd#11310": [
+    { c: "./harness strstrip $'\\tfoo'", o: [ "!\"\\tfoo\"   (only spaces skipped at the start)" ] },
+    { c: "./harness strstrip $'  \\n'", o: [
+      "!g_strndup() asks for about 4 GiB",
+      "# the end was found before the start, so the length wrapped around" ] },
+    { c: "git switch fix/strstrip-leading-ws   # all whitespace, both ends", o: [] },
+    { c: "./harness strstrip $'\\tfoo' $'  \\n'", o: [ "+\"foo\"", "+\"\"" ] }
+  ],
+
+  "util-linux/util-linux#4690": [
+    { c: "cat /etc/os-release   # no trailing newline", o: [
+      "NAME=Fedora", "VERSION=", "ANSI_COLOR=", "PRETTY_NAME=\"Fedora Linux 44\"", "X==y", "ID=fedora" ] },
+    { c: "agetty --show-issue   # issue: VERSION=[\\S{VERSION}] ANSI=[\\S{ANSI_COLOR}] X=[\\S{X}] ID=[\\S{ID}]", o: [
+      "!VERSION=[ANSI_COLOR=] ANSI=[^[[PRETTY_NAME=\"Fedora Linux 44m] X=[y] ID=[fedora]",
+      "# an empty value took the next line; X==y lost an =" ] },
+    { c: "ASAN_OPTIONS=halt_on_error=1 agetty --show-issue   # NAME=Fedora\\nID=fedora, \\S{ID}", o: [
+      "!heap-buffer-overflow READ of size 1   (eol + 1 is past the NUL)" ] },
+    { c: "git switch fix/agetty-os-release   # one line at a time, since b34f097e7 (v2.24)", o: [] },
+    { c: "agetty --show-issue", o: [
+      "+VERSION=[] ANSI=[^[[m] X=[=y] ID=[fedora]",
+      "# 4.2M random cases vs a separate parser: 0 ASan reports, 0 mismatches" ] }
+  ],
+
+  "OpenPrinting/cups-browsed#79": [
+    { c: "./harness browse-allow 0.0.0.0/0", o: [
+      "!runtime error: shift exponent 32 is too large for 32-bit type 'unsigned int'",
+      "!mask=255.255.255.255   (allow-all became allow-one)" ] },
+    { c: "git switch fix/browseallow-linklocal-overwritten", o: [
+      "# also: addrstr[6] == 'B' tested twice, so feb* link-local missed its interface",
+      "# also: queue_overwritten() turned a changed device URI into \"PPD only\"" ] },
+    { c: "./harness browse-allow 0.0.0.0/0 10.0.0.0/8 192.168.1.0/24", o: [
+      "+mask=0.0.0.0", "mask=255.0.0.0", "mask=255.255.255.0" ] }
+  ],
+
+  "OpenPrinting/cups-browsed#78": [
+    { c: "./harness local-queue-name 'Office Printer' --existing Office_Printer   # IPP, defaults", o: [
+      "!Office_Printer@printer.local",
+      "# tested the is_cups_queue pointer, not what it points to: always true" ] },
+    { c: "git switch fix/is-cups-queue-deref", o: [
+      "# name@host is meant only for when DNS-SD naming isn't used" ] },
+    { c: "./harness local-queue-name 'Office Printer' --existing Office_Printer", o: [
+      "+(ignored) No suitable local queue name found" ] },
+    { c: "./harness local-queue-name 'Free One'", o: [ "Free_One   # unchanged" ] }
+  ],
+
+  "OpenPrinting/cups-filters#786": [
+    { c: "./harness dstrncat \"$(printf '(A\\0B) show\\n')\" | xxd -p", o: [
+      "!2841000000000000000000",
+      "# dstrncat() stopped at the first NUL and zero-filled the rest of the line" ] },
+    { c: "# print_ps() re-feeds from that copy: binary image data in PostScript corrupted", o: [] },
+    { c: "git switch fix/dstrncat-memcpy", o: [] },
+    { c: "./harness dstrncat \"$(printf '(A\\0B) show\\n')\" | xxd -p", o: [ "+28410042292073686f770a" ] }
+  ],
+
+  "OpenPrinting/libppd#98": [
+    { c: "rg -n 'cfNewResolution' ppd/ppd-generator.c", o: [
+      "!current_def == cfNewResolution(...)   # a pointer compare with a fresh allocation",
+      "!resArray[i] where [j] was meant, and a leak on every pass" ] },
+    { c: "./harness gen-ppd urf-supported=RS300-600-1200 printer-resolution-default=1200dpi", o: [
+      "*DefaultResolution: 600dpi   # the check could never match: always the middle one" ] },
+    { c: "git switch fix/urf-default-res   # keep the middle resolution, drop the loop", o: [
+      "# printer-resolution-default is about the engine, not the raster data" ] },
+    { c: "./test_ppd_generator", o: [
+      "+*DefaultResolution: 600dpi   (pinned by a new case)",
+      "# same PPD as before; only the leak is gone" ] }
+  ],
+
+  "OpenPrinting/libppd#97": [
+    { c: "./harness pdftops --make-model 'Hewlett-Packard LaserJet 4000'", o: [
+      "!Printer make and model: HP",
+      "# strncpy(make, \"HP\", sizeof(make)) zeroed the buffer the model points into" ] },
+    { c: "./harness pdftops --ppd no-product.ppd", o: [
+      "!SEGV on address 0x1 in snprintf, from pdftops.c:462   (ppd->product + 1)" ] },
+    { c: "git switch fix/pdftops-make-model", o: [] },
+    { c: "./harness pdftops --make-model 'Hewlett-Packard LaserJet 4000'", o: [
+      "+Printer make and model: HP LaserJet 4000   (the HP quirks match again)" ] },
+    { c: "./harness pdftops --ppd no-product.ppd && ./harness pdftops --ppd empty-product.ppd", o: [
+      "+Printer make and model: (empty)", "+Printer make and model: (empty)" ] }
+  ],
+
+  "lsof-org/lsof#375": [
+    { c: "lsof -r1c2 -a -p $$ -Fp", o: [
+      "!=======", "!=======   (two repeats, nothing in them)",
+      "# after c<N> the code rewound and parsed c2 again as -c 2" ] },
+    { c: "git switch fix/r-count-reparse   # stop when the argument is used up", o: [] },
+    { c: "lsof -r1c2 -a -p $$ -Fp", o: [ "+p31337", "=======", "+p31337", "=======" ] },
+    { c: "make check", o: [ "+case-20-repeat-count ... ok   (now checks the process is listed)" ] }
+  ],
+
+  "OpenPrinting/libcupsfilters#313": [
+    { c: "./test-ieee1284-normalize 'MFG:HP;MDL:DeskJet'   # no trailing ;", o: [
+      "!MFG only -> Unknown",
+      "# the parser hit the end while reading the value and broke out before storing it" ] },
+    { c: "git switch fix/ieee1284-last-field", o: [] },
+    { c: "./test-ieee1284-normalize 'MFG:HP;MDL:DeskJet' 'MFG:HP;MDL:DeskJet;'", o: [
+      "+MFG, MDL -> HP DeskJet", "MFG, MDL -> HP DeskJet", "+passed under ASan and UBSan" ] }
+  ],
+
+  "OpenPrinting/libcupsfilters#312": [
+    { c: "./test-ieee1284-normalize 'Epson Stylus Photo' 'Konica Minolta bizhub C258' 'Kyocera Mita FS-1020D'", o: [
+      "!Photo", "!C258", "!Mita FS-1020D",
+      "# strncasecmp() without !: the two-word make check fired on a mismatch" ] },
+    { c: "git switch fix/ieee1284-two-word-makes   # four missing !s", o: [] },
+    { c: "./test-ieee1284-normalize 'Epson Stylus Photo' 'Konica Minolta bizhub C258' 'Kyocera Mita FS-1020D'", o: [
+      "+Stylus Photo", "+bizhub C258", "+FS-1020D" ] }
+  ],
+
+  "lance-format/lance#6975": [
+    { c: "# DirectoryNamespace had no rename_table (#6960)", o: [] },
+    { c: "git switch feat/namespace-dir-rename   # part of #6960", o: [
+      "# one conflict-aware manifest rewrite: the row moves, its location stays",
+      "# no table data copied, moved or deleted" ] },
+    { c: "python -c \"ns.rename_table(...); print(ns.describe_table(id=['t2']).location)\"", o: [
+      "+.../t1.lance   (same location, metadata and base objects)" ] },
+    { c: "python -c \"ns.rename_table(...)\"   # root table, directory-listing mode", o: [
+      "+Unsupported (before any mutation: an old directory name would stay visible)" ] },
+    { c: "cargo test --profile ci -p lance-namespace-impls --lib", o: [ "+test result: ok. 467 passed" ] }
+  ],
+
+  "python/cpython#159504": [
+    { c: "./python bench_write.py   # 48 MiB bytes write behind a 2 MiB prefix, socketpair", o: [
+      "!1633 ms",
+      "# each partial send re-queued b[nbytes:], copying the rest every time: O(n**2)" ] },
+    { c: "git switch --detach gh-159503   # wrap the remainder in a memoryview", o: [
+      "# the same thing write() already does on its first-send path" ] },
+    { c: "./python bench_write.py", o: [ "+14 ms   ~117x" ] },
+    { c: "./python -m test test_asyncio", o: [
+      "+== Tests result: SUCCESS ==",
+      "# 1200 scripted-socket runs, old vs new: identical output" ] }
+  ],
+
+  "OpenPrinting/libcupsfilters#305": [
+    { c: "/usr/bin/time -f '%M KB' ./harness image-open huge-1bit.png   # 16384x131072, 261 KB", o: [
+      "max_ics 32768",
+      "!2109440 KB   (every tile kept in memory)",
+      "# max_tiles * 256 * 256 * depth hit exactly 2 GB and wrapped to a negative int" ] },
+    { c: "git switch fix/tile-cache-limit   # compare in tiles, not bytes", o: [] },
+    { c: "/usr/bin/time -f '%M KB' ./harness image-open huge-1bit.png", o: [
+      "max_ics 513", "+44032 KB   (the 32 MB cap applies again)" ] }
+  ],
+
+  "OpenPrinting/libcupsfilters#306": [
+    { c: "./test-pdf LiberationSansNarrow-Regular.ttf   # UBSan build", o: [
+      "!sfnt-private.h:61:34: runtime error: left shift of 167 by 24 places cannot be represented in type 'int'",
+      "# also the glyph mask loops, once a font has more than 31 glyphs" ] },
+    { c: "git switch fix/fontembed-unsigned-shifts   # and NULL-check logfunc in raster", o: [] },
+    { c: "./test-pdf LiberationSansNarrow-Regular.ttf && ./test-pdf LiberationSans-Bold.ttf", o: [
+      "+no UBSan reports",
+      "# the PDF matches master except for the random subset name" ] }
+  ],
+
+  "OpenPrinting/libcupsfilters#303": [
+    { c: "echo hello | texttopdf 1 me t 1 '' > /dev/null   # ASan build", o: [
+      "!==ERROR: AddressSanitizer: heap-buffer-overflow READ of size 3",
+      "# the tail copy took ret - length bytes: the padding, not what was left" ] },
+    { c: "./harness otf-checksum --lengths 1..12", o: [
+      "!len 1: reads 2 past the end   len 3, 7, 11: wrong checksum" ] },
+    { c: "git switch fix/otf-checksum-tail   # copy length - (ret - 4) bytes", o: [] },
+    { c: "./harness otf-checksum --lengths 1..12", o: [ "+all 12 lengths match, no ASan report" ] }
+  ],
+
+  "systemd/systemd#43954": [
+    { c: "time journalctl --verify > /dev/null   # 100 files, 772 MB", o: [ "real\t0m13.4s" ] },
+    { c: "# where it went", o: [
+      "!verify_data() bisected the main entry array for a lookup that could never fail",
+      "!every bisection step of the offset lists went through the mmap cache",
+      "!a 20-item chain cache against 20+ chains per entry: every lookup missed" ] },
+    { c: "git switch --detach 43954   # three commits, each removes work", o: [] },
+    { c: "time journalctl --verify > /dev/null", o: [
+      "+real\t0m5.1s   2.65x",
+      "# 11.0s after the first commit, 8.2s after the second" ] },
+    { c: "./build/verify-bitflip-diff --all-bits   # main vs branch", o: [
+      "+9,463,104 single-bit corruptions: the two agree on every one" ] }
+  ],
+
+  "ppp-project/ppp#652": [
+    { c: "# /etc/ppp/eaptls-client is group-readable, so it fails the access check", o: [
+      "!have_eaptls_secret_client() opened it without ppp_check_access(): EAP looks usable",
+      "# the real read in get_eaptls_secret() does check, so EAP-TLS fails later" ] },
+    { c: "rg -n 'ppp_check_access' pppd/auth.c", o: [
+      "# the server side and every other secrets lookup in auth.c already check" ] },
+    { c: "git switch fix/eaptls-client-access", o: [] },
+    { c: "# found in an AI-assisted code review; checked by reading the code", o: [
+      "+client and server agree: a file that fails the check never offers EAP" ] }
+  ],
+
+  "fwupd/fwupd#11248": [
+    { c: "./harness strsafe --guard-page 'ABCD' --limit G_MAXSIZE   # unterminated payload", o: [
+      "!SIGSEGV: read past the end of the attribute",
+      "# mnl_attr_get_str() + G_MAXSIZE trusts the attribute to be NUL-terminated" ] },
+    { c: "git switch fix/devlink-attr-len   # bound by mnl_attr_get_payload_len()", o: [
+      "# an entry with no usable name or value is skipped, not looked up as NULL" ] },
+    { c: "./harness strsafe --guard-page 'ABCD' --limit payload_len", o: [ "+\"ABCD\"" ] }
+  ],
+
+  "ppp-project/ppp#648": [
+    { c: "./relay-id-test   # the PADO dump code, lifted out, 24-byte relay ID", o: [
+      "!Relay-ID:",
+      "# printf(ptr, \" %02x\", ...) instead of sprintf: an empty format, since 2021" ] },
+    { c: "git switch fix/pppoe-relay-id-log", o: [] },
+    { c: "./relay-id-test", o: [
+      "+Relay-ID: a0 a1 a2 a3 a4 a5 a6 a7 a8 a9 aa ab ac ad ae af b0 b1 b2 b3..." ] }
+  ],
+
+  "ppp-project/ppp#647": [
+    { c: "printf 'alice\\nsecret-from-file\\n' > ua && chmod 600 ua && pppd +ua ua dryrun   # test build", o: [
+      "!TEST +ua: user=[alice] passwd=[]",
+      "# override_value(\"passwd\", ...) but the option is named password, since 2001" ] },
+    { c: "git switch fix/ua-password   # one word", o: [] },
+    { c: "pppd +ua ua dryrun", o: [ "+TEST +ua: user=[alice] passwd=[secret-from-file]" ] }
+  ],
+
+  "sudo-project/sudo#575": [
+    { c: "cvtsudoers -i ldif -f sudoers roles.ldif   # Alice: /usr/bin/id, alice: /bin/sh", o: [
+      "# sudoRole role1, role2",
+      "!Alice ALL = /usr/bin/id, /bin/sh",
+      "# Alice gains a shell, alice loses her rule: the list cache used strcasecmp()" ] },
+    { c: "git switch fix/ldif-case-sensitive-users   # strcmp() for users and groups", o: [
+      "# sudoers' case_insensitive_user decides matching; hosts still merge" ] },
+    { c: "cvtsudoers -i ldif -f sudoers roles.ldif", o: [
+      "# sudoRole role1", "+Alice ALL = /usr/bin/id", "# sudoRole role2", "+alice ALL = /bin/sh" ] },
+    { c: "make -C plugins/sudoers check", o: [ "+cvtsudoers/test43 ... ok" ] }
+  ],
+
+  "OpenPrinting/cups#1782": [
+    { c: "ipptool -f /dev/null ipp://localhost/ create-local.test   # device-uri socket://10.0.0.5", o: [
+      "!CUPS-Create-Local-Printer: Bad device-uri \"\".",
+      "# ptr had been walked to the end of printer-name; master switched to it in 9fa1c04f" ] },
+    { c: "git switch fix/create-local-uri-message", o: [] },
+    { c: "ipptool -f /dev/null ipp://localhost/ create-local.test", o: [
+      "+CUPS-Create-Local-Printer: Bad device-uri \"socket://10.0.0.5\"." ] }
+  ],
+
+  "sudo-project/sudo#573": [
+    { c: "visudo -c -s -f bad.sudoers   # /bin/ls ^[a-z$  and  /bin/cat ^foo(bar$", o: [
+      "!bad.sudoers: parsed OK",
+      "# strict mode compiled sudoerstext, which is just the matched $" ] },
+    { c: "git switch fix/strict-arg-regex   # compile the collected command args", o: [] },
+    { c: "visudo -c -s -f bad.sudoers", o: [
+      "+bad.sudoers:1:25: Unmatched [, [^, [:, [., or [=",
+      "+bad.sudoers:2:29: Unmatched ( or \\(" ] },
+    { c: "make -C plugins/sudoers check", o: [ "+all tests passed   (/bin/ls ^[a-z]+$ still parses)" ] }
+  ],
+
+  "sudo-project/sudo#574": [
+    { c: "cvtsudoers -i ldif three-folds.ldif   # sudoCommand split over three lines", o: [
+      "!cvtsudoers: invalid LDIF attribute: sudoCommandart httpd",
+      "# after the append, len held only the continuation's length" ] },
+    { c: "git switch fix/ldif-fold-length", o: [] },
+    { c: "cvtsudoers -i ldif three-folds.ldif", o: [
+      "+millert ALL = /usr/bin/systemctl restart httpd, /usr/bin/ls" ] },
+    { c: "make -C plugins/sudoers check", o: [ "+cvtsudoers/test42 ... ok   (fails without the fix)" ] }
+  ],
+
+  "util-linux/util-linux#4692": [
+    { c: "unshare -Urm sh -c 'for i in $(seq 2000); do mkdir -p /tmp/m/$i; mount -t tmpfs none /tmp/m/$i; done; time findmnt -U > /dev/null'", o: [
+      "!real\t0m51.8s",
+      "# every pair compared, each through a linear cache_find_path() scan: O(n^3)" ] },
+    { c: "git switch perf/libmount-path-cache-hash", o: [
+      "# hash ignores repeated and trailing slashes, so it agrees with streq_paths()" ] },
+    { c: "unshare -Urm sh -c '...; time findmnt -U > /dev/null'", o: [
+      "+real\t0m0.28s   185x",
+      "+500 mounts: 0.055 s (was 2.0 s)   1000: 0.086 s (was 6.6 s)" ] },
+    { c: "./compare-findmnt.sh --old master --new HEAD", o: [
+      "+229 invocations: stdout, stderr and exit codes byte-identical" ] }
+  ],
+
+  "NLnetLabs/unbound#1532": [
+    { c: "./harness parse-packet '. RRSIG (empty rdata)' '. A 7200 1.2.3.4'", o: [
+      "RRSIG [ttl=3600 rdlen=0]",
+      "!A     [ttl=3600 rdlen=0]   (picked up the RRSIG's TTL and rdata)",
+      "# the first short-RRSIG return skipped restoring the packet position" ] },
+    { c: "git switch fix/rrsig-covered-position", o: [] },
+    { c: "./harness parse-packet '. RRSIG (empty rdata)' '. A 7200 1.2.3.4'", o: [
+      "RRSIG [ttl=3600 rdlen=0]", "+A     [ttl=7200 rdlen=4]" ] },
+    { c: "make unittest && ./unittest", o: [ "+All tests passed" ] }
+  ],
+
+  "NLnetLabs/unbound#1528": [
+    { c: "./harness nsec-at-apex --bitmap 3,4,3-nosoa,9", o: [
+      "!3-byte bitmap, SOA            no",
+      "!4-byte bitmap, SOA            no",
+      "3-byte bitmap, no SOA         no",
+      "9-byte bitmap, SOA (signed)   yes",
+      "# the rdata end was pos+4+rdatalen; reading starts at the TTL, so pos+6" ] },
+    { c: "git switch fix/nsec-apex-bounds", o: [] },
+    { c: "./harness nsec-at-apex --bitmap 3,4,3-nosoa,9", o: [
+      "+3-byte bitmap, SOA            yes", "+4-byte bitmap, SOA            yes",
+      "3-byte bitmap, no SOA         no", "9-byte bitmap, SOA (signed)   yes" ] }
+  ],
+
+  "avahi/avahi#998": [
+    { c: "./harness add-dns-servers --domain 'my-office-network-segment\\.b.example' 192.168.1.1 fe80::1", o: [
+      "avahi_key_new() failed.",
+      "!Segmentation fault (exit 139)",
+      "# char n[64] cut the name right after a \\ escape; r was used before its NULL check" ] },
+    { c: "git switch fix/record-alloc-check", o: [] },
+    { c: "./harness add-dns-servers --domain 'my-office-network-segment\\.b.example' 192.168.1.1 fe80::1", o: [
+      "+192.168.1.1: added",
+      "+fe80::1: Failed to add DNS server address: Memory exhausted" ] },
+    { c: "valgrind ./avahi-test", o: [ "+runs through cleanly   (both new cases segfault without the fix)" ] }
+  ],
+
+  "OpenPrinting/cups#1769": [
+    { c: "./harness validate-uri --lengths 100,1023,1024,2000", o: [
+      "100   -> 1", "1023  -> 1", "!1024  -> 1", "!2000  -> 1",
+      "# set the bad-length error, then fell through and reported valid" ] },
+    { c: "git switch fix/ipp-validate-uri-length   # the missing return (0)", o: [] },
+    { c: "./harness validate-uri --lengths 100,1023,1024,2000", o: [
+      "100   -> 1", "1023  -> 1", "+1024  -> 0", "+2000  -> 0" ] },
+    { c: "make test -C cups testipp", o: [ "+testipp passes" ] }
+  ],
+
+  "OpenPrinting/cups#1770": [
+    { c: "./harness passenv 'A B' 'A, B' 'A  B' 'A , B'", o: [
+      "[A] [B]", "![A] [] [B]", "![A] [] [B]", "![A] [] [] [B]",
+      "# !isspace(c) || c != ',' is always true, so separators were never skipped" ] },
+    { c: "git switch fix/passenv-separators   # || -> &&", o: [] },
+    { c: "./harness passenv 'A B' 'A, B' 'A  B' 'A , B'", o: [
+      "+[A] [B]", "+[A] [B]", "+[A] [B]", "+[A] [B]" ] }
+  ],
+
+  "avahi/avahi#997": [
+    { c: "rg -n 'size = 0' avahi-daemon/dbus-util.c", o: [
+      "!size = 0;   # zeroes the local pointer; the caller's size is left as it was",
+      "# *rdata is reset to NULL on the same path, so the out-parameters disagree" ] },
+    { c: "git switch fix/dbus-read-rdata-size   # *size = 0", o: [
+      "# the only caller gives up on error today; this protects the next one" ] },
+    { c: "meson compile -C build", o: [ "+builds with D-Bus enabled, no new warnings" ] }
+  ]
+});

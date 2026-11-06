@@ -457,4 +457,12 @@
       if (row && window.deckTerminal) window.deckTerminal.debug(row.getAttribute("data-pr"));
     });
   }
+  var advisoryList = doc.getElementById("advisory-body");
+  if (advisoryList) {
+    advisoryList.addEventListener("click", function (e) {
+      var btn = e.target.closest(".btn-verify");
+      var row = btn && btn.closest("[data-advisory]");
+      if (row && window.deckTerminal) window.deckTerminal.debug(row.getAttribute("data-advisory"));
+    });
+  }
 })();

@@ -71,6 +71,7 @@
     <a href="#mlrouter"     class="rail-node" data-rail="mlrouter"><span class="rail-name">mlrouter</span></a>
     <a href="#shipped"      class="rail-node" data-rail="shipped"><span class="rail-name">Shipped</span></a>
     <a href="#ledger"       class="rail-node" data-rail="ledger"><span class="rail-name">Ledger</span></a>
+    <a href="#advisories"   class="rail-node" data-rail="advisories"><span class="rail-name">Advisories</span></a>
     <a href="#runixos"      class="rail-node" data-rail="runixos"><span class="rail-name">RunixOS</span></a>
     <a href="#about"        class="rail-node" data-rail="about"><span class="rail-name">Now</span></a>
     <a href="#console"      class="rail-node" data-rail="console"><span class="rail-name">Terminal</span></a>
@@ -692,6 +693,25 @@ app = with_persistence(mcp, backend=<span class="s">"redis"</span>, url=<span cl
         <p class="ledger-foot">
           <a class="receipt" href="https://github.com/search?q=author%3AAr-maan05+type%3Apr+is%3Amerged+-user%3AAr-maan05&amp;type=pullrequests&amp;s=created&amp;o=desc" target="_blank" rel="noopener">The same list on GitHub <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></a>
         </p>
+      </div>
+    </section>
+
+    <!-- ===================== ADVISORIES ===================== -->
+    <section id="advisories" aria-labelledby="advisories-h2">
+      <div class="shell">
+        <div class="section-head">
+          <h2 id="advisories-h2">Advisories.</h2>
+          <p class="lead">Vulnerabilities I reported privately to maintainers, published as GitHub security advisories. Debug replays the proof of concept.</p>
+        </div>
+
+        <ol class="prs" id="advisory-body">
+            <li class="pr advisory" data-advisory="GHSA-3jpq-xwf3-rwr6" data-repo="lightpanda-io/browser">
+              <p class="pr-meta"><span class="col-repo">lightpanda-io/browser</span><span class="col-date">2026-11-04</span><span class="col-sev">High · CVSS 7.5</span></p>
+              <h3 class="col-title"><a href="https://github.com/lightpanda-io/browser/security/advisories/GHSA-3jpq-xwf3-rwr6" target="_blank" rel="noopener">Heap buffer overflow in Frame.buf via long element and tag names</a></h3>
+              <p class="col-why">Element and SVG tag names were lowercased into a fixed 1,024-byte buffer that release builds never bounds-checked, so one page with a long tag name overwrote the pointers after it and crashed the browser, every CDP session included. Fixed in 1.0.2.</p>
+              <button class="btn-verify" type="button" aria-label="Debug GHSA-3jpq-xwf3-rwr6">Debug</button>
+            </li>
+        </ol>
       </div>
     </section>
 

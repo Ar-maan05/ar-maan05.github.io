@@ -45,6 +45,23 @@
       };
     });
   }
+  // Published security advisories, read from the Advisories section. Shaped
+  // like a PR so the replay machinery takes them as they are.
+  function advisories() {
+    return Array.prototype.map.call(doc.querySelectorAll("#advisory-body [data-advisory]"), function (li) {
+      var id = li.getAttribute("data-advisory");
+      var a = li.querySelector(".col-title a"), d = li.querySelector(".col-date"),
+          w = li.querySelector(".col-why"), v = li.querySelector(".col-sev");
+      return {
+        key: id, repo: li.getAttribute("data-repo"), num: id, adv: true,
+        title: a ? a.textContent.trim() : id,
+        url: a ? a.href : "",
+        date: d ? d.textContent.trim() : "",
+        sev: v ? v.textContent.trim() : "",
+        note: w ? w.textContent.trim() : ""
+      };
+    });
+  }
   function byRepo() {
     var m = {};
     prs().forEach(function (p) { (m[p.repo] = m[p.repo] || []).push(p); });
@@ -72,12 +89,14 @@
     for (i = 0; i < all.length; i++) if (all[i].num === q) return all[i];
     for (i = 0; i < all.length; i++) if (all[i].key.toLowerCase().indexOf(q) !== -1) return all[i];
     for (i = 0; i < all.length; i++) if (all[i].title.toLowerCase().indexOf(q) !== -1) return all[i];
+    var adv = advisories();
+    for (i = 0; i < adv.length; i++) if (adv[i].key.toLowerCase().indexOf(q) !== -1) return adv[i];
     return null;
   }
 
   var SECTIONS = [
     ["work", "mcp-persist case study"], ["mlrouter", "the LLM gateway"], ["shipped", "other packages"],
-    ["ledger", "every merged PR"], ["runixos", "the microkernel"], ["foundations", "the groundwork before it"],
+    ["ledger", "every merged PR"], ["advisories", "security advisories"], ["runixos", "the microkernel"], ["foundations", "the groundwork before it"],
     ["about", "what I'm doing now"], ["console", "this terminal"], ["contact", "how to reach me"],
     ["colophon", "how the site is built"]
   ];
@@ -147,6 +166,7 @@
     var c = history.slice().reverse();
     Object.keys(COMMANDS).forEach(function (n) { if (!COMMANDS[n].hidden) c.push(n); });
     prs().forEach(function (p) { c.push("debug " + p.num); });
+    advisories().forEach(function (p) { c.push("debug " + p.key); });
     Object.keys(byRepo()).forEach(function (r) { c.push("merged " + short(r)); });
     SECTIONS.forEach(function (s) { c.push("cd " + s[0]); });
     return c;
@@ -348,6 +368,16 @@
       startReplay(p);
     } },
 
+    advisories: { desc: "security advisories I reported", run: function () {
+      advisories().forEach(function (p) {
+        say([{ t: p.key, cmd: "debug " + p.key, c: "t-num" }, "  ", { t: p.date + "  " + pad(short(p.repo), 9), c: "t-dim" },
+             { t: p.sev, c: "t-err" }], "t-row");
+        say(["  ", { t: p.title, href: p.url }], "t-row");
+      });
+      blank();
+      say({ t: "Click an ID to replay the proof of concept.", c: "t-dim" });
+    } },
+
     log: { desc: "latest merges", run: function () {
       prs().slice().sort(function (a, b) { return b.date.localeCompare(a.date); }).slice(0, 10).forEach(function (p) {
         var id = short(p.repo) + "#" + p.num;
@@ -527,7 +557,7 @@
       replayScreen.setAttribute("aria-labelledby", replayTab.id);
     }
     replayTab.innerHTML = '<span class="t-tab-kind">replay</span> ';
-    replayTab.appendChild(doc.createTextNode(short(p.repo) + "#" + p.num));
+    replayTab.appendChild(doc.createTextNode(p.adv ? p.key : short(p.repo) + "#" + p.num));
   }
 
   function drawStatus() {
@@ -549,7 +579,7 @@
       mid.appendChild(span({ t: "step " + Math.min(R.i + 1, R.steps.length) + " of " + R.steps.length, c: "ts-count" }));
       right.appendChild(ctl(R.done ? "Replay" : R.paused ? "Resume" : "Pause", R.done ? restartReplay : togglePause));
       if (!R.done) right.appendChild(ctl("Skip", skipReplay));
-      right.appendChild(span({ t: "PR ↗", href: R.p.url, c: "ts-btn" }));
+      right.appendChild(span({ t: (R.p.adv ? "Advisory" : "PR") + " ↗", href: R.p.url, c: "ts-btn" }));
     } else {
       left.appendChild(span({ t: "zsh", c: "ts-mode" }));
       mid.appendChild(span({ t: "Tab completes · → accepts · ↑↓ history", c: "ts-hint" }));
@@ -589,7 +619,7 @@
     R = { p: p, steps: stepsFor(p), i: 0, paused: false, done: false, timer: null };
     ensureReplayTab(p);
     replayScreen.textContent = "";
-    line(replayScreen, [{ t: "# " + p.key + (p.date ? " · merged " + p.date : ""), c: "t-dim" }]);
+    line(replayScreen, [{ t: "# " + p.key + (p.date ? (p.adv ? " · published " : " · merged ") + p.date : ""), c: "t-dim" }]);
     line(replayScreen, [{ t: "# ", c: "t-dim" }, { t: p.title, href: p.url }]);
     if (p.note) line(replayScreen, { t: "# " + p.note, c: "t-dim" }, "t-note");
     blank(replayScreen);
@@ -642,7 +672,7 @@
     if (!R) return;
     R.done = true;
     blank(replayScreen);
-    line(replayScreen, [{ t: "replay finished · ", c: "t-dim" }, { t: "view the PR", href: R.p.url }, { t: " · ", c: "t-dim" }, { t: "back to the shell", go: "shell" }]);
+    line(replayScreen, [{ t: "replay finished · ", c: "t-dim" }, { t: R.p.adv ? "view the advisory" : "view the PR", href: R.p.url }, { t: " · ", c: "t-dim" }, { t: "back to the shell", go: "shell" }]);
     drawStatus();
   }
   function togglePause() {
@@ -688,7 +718,7 @@
 
   window.deckTerminal = {
     debug: function (key) {
-      var p = prs().filter(function (x) { return x.key === key; })[0];
+      var p = prs().concat(advisories()).filter(function (x) { return x.key === key; })[0];
       if (!p) return;
       term.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "center" });
       say(promptParts("debug " + p.num), "t-echo");
