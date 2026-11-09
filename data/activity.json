@@ -1,5 +1,5 @@
 {
-  "generated": "2026-11-08T12:25:32.060Z",
+  "generated": "2026-11-09T14:40:17.957Z",
   "curated": [
     {
       "repo": "systemd/systemd",
@@ -515,6 +515,14 @@
     }
   ],
   "extra": [
+    {
+      "repo": "fwupd/fwupd",
+      "number": 11379,
+      "title": "Do not accept an empty string in fu_strtoull() and fu_strtoll()",
+      "state": "merged",
+      "url": "https://github.com/fwupd/fwupd/pull/11379",
+      "merged_at": "2026-11-09T09:02:56Z"
+    },
     {
       "repo": "util-linux/util-linux",
       "number": 4727,

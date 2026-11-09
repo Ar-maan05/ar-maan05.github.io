@@ -3,15 +3,15 @@
   "downloads_display": "21,000+",
   "downloads_short": "21k+",
   "version": "2.2.0",
-  "merged_prs": 103,
+  "merged_prs": 104,
   "repos_merged": 22,
   "repo_merged": {
+    "fwupd/fwupd": 6,
     "OpenPrinting/cups-filters": 4,
     "OpenPrinting/libcupsfilters": 7,
     "OpenPrinting/libppd": 4,
     "OpenPrinting/cups-browsed": 3,
     "lsof-org/lsof": 3,
-    "fwupd/fwupd": 5,
     "AcademySoftwareFoundation/openexr": 1,
     "ppp-project/ppp": 3,
     "util-linux/util-linux": 7,
@@ -29,5 +29,5 @@
     "lancedb/lancedb": 5,
     "lightpanda-io/browser": 3
   },
-  "generated": "2026-11-08T12:25:18.915Z"
+  "generated": "2026-11-09T14:39:54.239Z"
 }
