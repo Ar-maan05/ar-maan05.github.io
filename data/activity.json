@@ -1,5 +1,5 @@
 {
-  "generated": "2026-11-09T14:40:17.957Z",
+  "generated": "2026-11-10T13:56:47.675Z",
   "curated": [
     {
       "repo": "systemd/systemd",
@@ -515,6 +515,30 @@
     }
   ],
   "extra": [
+    {
+      "repo": "lsof-org/lsof",
+      "number": 385,
+      "title": "linux: keep the whole Unix socket path from /proc/net/unix",
+      "state": "merged",
+      "url": "https://github.com/lsof-org/lsof/pull/385",
+      "merged_at": "2026-11-10T03:24:27Z"
+    },
+    {
+      "repo": "OpenPrinting/libcupsfilters",
+      "number": 330,
+      "title": "image: free the EXIF data in _cfImageReadEXIF()",
+      "state": "merged",
+      "url": "https://github.com/OpenPrinting/libcupsfilters/pull/330",
+      "merged_at": "2026-11-09T22:40:47Z"
+    },
+    {
+      "repo": "linux-pam/linux-pam",
+      "number": 1051,
+      "title": "libpamc: avoid shadowing the caller's prompt in PAM_BP_FILL",
+      "state": "merged",
+      "url": "https://github.com/linux-pam/linux-pam/pull/1051",
+      "merged_at": "2026-11-09T15:32:59Z"
+    },
     {
       "repo": "fwupd/fwupd",
       "number": 11379,
