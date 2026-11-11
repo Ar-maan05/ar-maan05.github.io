@@ -1,5 +1,5 @@
 {
-  "generated": "2026-11-10T13:56:47.675Z",
+  "generated": "2026-11-11T13:10:39.557Z",
   "curated": [
     {
       "repo": "systemd/systemd",
@@ -515,6 +515,14 @@
     }
   ],
   "extra": [
+    {
+      "repo": "linux-pam/linux-pam",
+      "number": 1050,
+      "title": "libpamc: check every character of an agent id",
+      "state": "merged",
+      "url": "https://github.com/linux-pam/linux-pam/pull/1050",
+      "merged_at": "2026-11-11T11:45:22Z"
+    },
     {
       "repo": "lsof-org/lsof",
       "number": 385,
