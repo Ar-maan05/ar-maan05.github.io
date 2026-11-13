@@ -1,5 +1,5 @@
 {
-  "generated": "2026-11-12T14:13:57.403Z",
+  "generated": "2026-11-13T13:37:14.185Z",
   "curated": [
     {
       "repo": "systemd/systemd",
@@ -515,6 +515,22 @@
     }
   ],
   "extra": [
+    {
+      "repo": "sudo-project/sudo",
+      "number": 590,
+      "title": "sudoreplay: don't reuse the previous result for a missing log field",
+      "state": "merged",
+      "url": "https://github.com/sudo-project/sudo/pull/590",
+      "merged_at": "2026-11-13T03:33:22Z"
+    },
+    {
+      "repo": "sudo-project/sudo",
+      "number": 589,
+      "title": "cvtsudoers: fix CSV output of log tags, boolean options and aliases",
+      "state": "merged",
+      "url": "https://github.com/sudo-project/sudo/pull/589",
+      "merged_at": "2026-11-13T03:32:50Z"
+    },
     {
       "repo": "linux-pam/linux-pam",
       "number": 1050,

@@ -3,7 +3,7 @@
   "downloads_display": "21,000+",
   "downloads_short": "21k+",
   "version": "2.2.0",
-  "merged_prs": 108,
+  "merged_prs": 110,
   "repos_merged": 23,
   "repo_merged": {
     "OpenPrinting/libcupsfilters": 8,
@@ -12,10 +12,10 @@
     "OpenPrinting/cups-filters": 4,
     "OpenPrinting/libppd": 4,
     "OpenPrinting/cups-browsed": 3,
+    "sudo-project/sudo": 5,
     "AcademySoftwareFoundation/openexr": 1,
     "ppp-project/ppp": 3,
     "util-linux/util-linux": 7,
-    "sudo-project/sudo": 3,
     "OpenPrinting/cups": 3,
     "avahi/avahi": 2,
     "NLnetLabs/unbound": 2,
@@ -30,5 +30,5 @@
     "lancedb/lancedb": 5,
     "lightpanda-io/browser": 3
   },
-  "generated": "2026-11-12T14:13:34.623Z"
+  "generated": "2026-11-13T13:36:59.055Z"
 }
