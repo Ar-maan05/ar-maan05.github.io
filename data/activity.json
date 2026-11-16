@@ -1,5 +1,5 @@
 {
-  "generated": "2026-11-15T13:08:24.838Z",
+  "generated": "2026-11-16T14:15:53.899Z",
   "curated": [
     {
       "repo": "systemd/systemd",
@@ -515,6 +515,14 @@
     }
   ],
   "extra": [
+    {
+      "repo": "AcademySoftwareFoundation/openexr",
+      "number": 2838,
+      "title": "Check the buffer size in the HTJ2K write_header",
+      "state": "merged",
+      "url": "https://github.com/AcademySoftwareFoundation/openexr/pull/2838",
+      "merged_at": "2026-11-15T23:17:58Z"
+    },
     {
       "repo": "sudo-project/sudo",
       "number": 590,
