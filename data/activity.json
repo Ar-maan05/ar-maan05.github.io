@@ -1,5 +1,5 @@
 {
-  "generated": "2026-11-16T14:15:53.899Z",
+  "generated": "2026-11-17T15:08:30.539Z",
   "curated": [
     {
       "repo": "systemd/systemd",
@@ -515,6 +515,14 @@
     }
   ],
   "extra": [
+    {
+      "repo": "lsof-org/lsof",
+      "number": 397,
+      "title": "linux: do the hash multiplies in unsigned",
+      "state": "merged",
+      "url": "https://github.com/lsof-org/lsof/pull/397",
+      "merged_at": "2026-11-17T06:44:54Z"
+    },
     {
       "repo": "AcademySoftwareFoundation/openexr",
       "number": 2838,
