@@ -1,5 +1,5 @@
 {
-  "generated": "2026-11-17T15:08:30.539Z",
+  "generated": "2026-11-18T14:46:46.705Z",
   "curated": [
     {
       "repo": "systemd/systemd",
@@ -515,6 +515,38 @@
     }
   ],
   "extra": [
+    {
+      "repo": "util-linux/util-linux",
+      "number": 4753,
+      "title": "libsmartcols: add scols_table_make_tree()",
+      "state": "merged",
+      "url": "https://github.com/util-linux/util-linux/pull/4753",
+      "merged_at": "2026-11-18T12:44:08Z"
+    },
+    {
+      "repo": "util-linux/util-linux",
+      "number": 4754,
+      "title": "findmnt: fix hang and crash on mount ID cycles",
+      "state": "merged",
+      "url": "https://github.com/util-linux/util-linux/pull/4754",
+      "merged_at": "2026-11-18T11:14:18Z"
+    },
+    {
+      "repo": "util-linux/util-linux",
+      "number": 4728,
+      "title": "lslocks: look up lock paths without rescanning /proc/PID/fd",
+      "state": "merged",
+      "url": "https://github.com/util-linux/util-linux/pull/4728",
+      "merged_at": "2026-11-18T11:14:18Z"
+    },
+    {
+      "repo": "util-linux/util-linux",
+      "number": 4726,
+      "title": "findmnt: build the tree without rescanning the mount table",
+      "state": "merged",
+      "url": "https://github.com/util-linux/util-linux/pull/4726",
+      "merged_at": "2026-11-18T11:14:18Z"
+    },
     {
       "repo": "lsof-org/lsof",
       "number": 397,
