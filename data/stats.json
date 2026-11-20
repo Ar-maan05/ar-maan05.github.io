@@ -3,7 +3,7 @@
   "downloads_display": "21,000+",
   "downloads_short": "21k+",
   "version": "2.2.0",
-  "merged_prs": 116,
+  "merged_prs": 117,
   "repos_merged": 23,
   "repo_merged": {
     "lsof-org/lsof": 5,
@@ -21,14 +21,14 @@
     "NLnetLabs/unbound": 2,
     "linux-pam/linux-pam": 2,
     "python/cpython": 2,
+    "coreos/afterburn": 3,
     "crmne/spotifast": 2,
     "storytold/photocraft": 9,
     "systemd/systemd": 21,
-    "coreos/afterburn": 2,
     "BerriAI/litellm": 7,
     "lance-format/lance": 5,
     "lancedb/lancedb": 5,
     "lightpanda-io/browser": 3
   },
-  "generated": "2026-11-19T14:53:20.484Z"
+  "generated": "2026-11-20T14:34:25.753Z"
 }
