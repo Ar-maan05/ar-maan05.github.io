@@ -1399,3 +1399,296 @@ Object.assign(window.DECK_SIMS, {
     { c: "meson compile -C build", o: [ "+builds with D-Bus enabled, no new warnings" ] }
   ]
 });
+
+/* Replays for the merges of mid-November, and for CVE-2026-124757. */
+Object.assign(window.DECK_SIMS, {
+
+  "CVE-2026-124757": [
+    { c: "cat /proc/self/cgroup   # an unprivileged user on Debian bookworm", o: [
+      "0::/user.slice/user-1000.slice/user@1000.service/app.slice/...",
+      "# systemd delegates the user@1000.service subtree to the user" ] },
+    { c: "# a directory there named like root's session; needrestart matched the path unanchored", o: [
+      "!needrestart files my process under root's session" ] },
+    { c: "# the process names itself: prctl(PR_SET_NAME), 15 bytes I choose", o: [] },
+    { c: "sudo apt-get install --reinstall hello   # the stock apt hook runs needrestart", o: [
+      "Scanning processes...",
+      "!400-notify-send: su root -c \"... <process name> ...\"",
+      "!the name closes the quote: root's shell parses it as commands",
+      "# trixie 3.11-1: notify-send ran as root with my DISPLAY and text, no exec reproduced" ] },
+    { c: "# the fix: three patches I wrote, reviewed by upstream maintainer Thomas Liske", o: [
+      "b1996a1 notify.d: pass the notification text to su through the environment",
+      "7874c08 needrestart: anchor the systemd cgroup matches",
+      "e8ae1f2 needrestart: replace non-ASCII and control characters in process names" ] },
+    { c: "sudo apt-get install --reinstall hello   # needrestart 3.6-4+deb12u4", o: [
+      "+my process stays under uid 1000: the cgroup match is anchored",
+      "+the notification text reaches su as environment data, never as shell syntax",
+      "+control characters in process names are shown as ?" ] },
+    { c: "# reported 23 Oct; Debian and Ubuntu 5 Nov; linux-distros 8 Nov; public 17 Nov", o: [
+      "*DSA-6637-1 · DLA-4921-1 · USN-9151-1" ] }
+  ],
+
+  "coreos/afterburn#1310": [
+    { c: "cat network-data.yaml   # KubeVirt NoCloud, the form Netplan recommends", o: [
+      "routes:", "  - to: default", "    via: 192.168.1.1" ] },
+    { c: "afterburn exp rd-network-kargs --provider kubevirt", o: [
+      "!Error: invalid address: default",
+      "# to / destination went straight to IpNetwork::from_str(): the whole config rejected" ] },
+    { c: "git switch feat/kubevirt-default-route   # parse_route_destination()", o: [
+      "# default -> 0.0.0.0/0 or ::/0 by the gateway's family, as cloud-init normalizes it" ] },
+    { c: "afterburn exp rd-network-kargs --provider kubevirt", o: [
+      "+ip=192.168.1.10::192.168.1.1:255.255.255.0::eth0:none" ] },
+    { c: "cargo test kubevirt && make validate-fixtures", o: [
+      "+v1 and v2 fixtures, both families: fail on main, pass here; valid against cloud-init's schemas" ] }
+  ],
+
+  "util-linux/util-linux#4753": [
+    { c: "printf '1 0 a\\n2 1 b\\n1 0 a2\\n3 1 c\\n' | column --tree-id 1 --tree-parent 2 --tree 3", o: [
+      "a", "!a2", "!|-b", "!`-c",
+      "# with duplicate IDs the last one won; issue #4752 asks for the first" ] },
+    { c: "git switch feat/scols-make-tree   # scols_table_make_tree(), used by column --tree", o: [
+      "# cycles broken in one pass: the first line of a cycle stays at the top" ] },
+    { c: "printf '1 0 a\\n2 1 b\\n1 0 a2\\n3 1 c\\n' | column --tree-id 1 --tree-parent 2 --tree 3", o: [
+      "+a", "+|-b", "+`-c", "a2" ] },
+    { c: "time column --tree-id 1 --tree-parent 2 --tree 3 dup-30k.txt > /dev/null", o: [
+      "+real\t0m0.37s   (was 2.35s)",
+      "# ~2000 inputs old vs new: only duplicate and cycle inputs differ" ] }
+  ],
+
+  "util-linux/util-linux#4754": [
+    { c: "cat mi   # parent IDs: 20 -> 30 -> 20", o: [
+      "20 30 8:1 / / rw,relatime shared:1 - ext4 /dev/sda1 rw",
+      "30 20 0:30 / /boot rw,relatime shared:2 - tmpfs tmpfs rw",
+      "21 20 0:31 / /home rw,relatime shared:3 - tmpfs tmpfs rw" ] },
+    { c: "findmnt -F mi", o: [ "!(hangs: the root lookup goes round the cycle forever)" ] },
+    { c: "findmnt -F mi2 -Q 'FSTYPE==\"ext4\"'   # a cycle away from the root", o: [
+      "!Segmentation fault   (endless recursion in the tree walk)" ] },
+    { c: "git switch fix/findmnt-id-cycles", o: [] },
+    { c: "findmnt -F mi", o: [
+      "TARGET    SOURCE    FSTYPE OPTIONS",
+      "+/boot     tmpfs     tmpfs  rw,relatime",
+      "+`-/       /dev/sda1 ext4   rw,relatime",
+      "+  `-/home tmpfs     tmpfs  rw,relatime" ] },
+    { c: "./tests/run.sh findmnt", o: [
+      "+two new tests pass; thousands of random mountinfo files: no hangs or crashes" ] }
+  ],
+
+  "util-linux/util-linux#4728": [
+    { c: "time lslocks -p $PID > /dev/null   # one process holding 8000 flock()ed files", o: [
+      "!real\t0m43s",
+      "# every lock walked /proc/PID/fd and fstatat()ed until the inode matched, twice" ] },
+    { c: "git switch perf/lslocks-fd-tree   # read each holder's fds once into an inode tree", o: [] },
+    { c: "time lslocks -p $PID > /dev/null", o: [
+      "+real\t0m0.22s   ~195x",
+      "+4000 locks: 0.20 s (was 10.4 s)" ] },
+    { c: "./compare-lslocks.sh flock posix ofd -J -r -u -o --output-all -p", o: [
+      "+identical, dup'd and deleted files included; tests/run.sh lslocks passes" ] }
+  ],
+
+  "util-linux/util-linux#4726": [
+    { c: "unshare -Urm sh -c 'mount 16000 tmpfs under /tmp/m; time findmnt > /dev/null'", o: [
+      "!real\t0m2.97s",
+      "# has_line() walked the whole output table per node, and each child lookup",
+      "# rescanned the whole mount table: a parent with k children cost k scans" ] },
+    { c: "git switch perf/findmnt-tree   # userdata marks, one sorted array, binary search", o: [
+      "# kept in findmnt, so other libmount users are not affected" ] },
+    { c: "unshare -Urm sh -c '...; time findmnt > /dev/null; time findmnt -J > /dev/null'", o: [
+      "+real\t0m0.16s   18x",
+      "+real\t0m0.08s   36x (-J, was 2.85 s)" ] },
+    { c: "./compare-findmnt.sh --layouts flat,deep,mixed,overmount,rbind --random-F 6000", o: [
+      "+1130 combinations + 6000 random tables: identical, also under ASan/UBSan" ] }
+  ],
+
+  "lsof-org/lsof#397": [
+    { c: "CC=clang CFLAGS=-fsanitize=undefined ./configure && make && ./lsof -n -P -E > /dev/null", o: [
+      "!dnode.c:629:13: runtime error: signed integer overflow: 1279995 * 31415 cannot be represented in type 'int'",
+      "!dfile.c:135:34: runtime error: signed integer overflow: 58720318 * 31415 ...",
+      "# 7 sites; the bucket mask hid it on normal builds, but it is still UB" ] },
+    { c: "git switch fix/unsigned-hash   # HASHPID, HASHPINFO, SFHASHDEVINO, the IPv6 IPC hash", o: [
+      "# the low bits are the same, so every bucket stays the same" ] },
+    { c: "./lsof -n -P -E > /dev/null && make check", o: [
+      "+no UBSan reports", "+39 pass, 3 skip" ] }
+  ],
+
+  "AcademySoftwareFoundation/openexr#2838": [
+    { c: "./harness write-htj2k --size 1x1 --channel half   # UBSan build", o: [
+      "!internal_ht_common.cpp:249:54: runtime error: addition of unsigned offset overflowed",
+      "# a chunk smaller than the 6-byte header: max_sz wrapped before the bounds check" ] },
+    { c: "git switch fix/htj2k-header-size   # throw the same range_error before subtracting", o: [
+      "# it only worked by luck: the wrapped pointer made the next push throw anyway" ] },
+    { c: "./harness write-htj2k --size 1x1 --channel half && ./harness read 1x1.exr", o: [
+      "+clean: chunk stored uncompressed (packed 4, compressed 4)", "+reads back the same value" ] },
+    { c: "ctest -R testHTHeaderBounds", o: [ "+passes   (fails under UBSan without the fix)" ] }
+  ],
+
+  "sudo-project/sudo#590": [
+    { c: "sudoreplay -l user alice group wheel   # alice's session logged no run group", o: [
+      "!Nov 12 10:04:11 2026 : alice : TTY=/dev/pts/0 ; CWD=/home/alice ; USER=root ; ...",
+      "# a missing field left res as the previous term's result" ] },
+    { c: "sudoreplay -l user alice ! group wheel", o: [ "!(nothing)" ] },
+    { c: "git switch fix/sudoreplay-missing-field   # reset res for each term", o: [] },
+    { c: "sudoreplay -l user alice group wheel", o: [ "+(nothing)" ] },
+    { c: "sudoreplay -l user alice ! group wheel", o: [
+      "+Nov 12 10:04:11 2026 : alice : TTY=/dev/pts/0 ; CWD=/home/alice ; USER=root ; ..." ] }
+  ],
+
+  "sudo-project/sudo#589": [
+    { c: "cvtsudoers -f csv sudoers   # User_Alias ADMINS = alice; ADMINS ALL = (root) NOLOG_INPUT: /bin/ls", o: [
+      "rule,user,host,runusers,rungroups,options,command",
+      "!rule,ADMINS,ALL,root,,\"log_input\",/bin/ls",
+      "# log tags tested tag.follow, and the alias section checked the defaults list" ] },
+    { c: "git switch fix/cvtsudoers-csv", o: [
+      "# also: an LDIF sudoOption: env_reset came out as env_resetenv_reset" ] },
+    { c: "cvtsudoers -f csv sudoers", o: [
+      "+alias_type,alias_name,members", "+User_Alias,ADMINS,alice", "",
+      "rule,user,host,runusers,rungroups,options,command",
+      "+rule,ADMINS,ALL,root,,\"!log_input\",/bin/ls" ] },
+    { c: "make -C plugins/sudoers check", o: [ "+cvtsudoers/test44 ... ok   (fails before)" ] }
+  ],
+
+  "linux-pam/linux-pam#1050": [
+    { c: "./harness valid-agent-id agent a/b 'a b' a@b@c a.b a@ a@b.c", o: [
+      "agent  1", "!a/b    1", "!a b    1", "!a@b@c  1", "!a.b    1", "!a@     1", "a@b.c  1",
+      "# ++i in the loop and id[i++] in the body: every other character checked" ] },
+    { c: "git switch fix/pamc-agent-id   # read id[i]; '@' test i > 0", o: [
+      "# grammar from doc/specs/std-agent-id.raw: ^[a-z0-9_]+(@[a-z0-9_.]+)?$" ] },
+    { c: "./harness valid-agent-id agent a/b 'a b' a@b@c a.b a@ a@b.c", o: [
+      "agent  1", "+a/b    0", "+a b    0", "+a@b@c  0", "+a.b    0", "+a@     0", "a@b.c  1" ] }
+  ],
+
+  "lsof-org/lsof#385": [
+    { c: "lsof -U -a -p $PID   # a socket bound to \"my sock\"", o: [
+      "!... my type=STREAM (LISTEN)",
+      "# get_unix() split the /proc/net/unix line on blanks and ':'" ] },
+    { c: "git switch fix/unix-socket-path   # the kernel prints the path last: take it whole", o: [] },
+    { c: "lsof -U -a -p $PID", o: [ "+... my sock type=STREAM (LISTEN)" ] },
+    { c: "make check", o: [ "+case-20-ux-socket-path-space ... ok   (blanks, a TAB and a ':')" ] }
+  ],
+
+  "OpenPrinting/libcupsfilters#330": [
+    { c: "valgrind --leak-check=full ./harness read-exif 300dpi.jpg", o: [
+      "ppi=300x300",
+      "!definitely lost: 1,012 bytes in 37 blocks",
+      "# exif_data_new_from_data() with no exif_data_unref() on any return path" ] },
+    { c: "git switch fix/exif-unref", o: [ "# per image, so it adds up over multi-image jobs" ] },
+    { c: "valgrind --leak-check=full ./harness read-exif 300dpi.jpg no-xres.jpg zero-res.jpg no-exif.jpg", o: [
+      "ppi=300x300", "+All heap blocks were freed -- no leaks are possible" ] }
+  ],
+
+  "linux-pam/linux-pam#1051": [
+    { c: "cc -o bp bp.c -lpamc && ./bp   # pamc_bp_t prompt; PAM_BP_FILL(prompt, 0, 4, \"abcd\")", o: [
+      "!warning: 'prompt' may be used uninitialized",
+      "!Segmentation fault (exit 139)",
+      "# expands to uint8_t *prompt = (uint8_t *) (prompt): initialized from itself" ] },
+    { c: "git switch fix/bp-fill-shadow   # locals renamed __prompt, __bp_length", o: [
+      "# the spec's own example names its variable prompt" ] },
+    { c: "cc -o bp bp.c -lpamc && ./bp", o: [ "+filled: abcd" ] }
+  ],
+
+  "fwupd/fwupd#11379": [
+    { c: "./harness strtoull '' '0x' $'\\n' --min 0 --max G_MAXUINT32", o: [
+      "!\"\"    -> TRUE, 0", "!\"0x\"  -> TRUE, 0", "!\"\\n\"  -> TRUE, 0",
+      "# nothing parsed and strlen() == 0, so the end-pointer check passed" ] },
+    { c: "git switch fix/strtoull-no-digits", o: [] },
+    { c: "./harness strtoull '' '0x' $'\\n' --min 0 --max G_MAXUINT32", o: [
+      "+\"\"    -> FALSE: no digits to parse", "+\"0x\"  -> FALSE", "+\"\\n\"  -> FALSE" ] },
+    { c: "meson test -C build fwupd-self-test", o: [
+      "+new 0-minimum cases for both functions; all tests pass" ] }
+  ]
+});
+
+/* Changes that landed without GitHub marking a PR merged: curl and strongSwan
+   rebase or apply contributions by hand and close the PR, and the kernel takes
+   patches by mail. Same rule: each follows its own description. */
+Object.assign(window.DECK_SIMS, {
+
+  "torvalds/linux#5d7226621": [
+    { c: "./tools/testing/kunit/kunit.py run cmdline   # with the new cases, before the fix", o: [
+      "!get_options(\"1-100\") into 4 ints: count 99",
+      "!get_options(\"0-2147483647\"): index wraps negative, writes outside the array",
+      "!Kernel panic - not syncing   (the test kernel)",
+      "# get_range() stopped when the array was full; get_options() advanced by the whole range" ] },
+    { c: "git am 0001-lib-cmdline-fix-get_options-count-and-overflow.patch", o: [
+      "# stop once a range fills the array, bail in validation mode before the count",
+      "# overflows, and saturate the range length in get_range()" ] },
+    { c: "./tools/testing/kunit/kunit.py run cmdline", o: [
+      "+[PASSED] cmdline   (with an extra case from Leizhen Zhang)" ] },
+    { c: "git log -1 --format=%b 5d7226621 | grep -E '^(Fixes|Cc: <stable)'", o: [
+      "Fixes: 22f2e2801799 (\"[PATCH] get_options to allow a hypenated range for isolcpus\")",
+      "+Cc: <stable@vger.kernel.org>",
+      "# only root can supply this input, so a robustness fix; applied by Andrew Morton" ] }
+  ],
+
+  "curl/curl#23630": [
+    { c: "CURL_WS_CHUNK_SIZE=4 ./lib2700 ws://localhost:$PORT   # the server PINGs \"test\"", o: [
+      "!app gets \"te\" as a PING frame",
+      "!server gets PONG \"st\"",
+      "# RFC 6455: a PONG echoes the PING's payload, and auto PONG hides PINGs from the app" ] },
+    { c: "rg -n 'single-frame' lib/ws.c", o: [ "/* only works for single-frame payloads atm */" ] },
+    { c: "git switch fix/ws-ping-payload   # buffer up to 125 bytes, PONG once complete", o: [
+      "# control frames can't be bigger; the decoder already rejects them" ] },
+    { c: "CURL_WS_CHUNK_SIZE=4 ./lib2700 ws://localhost:$PORT", o: [
+      "+app sees nothing", "+server gets PONG \"test\"" ] },
+    { c: "./runtests.pl 2724", o: [
+      "+test 2724 OK   (fails before)",
+      "# all WebSockets tests pass, checksrc clean; landed on master by Daniel Stenberg" ] }
+  ],
+
+  "curl/curl#23586": [
+    { c: "./urlparts --url https://example.com/ --host '[fe80::1%25eth0]' --get url", o: [
+      "!https://[fe80::1%25eth0%25eth0]/   (doesn't parse back)",
+      "# the decoded copy was checked and its zone split off, but the original was stored" ] },
+    { c: "git switch fix/urlapi-zoneid   # store the checked address, zone kept apart", o: [
+      "# side effect: normalized like a parsed URL, [FE80::0:1] becomes [fe80::1]" ] },
+    { c: "./urlparts --url https://example.com/ --host '[fe80::1%25eth0]' --get url", o: [
+      "+https://[fe80::1%25eth0]/" ] },
+    { c: "./runtests.pl 1560", o: [ "+test 1560 OK   (two new set_parts cases)" ] }
+  ],
+
+  "curl/curl#23585": [
+    { c: "./urlparts --scheme file --get url   # a handle with only the scheme set", o: [
+      "!file://(nil)",
+      "# file_url() passed u->path, NULL here, straight to %s: undefined outside glibc" ] },
+    { c: "git switch fix/urlapi-file-null-path   # u->path ? u->path : \"/\"", o: [
+      "# the \"(nil)\" cleanup from #21743; CURLUPART_PATH already returned \"/\"" ] },
+    { c: "./urlparts --scheme file --get url", o: [ "+file:///" ] },
+    { c: "./runtests.pl 1560", o: [ "+test 1560 OK   (the new case fails before)" ] }
+  ],
+
+  "curl/curl#23581": [
+    { c: "curl -r -23 file:///tmp/f22.txt | wc -c; echo $?   # a 22-byte file", o: [
+      "22", "!0",
+      "# off by one: the offset became -1, lseek() failed with -1, and -1 matched" ] },
+    { c: "curl -r -100 file:///tmp/f22.txt | wc -c; echo $?", o: [ "0", "!36   (and no message)" ] },
+    { c: "git switch fix/file-range   # the check ftp.c and both sftp backends make", o: [] },
+    { c: "curl -r -23 file:///tmp/f22.txt", o: [ "+curl: (36) Offset (-23) was beyond file size (22)" ] },
+    { c: "curl -r -22 file:///tmp/f22.txt | wc -c", o: [ "22   # the whole file, as before" ] },
+    { c: "./runtests.pl 1020", o: [ "+test 1020 OK   (asks for one byte too many; fails before)" ] }
+  ],
+
+  "strongswan/strongswan#3180": [
+    { c: "rg -n -A3 'free\\(this->plain.ptr\\)' src/libcharon/encoding/payloads/encrypted_payload.c", o: [
+      "free(this->plain.ptr);", "status = decrypt_content(...);",
+      "!chunk_clone(this->plain)   # after an early failure: a copy from freed memory" ] },
+    { c: "# reachable only if frag_decrypt() ran twice on one payload; today it runs once", o: [] },
+    { c: "git switch fix/frag-decrypt-chunk-free   # chunk_free(&this->plain)", o: [
+      "+the chunk is cleared, so a failure clones an empty chunk" ] },
+    { c: "# applied to master by maintainer Tobias Brunner, with small changes", o: [] }
+  ]
+});
+
+Object.assign(window.DECK_SIMS, {
+  "esnet/iperf#2099": [
+    { c: "iperf3 -c 127.0.0.1 -V --nstreams 2 -t 2   # a build with SCTP support", o: [
+      "!Target Bitrate: 2",
+      "![  4]   0.00-2.00   sec   128 KBytes   524 Kbits/sec    sender",
+      "# case OPT_NUMSTREAMS had no break, so it fell through into -b" ] },
+    { c: "git switch fix/nstreams-break   # the missing break", o: [
+      "# also: the LOST n PACKETS debug message used + 1 where it meant - 1" ] },
+    { c: "iperf3 -c 127.0.0.1 -V --nstreams 2 -t 2", o: [
+      "+(no target bitrate)",
+      "+[  4]   0.00-2.00   sec  24.3 GBytes   104 Gbits/sec    sender" ] },
+    { c: "make check", o: [
+      "+PASS",
+      "# tested over TCP with the option registered by hand: no SCTP headers here" ] }
+  ]
+});

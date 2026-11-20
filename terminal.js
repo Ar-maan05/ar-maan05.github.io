@@ -579,7 +579,7 @@
       mid.appendChild(span({ t: "step " + Math.min(R.i + 1, R.steps.length) + " of " + R.steps.length, c: "ts-count" }));
       right.appendChild(ctl(R.done ? "Replay" : R.paused ? "Resume" : "Pause", R.done ? restartReplay : togglePause));
       if (!R.done) right.appendChild(ctl("Skip", skipReplay));
-      right.appendChild(span({ t: (R.p.adv ? "Advisory" : "PR") + " ↗", href: R.p.url, c: "ts-btn" }));
+      right.appendChild(span({ t: linkKind(R.p) + " ↗", href: R.p.url, c: "ts-btn" }));
     } else {
       left.appendChild(span({ t: "zsh", c: "ts-mode" }));
       mid.appendChild(span({ t: "Tab completes · → accepts · ↑↓ history", c: "ts-hint" }));
@@ -614,6 +614,10 @@
     ];
   }
 
+  // What the replay's link opens: an advisory, a landed commit, or the PR.
+  function linkKind(p) {
+    return p.adv ? "Advisory" : /\/commit\/|git\.kernel\.org/.test(p.url) ? "Commit" : "PR";
+  }
   function startReplay(p) {
     stopReplay();
     R = { p: p, steps: stepsFor(p), i: 0, paused: false, done: false, timer: null };
@@ -672,7 +676,7 @@
     if (!R) return;
     R.done = true;
     blank(replayScreen);
-    line(replayScreen, [{ t: "replay finished · ", c: "t-dim" }, { t: R.p.adv ? "view the advisory" : "view the PR", href: R.p.url }, { t: " · ", c: "t-dim" }, { t: "back to the shell", go: "shell" }]);
+    line(replayScreen, [{ t: "replay finished · ", c: "t-dim" }, { t: "view the " + linkKind(R.p).toLowerCase().replace("pr", "PR"), href: R.p.url }, { t: " · ", c: "t-dim" }, { t: "back to the shell", go: "shell" }]);
     drawStatus();
   }
   function togglePause() {

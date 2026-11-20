@@ -428,7 +428,7 @@ app = with_persistence(mcp, backend=<span class="s">"redis"</span>, url=<span cl
       <div class="shell">
         <div class="section-head">
           <h2 id="ledger-h2">The ledger.</h2>
-          <p class="lead">Every pull request I've had merged into projects other people depend on. States are checked against GitHub daily, and Debug replays what each fix changed.</p>
+          <p class="lead">Every change I've had merged into projects other people depend on, as a merged pull request or a patch the maintainers applied themselves. PR states are checked against GitHub daily, and Debug replays what each fix changed.</p>
         </div>
 
         <p class="ledger-summary" data-ledger-stats><span class="num" data-merged-count>117</span> merged across <span class="num" data-repos-count>23</span> repositories, in C, Rust, Zig and Python.</p>
@@ -446,6 +446,48 @@ app = with_persistence(mcp, backend=<span class="s">"redis"</span>, url=<span cl
         </div>
 
         <ol class="prs" id="ledger-body">
+            <li class="pr" data-pr="esnet/iperf#2099" data-repo="esnet/iperf">
+              <p class="pr-meta"><span class="col-repo">esnet/iperf</span><span class="col-date">2026-11-20</span></p>
+              <h3 class="col-title"><a href="https://github.com/esnet/iperf/pull/2099" target="_blank" rel="noopener">fix --nstreams falling through into -b, and the LOST debug count</a></h3>
+              <p class="col-why">A missing break let --nstreams N fall through into -b, so every test also capped itself at N bits/sec. The LOST packets debug message also counted two too many.</p>
+              <button class="btn-verify" type="button" aria-label="Debug esnet/iperf#2099">Debug</button>
+            </li>
+            <li class="pr" data-pr="curl/curl#23630" data-repo="curl/curl">
+              <p class="pr-meta"><span class="col-repo">curl/curl</span><span class="col-date">2026-11-02</span></p>
+              <h3 class="col-title"><a href="https://github.com/curl/curl/commit/148133e0159805d67a1f79304b51fa27aedd127e" target="_blank" rel="noopener">ws: collect the whole PING payload before the automatic PONG</a></h3>
+              <p class="col-why">A PING split across two reads was answered with only its second half, and the first half leaked to the application as a PING. The payload is now buffered whole before the automatic PONG.</p>
+              <button class="btn-verify" type="button" aria-label="Debug curl/curl#23630">Debug</button>
+            </li>
+            <li class="pr" data-pr="curl/curl#23586" data-repo="curl/curl">
+              <p class="pr-meta"><span class="col-repo">curl/curl</span><span class="col-date">2026-10-24</span></p>
+              <h3 class="col-title"><a href="https://github.com/curl/curl/commit/350c4307ed6d667ce022a6f6aa80369e18b01ee3" target="_blank" rel="noopener">urlapi: do not add the zone id twice to a set IPv6 host</a></h3>
+              <p class="col-why">Setting an IPv6 host with a zone id produced a URL with the zone in it twice, which no longer parsed back. The checked address is stored now, as when the whole URL is parsed.</p>
+              <button class="btn-verify" type="button" aria-label="Debug curl/curl#23586">Debug</button>
+            </li>
+            <li class="pr" data-pr="curl/curl#23585" data-repo="curl/curl">
+              <p class="pr-meta"><span class="col-repo">curl/curl</span><span class="col-date">2026-10-24</span></p>
+              <h3 class="col-title"><a href="https://github.com/curl/curl/commit/d611ca7e3e49e8ca7ea739de3234c6819aeceb0d" target="_blank" rel="noopener">urlapi: do not pass a NULL path to printf for file URLs</a></h3>
+              <p class="col-why">Getting the URL of a file:// handle with no path set printed file://(nil), undefined behavior outside glibc. It now gives file:///, matching what the path getter already returned.</p>
+              <button class="btn-verify" type="button" aria-label="Debug curl/curl#23585">Debug</button>
+            </li>
+            <li class="pr" data-pr="curl/curl#23581" data-repo="curl/curl">
+              <p class="pr-meta"><span class="col-repo">curl/curl</span><span class="col-date">2026-10-23</span></p>
+              <h3 class="col-title"><a href="https://github.com/curl/curl/commit/178e5077b60be91a8dfcbaa22a6bf79e179009ff" target="_blank" rel="noopener">file: reject a -Y range larger than the file</a></h3>
+              <p class="col-why">A range past the start of a local file either quietly returned the whole file or failed with no message. It is now rejected with the same error FTP and SFTP already gave.</p>
+              <button class="btn-verify" type="button" aria-label="Debug curl/curl#23581">Debug</button>
+            </li>
+            <li class="pr" data-pr="strongswan/strongswan#3180" data-repo="strongswan/strongswan">
+              <p class="pr-meta"><span class="col-repo">strongswan/strongswan</span><span class="col-date">2026-10-22</span></p>
+              <h3 class="col-title"><a href="https://github.com/strongswan/strongswan/commit/790601e03c45c8d223ecbab5f7627f899245f53d" target="_blank" rel="noopener">encrypted-payload: Avoid cloning freed plaintext on decryption failure</a></h3>
+              <p class="col-why">frag_decrypt() freed the plaintext but kept the pointer, so an early decryption failure cloned freed memory. Not reachable on today&#x27;s receive path; applied as hardening.</p>
+              <button class="btn-verify" type="button" aria-label="Debug strongswan/strongswan#3180">Debug</button>
+            </li>
+            <li class="pr" data-pr="torvalds/linux#5d7226621" data-repo="torvalds/linux">
+              <p class="pr-meta"><span class="col-repo">torvalds/linux</span><span class="col-date">2026-10-21</span></p>
+              <h3 class="col-title"><a href="https://git.kernel.org/torvalds/c/5d72266218b1c4dd2917f1df2b86f3b0e0a605c9" target="_blank" rel="noopener">lib/cmdline: fix get_options() count and overflow with large ranges</a></h3>
+              <p class="col-why">get_options() advanced past a full array by the whole range, so a huge range wrapped the index negative and wrote outside the array. Taken by Andrew Morton into mainline and stable.</p>
+              <button class="btn-verify" type="button" aria-label="Debug torvalds/linux#5d7226621">Debug</button>
+            </li>
             <li class="pr" data-pr="util-linux/util-linux#4653" data-repo="util-linux/util-linux">
               <p class="pr-meta"><span class="col-repo">util-linux/util-linux</span><span class="col-date">2026-09-29</span></p>
               <h3 class="col-title"><a href="https://github.com/util-linux/util-linux/pull/4653" target="_blank" rel="noopener">setpriv: match Landlock fs rights exactly</a></h3>
@@ -701,10 +743,16 @@ app = with_persistence(mcp, backend=<span class="s">"redis"</span>, url=<span cl
       <div class="shell">
         <div class="section-head">
           <h2 id="advisories-h2">Advisories.</h2>
-          <p class="lead">Vulnerabilities I reported privately to maintainers, published as GitHub security advisories. Debug replays the proof of concept.</p>
+          <p class="lead">Vulnerabilities I found and reported privately, published once the fixes shipped. Debug replays each one, from the bug to the fix.</p>
         </div>
 
         <ol class="prs" id="advisory-body">
+            <li class="pr advisory" data-advisory="CVE-2026-124757" data-repo="liske/needrestart">
+              <p class="pr-meta"><span class="col-repo">liske/needrestart</span><span class="col-date">2026-11-17</span><span class="col-sev">High · local root</span></p>
+              <h3 class="col-title"><a href="https://www.openwall.com/lists/oss-security/2026/11/17/27" target="_blank" rel="noopener">CVE-2026-124757: local root via a forged session cgroup and the notify-send hook</a></h3>
+              <p class="col-why">needrestart matched cgroup paths unanchored, so a user could pass their process off as part of root's session. The notify hook then put that process's self-chosen name into a shell string run as root. I wrote the three-patch fix and coordinated disclosure with Debian, Ubuntu and linux-distros.</p>
+              <button class="btn-verify" type="button" aria-label="Debug CVE-2026-124757">Debug</button>
+            </li>
             <li class="pr advisory" data-advisory="GHSA-3jpq-xwf3-rwr6" data-repo="lightpanda-io/browser">
               <p class="pr-meta"><span class="col-repo">lightpanda-io/browser</span><span class="col-date">2026-11-04</span><span class="col-sev">High · CVSS 7.5</span></p>
               <h3 class="col-title"><a href="https://github.com/lightpanda-io/browser/security/advisories/GHSA-3jpq-xwf3-rwr6" target="_blank" rel="noopener">Heap buffer overflow in Frame.buf via long element and tag names</a></h3>
