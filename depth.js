@@ -3,7 +3,7 @@
       scroll, so the scrollbar, find-in-page and touch keep working.
    2. A fixed 3D "merge graph" behind the page: main runs into the screen,
       branches fork, spiral around it and merge back. Scroll flies the camera
-      down the trunk; the pointer steers it.
+      down the trunk; the cursor doesn't move it.
    3. Scroll-driven depth: sections swing up out of the page as they enter,
       the hero recedes as you leave it.
    Zero dependencies. Reduced motion gets the original static deck and native
@@ -12,7 +12,6 @@
   "use strict";
   var doc = document, root = doc.documentElement, win = window;
   var reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  var fine = matchMedia("(pointer: fine)").matches;
   var raf = win.requestAnimationFrame.bind(win);
 
   if (reduce) return;              // the original static deck, untouched
@@ -269,13 +268,6 @@
       ctx.beginPath(); ctx.arc(A.x, A.y, hr, 0, 6.2832);
       ctx.fillStyle = rgba(c, Math.min(1, A.a * 1.4)); ctx.fill();
     }
-  }
-
-  if (fine) {
-    win.addEventListener("pointermove", function (e) {
-      cam.tx = (e.clientX / W - 0.5) * 140;
-      cam.ty = (e.clientY / H - 0.5) * 100;
-    }, { passive: true });
   }
 
   /* ======================================================================
