@@ -1923,3 +1923,16 @@ main > section { padding-block: var(--s-7); border-top: 0; }
 .advisory::before { background: var(--ink); }
 .advisory:hover { background: var(--merge-tint); }
 .advisory .col-title a:hover { color: var(--ink); }
+
+/* Links inside ledger and advisory notes (e.g. the CVE patches) */
+.pr .col-why a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: var(--rule-strong);
+  text-underline-offset: 3px;
+}
+.pr .col-why a:hover { text-decoration-color: currentColor; }
+
+/* Terminal status badge: monochrome when a replay is done (replay output
+   keeps red/green, which marks the bug and the fix) */
+.ts-mode.is-done { background: var(--t-strong); color: var(--t-bg); }
