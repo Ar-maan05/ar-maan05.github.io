@@ -138,58 +138,6 @@
   }
 
 
-  // Scroll progress bar (§17.2) — passive listener, CSS hides it under reduced motion
-  var bar = doc.querySelector(".scroll-bar");
-  if (bar) {
-    window.addEventListener("scroll", function () {
-      var p = window.scrollY / (doc.body.scrollHeight - window.innerHeight);
-      bar.style.transform = "scaleX(" + Math.min(p, 1) + ")";
-    }, { passive: true });
-  }
-
-  // Hero entrance is pure CSS (§10.1); no JS needed for it.
-  // Scroll reveals (§10.3)
-  var revealTargets = doc.querySelectorAll("main > section:not(.hero), .arch");
-  if ("IntersectionObserver" in window && !reduce) {
-    // Sections reveal once their top clears the bottom 15% of the viewport.
-    // A ratio threshold would never fire for sections taller than ~6
-    // viewports (the stacked ledger on phones), leaving them invisible.
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (en) {
-        if (en.isIntersecting) {
-          en.target.classList.add("in");
-          io.unobserve(en.target);
-        }
-      });
-    }, { rootMargin: "0px 0px -15% 0px" });
-    var archIo = new IntersectionObserver(function (entries) {
-      entries.forEach(function (en) {
-        if (en.isIntersecting && en.intersectionRatio >= 0.4) {
-          en.target.classList.add("in");
-          archIo.unobserve(en.target);
-        }
-      });
-    }, { threshold: [0.4] });
-    revealTargets.forEach(function (s) {
-      (s.classList.contains("arch") ? archIo : io).observe(s);
-    });
-  } else {
-    revealTargets.forEach(function (s) { s.classList.add("in"); });
-  }
-
-  // Global cursor-aware ambient layer (§18.3)
-  if (window.matchMedia('(pointer: fine)').matches && !reduce) {
-    var raf = null;
-    window.addEventListener('pointermove', function (e) {
-      if (raf) return;
-      raf = requestAnimationFrame(function () {
-        doc.body.style.setProperty('--cx', e.clientX + 'px');
-        doc.body.style.setProperty('--cy', e.clientY + 'px');
-        raf = null;
-      });
-    }, { passive: true });
-  }
-
   // Same-origin fetch with timeout
   function getJSON(url) {
     var ctrl = new AbortController();
@@ -207,19 +155,7 @@
   function setDownloads(text) {
     doc.querySelectorAll("[data-downloads]").forEach(function (el) { el.textContent = text; });
   }
-  function animateDownloads(target) {
-    var els = doc.querySelectorAll("[data-downloads]");
-    if (reduce || !els.length) { setDownloads(fmt(target) + "+"); return; }
-    var start = performance.now(), dur = 900;
-    function tick(now) {
-      var p = Math.min(1, (now - start) / dur);
-      var eased = 1 - Math.pow(2, -10 * p);          /* easeOutExpo */
-      var val = Math.round(FLOOR + (target - FLOOR) * (p >= 1 ? 1 : eased));
-      setDownloads(fmt(val) + "+");
-      if (p < 1) requestAnimationFrame(tick);
-    }
-    requestAnimationFrame(tick);
-  }
+  function animateDownloads(target) { setDownloads(fmt(target) + "+"); }
 
   // Raise a baked integer readout to a live value, never lower it (§6.1).
   // data-countup-target is the authority when set, since textContent can be a

@@ -38,7 +38,6 @@
 
   <link rel="preload" href="fonts/plex-sans-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="styles.css">
-  <link rel="stylesheet" href="depth.css">
 
   <script type="application/ld+json">
   {
@@ -61,22 +60,7 @@
   </script>
 </head>
 <body>
-  <div class="scroll-bar" aria-hidden="true"></div>
   <a class="skip-link" href="#main">Skip to content</a>
-
-  <!-- Channel rail: a mission-deck side index. Real section order, scrollspy-lit. -->
-  <nav class="deck-rail" aria-label="Sections">
-    <a href="#top"          class="rail-node" data-rail="top"><span class="rail-name">Top</span></a>
-    <a href="#work"         class="rail-node" data-rail="work"><span class="rail-name">Case study</span></a>
-    <a href="#mlrouter"     class="rail-node" data-rail="mlrouter"><span class="rail-name">mlrouter</span></a>
-    <a href="#shipped"      class="rail-node" data-rail="shipped"><span class="rail-name">Shipped</span></a>
-    <a href="#ledger"       class="rail-node" data-rail="ledger"><span class="rail-name">Ledger</span></a>
-    <a href="#advisories"   class="rail-node" data-rail="advisories"><span class="rail-name">Advisories</span></a>
-    <a href="#runixos"      class="rail-node" data-rail="runixos"><span class="rail-name">RunixOS</span></a>
-    <a href="#about"        class="rail-node" data-rail="about"><span class="rail-name">Now</span></a>
-    <a href="#console"      class="rail-node" data-rail="console"><span class="rail-name">Terminal</span></a>
-    <a href="#contact"      class="rail-node" data-rail="contact"><span class="rail-name">Contact</span></a>
-  </nav>
 
   <!-- Inline icon sprite (Lucide), stroked via .icon in CSS -->
   <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
@@ -127,34 +111,29 @@
   <main id="main">
     <span id="top"></span>
 
-    <!-- ===================== 1. HERO (the deck) ===================== -->
+    <!-- ===================== 1. HERO  ===================== -->
     <section class="hero" aria-labelledby="hero-h1">
-      <div class="hero-stage" aria-hidden="true">
-        <canvas id="fx-canvas"></canvas>
-        <div class="stage-grid"></div>
-        <div class="stage-scan"></div>
-      </div>
       <div class="shell hero-shell">
       <div class="hero-grid">
         <div class="hero-text">
-          <p class="hero-kicker" data-anim style="--d:0ms">WPI Computer Science, BS/MS ’29, 4.0 GPA</p>
-          <h1 id="hero-h1" data-anim style="--d:0ms">Merged upstream.</h1>
-          <p class="hero-lede" data-anim style="--d:80ms">I build infrastructure for AI tooling, and fix the Linux and Python layers it runs on. My event store for MCP servers, mcp-persist, has <span class="tnum" data-bake="downloads" data-downloads>21,000+</span> downloads and runs in production inside mlrouter, the LLM gateway I'm shipping. My fixes are merged upstream in systemd, CPython and across the AI data stack.</p>
-          <div class="hero-cta" data-anim style="--d:80ms">
+          <p class="hero-kicker">WPI Computer Science, BS/MS ’29, 4.0 GPA</p>
+          <h1 id="hero-h1">Merged upstream.</h1>
+          <p class="hero-lede">I build infrastructure for AI tooling, and fix the Linux and Python layers it runs on. My event store for MCP servers, mcp-persist, has <span class="tnum" data-bake="downloads" data-downloads>21,000+</span> downloads and runs in production inside mlrouter, the LLM gateway I'm shipping. My fixes are merged upstream in systemd, CPython and across the AI data stack.</p>
+          <div class="hero-cta">
             <a class="btn btn-primary" href="#work">Read the case study</a>
             <a class="btn btn-ghost" href="#ledger">See the ledger</a>
           </div>
-          <p class="hero-availability" data-anim style="--d:160ms">
+          <p class="hero-availability">
             <span class="avail-dot" aria-hidden="true"></span>
             <span>Open to <b>Summer 2027</b> Software Engineering internships</span>
           </p>
         </div>
 
-        <div class="hero-figure" data-tilt>
+        <div class="hero-figure">
           <div class="mergefeed">
             <div class="mergefeed-head">
               <span class="mf-title">Latest merges</span>
-              <span class="mf-count"><b data-mf-count data-countup>117</b>&nbsp;merged upstream</span>
+              <span class="mf-count"><b data-mf-count>117</b>&nbsp;merged upstream</span>
             </div>
             <div class="mergefeed-viewport">
               <ol class="mergefeed-track" data-mergefeed>
@@ -174,16 +153,16 @@
       </div>
 
       <div class="proofbar" aria-label="Proof">
-        <a class="receipt" href="https://pepy.tech/project/mcp-persist" target="_blank" rel="noopener" data-anim style="--d:600ms">
+        <a class="receipt" href="https://pepy.tech/project/mcp-persist" target="_blank" rel="noopener">
           <b class="tnum" data-bake="downloads" data-downloads>21,000+</b>&nbsp;PyPI downloads <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg>
         </a>
-        <a class="receipt" href="#ledger" data-anim style="--d:660ms">
-          <b class="tnum" data-merged-count data-countup>117</b>&nbsp;PRs merged upstream
+        <a class="receipt" href="#ledger">
+          <b class="tnum" data-merged-count>117</b>&nbsp;PRs merged upstream
         </a>
-        <a class="receipt" href="https://github.com/systemd/systemd/pulls?q=is%3Apr+author%3AAr-maan05+is%3Amerged" target="_blank" rel="noopener" data-anim style="--d:720ms">
+        <a class="receipt" href="https://github.com/systemd/systemd/pulls?q=is%3Apr+author%3AAr-maan05+is%3Amerged" target="_blank" rel="noopener">
           <b class="tnum" data-repo-merged="systemd/systemd">21</b>&nbsp;in systemd <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg>
         </a>
-        <a class="receipt" href="https://github.com/python/cpython/pulls?q=is%3Apr+author%3AAr-maan05+is%3Amerged" target="_blank" rel="noopener" data-anim style="--d:780ms">
+        <a class="receipt" href="https://github.com/python/cpython/pulls?q=is%3Apr+author%3AAr-maan05+is%3Amerged" target="_blank" rel="noopener">
           CPython contributor <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg>
         </a>
       </div>
@@ -361,7 +340,7 @@ app = with_persistence(mcp, backend=<span class="s">"redis"</span>, url=<span cl
         </div>
         <div class="ship-grid">
 
-          <article class="ship-card" data-tilt>
+          <article class="ship-card">
             <div class="ship-top">
               <h3>agentfence</h3>
               <span class="chip chip-draft">v0.1.0</span>
@@ -372,7 +351,7 @@ app = with_persistence(mcp, backend=<span class="s">"redis"</span>, url=<span cl
             </div>
           </article>
 
-          <article class="ship-card" data-tilt>
+          <article class="ship-card">
             <div class="ship-top">
               <h3>patchproof</h3>
               <span class="chip chip-draft">v0.1.0</span>
@@ -383,7 +362,7 @@ app = with_persistence(mcp, backend=<span class="s">"redis"</span>, url=<span cl
             </div>
           </article>
 
-          <article class="ship-card" data-tilt>
+          <article class="ship-card">
             <div class="ship-top">
               <h3>codebase-rag</h3>
               <span class="chip chip-draft">v1.0.1</span>
@@ -395,7 +374,7 @@ app = with_persistence(mcp, backend=<span class="s">"redis"</span>, url=<span cl
             </div>
           </article>
 
-          <article class="ship-card" data-tilt>
+          <article class="ship-card">
             <div class="ship-top">
               <h3>rag-timetravel</h3>
               <span class="chip chip-draft">v1.1.0</span>
@@ -407,7 +386,7 @@ app = with_persistence(mcp, backend=<span class="s">"redis"</span>, url=<span cl
             </div>
           </article>
 
-          <article class="ship-card" data-tilt>
+          <article class="ship-card">
             <div class="ship-top">
               <h3>TokenDrift</h3>
               <span class="chip chip-draft">v1.0.0</span>
@@ -874,7 +853,6 @@ app = with_persistence(mcp, backend=<span class="s">"redis"</span>, url=<span cl
   <script src="script.js" defer></script>
   <script src="terminal.js" defer></script>
   <script src="demo.js" defer></script>
-  <script src="depth.js" defer></script>
   <script src="fx.js" defer></script>
 </body>
 </html>
