@@ -118,15 +118,11 @@
         <div class="hero-text">
           <p class="hero-kicker">WPI Computer Science, BS/MS ’29, 4.0 GPA</p>
           <h1 id="hero-h1">Merged upstream.</h1>
-          <p class="hero-lede">I build infrastructure for AI tooling, and fix the Linux and Python layers it runs on. My event store for MCP servers, mcp-persist, has <span class="tnum" data-bake="downloads" data-downloads>21,000+</span> downloads and runs in production inside mlrouter, the LLM gateway I'm shipping. My fixes are merged upstream in systemd, CPython and across the AI data stack.</p>
+          <p class="hero-lede">I build infrastructure for AI tooling, and fix the Linux and Python layers it runs on. My event store for MCP servers, mcp-persist, has <span class="tnum" data-bake="downloads" data-downloads>21,000+</span> downloads and runs in production. My fixes are merged upstream in systemd, CPython and across the AI data stack.</p>
           <div class="hero-cta">
             <a class="btn btn-primary" href="#work">Read the case study</a>
             <a class="btn btn-ghost" href="#ledger">See the ledger</a>
           </div>
-          <p class="hero-availability">
-            <span class="avail-dot" aria-hidden="true"></span>
-            <span>Open to <b>Summer 2027</b> Software Engineering internships</span>
-          </p>
         </div>
 
         <div class="hero-figure">
@@ -277,57 +273,44 @@ app = with_persistence(mcp, backend=<span class="s">"redis"</span>, url=<span cl
       </div>
     </section>
 
-    <!-- ===================== FLAGSHIP: MLROUTER ===================== -->
-    <section id="mlrouter" aria-labelledby="mlrouter-h2">
+    <!-- ===================== FLAGSHIP: AGENTFENCE ===================== -->
+    <section id="agentfence" aria-labelledby="agentfence-h2">
       <div class="shell">
         <div class="section-head">
-          <h2 id="mlrouter-h2">mlrouter</h2>
-          <p class="case-sub">One OpenAI-compatible API across every model provider ·
-            <a href="https://mlrouter.com" target="_blank" rel="noopener">mlrouter.com</a>
-            <span class="status-chip">Live · entering production</span></p>
+          <h2 id="agentfence-h2">agentfence</h2>
+          <p class="case-sub">Learned least-privilege sandboxing for AI coding agents · Rust · Landlock · v0.1.0</p>
         </div>
 
         <div class="prose" style="margin-top: var(--s-5);">
-          <p>mlrouter is a multi-model LLM gateway: a single OpenAI-compatible endpoint that routes requests across OpenAI, Anthropic, Google, Mistral, HuggingFace, XAI, OpenRouter, Deepseek, and many others. It picks a backend by cost or latency, scores each provider's health, and fails over through circuit breakers and fallback chains when one degrades. Virtual keys carry spend caps; every request is logged. It's live at <a href="https://mlrouter.com" target="_blank" rel="noopener">mlrouter.com</a> and going into production with its first customers. It's also the platform where my open-source packages run as first-class services.</p>
+          <p>Coding agents run with your full user account. A prompt injection in a README, an issue or a web page can make one read <code>~/.ssh</code>, append to <code>~/.bashrc</code> or drop a git hook. Least privilege is the answer, but nobody wants to hand-write a profile for every project and every agent.</p>
+          <p>agentfence derives the profile from what the agent actually did. Run Claude Code, aider or any command under <code>agentfence learn</code> a few times, and <code>synth</code> turns the traces into the smallest Landlock policy that covers them. It never grants credentials or persistence paths, even if the agent touched them while learning. <code>run</code> then enforces it with no root. Across 21 real agent workflows it blocked 252 of 252 attack attempts and cut the writable surface 68 to 457 times.</p>
         </div>
 
         <dl class="spec">
           <div class="spec-row">
-            <dt>Unified gateway</dt>
-            <dd>One <code>/v1/chat/completions</code> across every major provider. The model prefix selects the backend; <code>auto</code> routes on cost.</dd>
+            <dt>Learn</dt>
+            <dd>Records every file open, exec, directory change and network connect through <code>strace</code>, normalized to JSONL.</dd>
           </div>
           <div class="spec-row">
-            <dt>Cost &amp; latency routing</dt>
-            <dd>Strategies score providers on price and p50/p95 latency, with automatic context-window escalation when a prompt outgrows a model.</dd>
+            <dt>Synthesize</dt>
+            <dd>A weighted set-cover solver picks the fewest, narrowest grants that cover the traces, with ceilings per path role and machine-generated temp names collapsed.</dd>
           </div>
           <div class="spec-row">
-            <dt>Health &amp; failover</dt>
-            <dd>Per-provider health scores, circuit breakers, and fallback chains keep the endpoint answering when an upstream goes bad.</dd>
+            <dt>Never grant secrets</dt>
+            <dd>SSH and cloud keys, credential stores and keyrings are dropped before the solver ever sees them, and git hooks and config stay read-only.</dd>
           </div>
           <div class="spec-row">
-            <dt>Virtual keys</dt>
-            <dd>Hashed virtual keys resolve to real provider keys server-side, never exposed, with per-key spend caps enforced in Redis.</dd>
+            <dt>Enforce unprivileged</dt>
+            <dd>Landlock applies the profile to the agent with no root and nothing loaded system-wide, and every denial is logged.</dd>
           </div>
           <div class="spec-row">
-            <dt>Durable sessions <span class="feature-by">mcp-persist</span></dt>
-            <dd>Streaming sessions survive a restart and resume mid-stream, powered by my own <a href="#work">mcp-persist</a>.</dd>
-          </div>
-          <div class="spec-row">
-            <dt>Tokenizer safety <span class="feature-by">TokenDrift</span></dt>
-            <dd>Token counts and migration-safety checks run before a model swap reaches production, powered by <a href="https://pypi.org/project/tokendrift/" target="_blank" rel="noopener">TokenDrift</a>.</dd>
+            <dt>Report</dt>
+            <dd>Shows what the profile blocked, grouped by kind of path, and diffs a new run against the profile.</dd>
           </div>
         </dl>
 
-        <div class="flagship-note">
-          <p><span class="runin">The parts and the whole.</span> mlrouter ships my open source as production services: <a href="#work">mcp-persist</a> for durable sessions, <a href="https://pypi.org/project/tokendrift/" target="_blank" rel="noopener">TokenDrift</a> for tokenizer safety, a prompt compressor, and a no-code MCP server builder. The packages are the parts; the platform is the whole.</p>
-        </div>
-
-        <p class="stack-line meta">Next.js 15 · Hono · FastAPI · Neon / Drizzle · Upstash Redis · Clerk · Stripe · BullMQ · Docker MCP runtime</p>
-
         <div class="case-links">
-          <a class="btn btn-primary" href="https://mlrouter.com" target="_blank" rel="noopener">
-            Visit mlrouter.com <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg>
-          </a>
+          <a class="receipt" href="https://github.com/Ar-maan05/agentfence" target="_blank" rel="noopener">GitHub <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></a>
         </div>
       </div>
     </section>
@@ -342,12 +325,11 @@ app = with_persistence(mcp, backend=<span class="s">"redis"</span>, url=<span cl
 
           <article class="ship-card">
             <div class="ship-top">
-              <h3>agentfence</h3>
-              <span class="chip chip-draft">v0.1.0</span>
+              <h3>mlrouter</h3>
             </div>
-            <p class="ship-desc">Least-privilege sandboxing for AI coding agents, learned instead of hand-written. Run Claude Code, aider or any command under <em>learn</em>, and agentfence synthesizes the smallest Landlock policy that covers what it actually did, never granting credentials or persistence paths, then enforces it without root. Across 21 real agent workflows: 252/252 attack attempts blocked and the writable surface cut 68-457x.</p>
+            <p class="ship-desc">A multi-model LLM gateway: one OpenAI-compatible endpoint that routes across providers by cost or latency and fails over when one degrades. Runs mcp-persist for durable sessions.</p>
             <div class="case-links ship-links">
-              <a class="receipt" href="https://github.com/Ar-maan05/agentfence" target="_blank" rel="noopener">GitHub <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></a>
+              <a class="receipt" href="https://mlrouter.com" target="_blank" rel="noopener">mlrouter.com <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></a>
             </div>
           </article>
 
@@ -778,8 +760,8 @@ app = with_persistence(mcp, backend=<span class="s">"redis"</span>, url=<span cl
         </div>
         <div class="now-body">
           <p>Back at WPI for the fall, teaching intro systems as a Peer Learning Assistant, serving as a Community Advisor in residence life, and building RunixOS as an independent study.</p>
-          <p>Upstream, most of my time now goes into systemd and the Linux userspace around it: a use-after-free in resolved's mDNS path, a password-redirect hole in ask-password, and a journalctl read path that runs 1.7x to 2.5x faster. Over the summer I led development of mlrouter, which runs mcp-persist in production.</p>
-          <p>The lab next to my desk is still a Fedora laptop running a 35B mixture-of-experts model through llama.cpp, wired to a filesystem MCP server, because the fastest way to find what breaks in MCP infrastructure is to live on it. Before any of this I spent a decade teaching Shotokan karate as a second-degree black belt, which is where I learned to explain hard things patiently. I'm open to Summer 2027 Software Engineering internships.</p>
+          <p>Upstream, most of my time now goes into systemd and the Linux userspace around it: a use-after-free in resolved's mDNS path, a password-redirect hole in ask-password, and a journalctl read path that runs 1.7x to 2.5x faster.</p>
+          <p>The lab next to my desk is still a Fedora laptop running a 35B mixture-of-experts model through llama.cpp, wired to a filesystem MCP server, because the fastest way to find what breaks in MCP infrastructure is to live on it. Before any of this I spent a decade teaching Shotokan karate as a second-degree black belt, which is where I learned to explain hard things patiently.</p>
         </div>
         <!-- NOTE FOR ARMAAN (decide later): one optional human line that is genuinely memorable: "I once built a five-game puzzle suite for an audience of one." Include only if you are comfortable and your partner is too. -->
         <p class="now-meta meta">BS/MS Computer Science, WPI · 4.0 GPA · Worcester, MA · EST · asandhu@wpi.edu</p>

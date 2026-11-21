@@ -95,7 +95,7 @@
   }
 
   var SECTIONS = [
-    ["work", "mcp-persist case study"], ["mlrouter", "the LLM gateway"], ["shipped", "other packages"],
+    ["work", "mcp-persist case study"], ["agentfence", "learned agent sandboxing"], ["shipped", "other packages"],
     ["ledger", "every merged PR"], ["advisories", "security advisories"], ["runixos", "the microkernel"], ["foundations", "the groundwork before it"],
     ["about", "what I'm doing now"], ["console", "this terminal"], ["contact", "how to reach me"],
     ["colophon", "how the site is built"]
@@ -315,8 +315,7 @@
       blank();
       say([{ t: "upstream  ", c: "t-dim" }, { t: String(mergedTotal()), c: "t-acc" }, " merged PRs across " + names.length + " repositories (" + top + ")"]);
       say([{ t: "shipping  ", c: "t-dim" }, { t: "mcp-persist", cmd: "cd work" }, " · " + text("[data-downloads]", "18,000+") + " downloads" + (ver ? " · v" + ver : "")]);
-      say([{ t: "building  ", c: "t-dim" }, { t: "mlrouter", cmd: "cd mlrouter" }, " · multi-model LLM gateway · ", { t: "mlrouter.com", href: "https://mlrouter.com" }]);
-      say([{ t: "open to   ", c: "t-dim" }, text(".hero-availability b", "Summer 2027") + " software engineering internships"]);
+      say([{ t: "building  ", c: "t-dim" }, { t: "agentfence", cmd: "cd agentfence" }, " · learned least-privilege sandboxing for AI agents"]);
       say([{ t: "reach me  ", c: "t-dim" }, { t: "asandhu@wpi.edu", href: "mailto:asandhu@wpi.edu" }]);
     } },
 
@@ -390,7 +389,6 @@
     projects: { desc: "packages I maintain", run: function () {
       var ver = text("[data-bake='version']", "");
       say([{ t: "mcp-persist", cmd: "cd work" }, pad("", 5), pad(text("[data-downloads]", "18,000+") + " downloads", 20), { t: (ver ? "v" + ver + " · " : "") + "durable event stores for MCP", c: "t-dim" }], "t-row");
-      say([{ t: "mlrouter", cmd: "cd mlrouter" }, pad("", 8), pad("live", 20), { t: "multi-model LLM gateway", c: "t-dim" }], "t-row");
       doc.querySelectorAll(".ship-card").forEach(function (c) {
         var name = c.querySelector("h3"), v = c.querySelector(".ship-top .chip"), d = c.querySelector(".ship-desc");
         if (!name) return;
