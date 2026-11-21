@@ -23,10 +23,7 @@
         '<div class="demo-pane" data-pane="client"><h4>Client</h4><div class="log" data-log="client"></div><div class="log-line cursor" data-cursor>Last-Event-ID: none</div></div>' +
       '</div>' +
       '<p class="sr-only" aria-live="polite" data-live></p>' +
-      '<div class="demo-caption meta"><span>A faithful simulation of the resume protocol. The production implementation is the package itself.</span>' +
-        '<a class="receipt" href="https://github.com/Ar-maan05/mcp-persist" target="_blank" rel="noopener">GitHub <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></a>' +
-        '<a class="receipt" href="https://pypi.org/project/mcp-persist/" target="_blank" rel="noopener">PyPI <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></a>' +
-      '</div>' +
+      '<div class="demo-caption meta"><span>A simulation of the resume protocol.</span></div>' +
     '</div>';
 
   var $ = function (s) { return mount.querySelector(s); };

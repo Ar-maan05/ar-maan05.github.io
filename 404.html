@@ -6,10 +6,10 @@
   <title>404 | Armaan Sandhu</title>
   <script>
     document.documentElement.className = "js";
-    // Restore saved theme before first paint to avoid flash
+    // Follow the system light/dark setting.
     try {
-      var saved = localStorage.getItem("theme");
-      if (saved) document.documentElement.setAttribute("data-theme", saved);
+      document.documentElement.setAttribute("data-theme",
+        matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
     } catch (e) {}
   </script>
 
@@ -50,7 +50,6 @@
   <footer class="site-footer">
     <div class="shell meta">
       <span>© 2026 Armaan Sandhu</span>
-      <span class="dot-sep"><a href="https://github.com/Ar-maan05/ar-maan05.github.io" target="_blank" rel="noopener">Source <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></a></span>
     </div>
   </footer>
 </body>

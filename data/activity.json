@@ -62,7 +62,7 @@
       "state": "merged",
       "merged_at": "2026-10-08T08:21:22Z",
       "url": "https://github.com/systemd/systemd/pull/43952",
-      "note": "Tree mode asked PID 1 about the same unit again for every path that reached it. Caching each answer per unit takes systemctl list-dependencies --all from 63.6 s to 0.34 s, byte-for-byte identical output.",
+      "note": "Caches each unit's answer instead of asking PID 1 again for every path: 63.6 s down to 0.34 s.",
       "highlight": true
     },
     {
@@ -171,7 +171,7 @@
       "state": "merged",
       "merged_at": "2026-09-23T04:52:45Z",
       "url": "https://github.com/systemd/systemd/pull/43663",
-      "note": "Three fixes on journalctl's per-entry read path, including a UTF-8 decoder that ran twice per byte. Output is byte-for-byte identical, 1.7x to 2.5x faster.",
+      "note": "Three fixes to the per-entry read path, including a UTF-8 decoder that ran twice per byte.",
       "highlight": true
     },
     {
@@ -208,7 +208,7 @@
       "state": "merged",
       "merged_at": "2026-09-04T04:53:05Z",
       "url": "https://github.com/systemd/systemd/pull/43650",
-      "note": "One datagram with a bad checksum, sendable by anyone on the link, disabled resolved's mDNS, LLMNR or stub listener until restart.",
+      "note": "One bad-checksum datagram from anyone on the link disabled resolved's listener until restart.",
       "highlight": true
     },
     {
@@ -299,7 +299,7 @@
       "state": "merged",
       "merged_at": "2026-07-25T20:30:02Z",
       "url": "https://github.com/systemd/systemd/pull/43150",
-      "note": "A newline in an ask-password prompt could inject a Socket= line and send the typed password to another path. Unsafe characters are now refused.",
+      "note": "A newline in a prompt could send the typed password to another socket.",
       "highlight": true
     },
     {
@@ -363,7 +363,7 @@
       "state": "merged",
       "merged_at": "2026-06-19T12:57:42Z",
       "url": "https://github.com/lightpanda-io/browser/pull/2722",
-      "note": "Browser.setDownloadBehavior was a no-op, so attachment responses were rendered as pages and their bodies discarded. Downloads now stream to disk under downloadPath, with downloadWillBegin and downloadProgress events.",
+      "note": "Downloads were rendered as pages and discarded; they now stream to disk with progress events.",
       "highlight": true
     },
     {
@@ -427,7 +427,6 @@
       "state": "merged",
       "merged_at": "2026-06-16T19:14:59Z",
       "url": "https://github.com/lance-format/lance/pull/7251",
-      "note": "Critical fix: merge_insert silently dropped matched rows when the leading payload column was all-null.",
       "highlight": true
     },
     {
@@ -437,7 +436,7 @@
       "state": "merged",
       "merged_at": "2026-06-11T10:37:31Z",
       "url": "https://github.com/BerriAI/litellm/pull/30020",
-      "note": "Stopped a cancelled stream from stranding its max_parallel_requests slot, which had been pinning capped keys at their limit.",
+      "note": "A cancelled stream no longer strands its max_parallel_requests slot.",
       "highlight": true
     },
     {
@@ -492,7 +491,7 @@
       "state": "merged",
       "merged_at": "2026-05-28T12:38:39Z",
       "url": "https://github.com/python/cpython/pull/150328",
-      "note": "Three Cygwin fixes in configure.ac: the system name was set to Cygwin while every case matched CYGWIN*, static builds named their library as a DLL import library (.dll.a), and the shared link hardcoded gcc and g++ instead of the configured compiler.",
+      "note": "Three Cygwin build fixes: a mismatched system name, misnamed static libraries and a hardcoded compiler.",
       "highlight": true
     },
     {

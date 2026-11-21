@@ -5,31 +5,30 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <script>
     document.documentElement.className = "js";
-    // The deck boots dark by default; restore an explicit saved theme before
-    // first paint to avoid a flash. An explicit attribute keeps the toggle and
-    // the sun/moon icon state consistent on first click.
-    try {
-      var saved = localStorage.getItem("theme");
-      document.documentElement.setAttribute("data-theme", saved === "light" ? "light" : "dark");
-    } catch (e) {
-      document.documentElement.setAttribute("data-theme", "dark");
-    }
+    // Follow the system light/dark setting, live.
+    (function () {
+      var root = document.documentElement;
+      var mq = window.matchMedia && matchMedia("(prefers-color-scheme: dark)");
+      function apply() { root.setAttribute("data-theme", mq && mq.matches ? "dark" : "light"); }
+      apply();
+      if (mq && mq.addEventListener) mq.addEventListener("change", apply);
+    })();
   </script>
 
-  <title>Armaan Sandhu | Open source, merged upstream</title>
-  <meta name="description" content="CS student at WPI. Author of mcp-persist (22,000+ downloads, in production). Pull requests merged upstream in CPython, systemd, and across AI infrastructure.">
+  <title>Armaan Sandhu</title>
+  <meta name="description" content="CS student at WPI. I find and fix bugs, security bugs included, in systemd and the Linux userspace around it, with changes merged upstream in systemd, util-linux, curl, CPython and the Linux kernel.">
   <link rel="canonical" href="https://ar-maan05.github.io/">
-  <meta name="theme-color" content="#06070B" media="(prefers-color-scheme: dark)">
-  <meta name="theme-color" content="#06070B">
+  <meta name="theme-color" content="#FBFBF9" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0A0C12" media="(prefers-color-scheme: dark)">
 
-  <meta property="og:title" content="Armaan Sandhu | Open source, merged upstream">
-  <meta property="og:description" content="CS student at WPI. Author of mcp-persist (22,000+ downloads, in production). Pull requests merged upstream in CPython, systemd, and across AI infrastructure.">
+  <meta property="og:title" content="Armaan Sandhu">
+  <meta property="og:description" content="CS student at WPI. I find and fix bugs, security bugs included, in systemd and the Linux userspace around it, with changes merged upstream in systemd, util-linux, curl, CPython and the Linux kernel.">
   <meta property="og:image" content="https://ar-maan05.github.io/og.png">
   <meta property="og:url" content="https://ar-maan05.github.io/">
   <meta property="og:type" content="website">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Armaan Sandhu | Open source, merged upstream">
-  <meta name="twitter:description" content="Author of mcp-persist. Pull requests merged upstream in CPython, systemd, and across AI infrastructure.">
+  <meta name="twitter:title" content="Armaan Sandhu">
+  <meta name="twitter:description" content="CS student at WPI. I find and fix bugs, security bugs included, in systemd and the Linux userspace around it, with changes merged upstream in systemd, util-linux, curl, CPython and the Linux kernel.">
   <meta name="twitter:image" content="https://ar-maan05.github.io/og.png">
 
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
@@ -76,24 +75,14 @@
     <div class="shell nav-inner">
       <a class="wordmark" href="#top">Armaan Sandhu</a>
       <nav class="nav-links" id="nav-links" aria-label="Primary">
-        <a href="#work">Work</a>
+        <a href="#work">Projects</a>
         <a href="#ledger">Ledger</a>
-        <a href="#console">Terminal</a>
+        <a href="#advisories">Advisories</a>
         <a href="#about">About</a>
         <a class="nav-mobile-only" href="#contact">Contact</a>
         <a class="nav-mobile-only" href="Resume.pdf" target="_blank" rel="noopener">Resume</a>
       </nav>
       <div class="nav-actions">
-        <button class="btn btn-ghost theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
-          <!-- sun icon (shown in dark mode) -->
-          <svg class="icon icon-sun" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-          </svg>
-          <!-- moon icon (shown in light mode) -->
-          <svg class="icon icon-moon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-          </svg>
-        </button>
         <a class="btn btn-ghost resume-link" href="Resume.pdf" target="_blank" rel="noopener">
           <svg class="icon" aria-hidden="true"><use href="#i-download"/></svg>Resume
         </a>
@@ -117,12 +106,8 @@
       <div class="hero-grid">
         <div class="hero-text">
           <p class="hero-kicker">WPI Computer Science, BS/MS ’29, 4.0 GPA</p>
-          <h1 id="hero-h1">Merged upstream.</h1>
-          <p class="hero-lede">I build infrastructure for AI tooling, and fix the Linux and Python layers it runs on. My event store for MCP servers, mcp-persist, has <span class="tnum" data-bake="downloads" data-downloads>22,000+</span> downloads and runs in production. My fixes are merged upstream in systemd, CPython and across the AI data stack.</p>
-          <div class="hero-cta">
-            <a class="btn btn-primary" href="#work">Read the case study</a>
-            <a class="btn btn-ghost" href="#ledger">See the ledger</a>
-          </div>
+          <h1 id="hero-h1">Armaan Sandhu</h1>
+          <p class="hero-lede">I find and fix bugs, security bugs included, in systemd and the Linux userspace around it.</p>
         </div>
 
         <div class="hero-figure">
@@ -148,20 +133,6 @@
 
       </div>
 
-      <div class="proofbar" aria-label="Proof">
-        <a class="receipt" href="https://pepy.tech/project/mcp-persist" target="_blank" rel="noopener">
-          <b class="tnum" data-bake="downloads" data-downloads>22,000+</b>&nbsp;PyPI downloads <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg>
-        </a>
-        <a class="receipt" href="#ledger">
-          <b class="tnum" data-merged-count>118</b>&nbsp;PRs merged upstream
-        </a>
-        <a class="receipt" href="https://github.com/systemd/systemd/pulls?q=is%3Apr+author%3AAr-maan05+is%3Amerged" target="_blank" rel="noopener">
-          <b class="tnum" data-repo-merged="systemd/systemd">21</b>&nbsp;in systemd <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg>
-        </a>
-        <a class="receipt" href="https://github.com/python/cpython/pulls?q=is%3Apr+author%3AAr-maan05+is%3Amerged" target="_blank" rel="noopener">
-          CPython contributor <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg>
-        </a>
-      </div>
       </div><!-- /.hero-shell -->
 
     </section>
@@ -175,7 +146,7 @@
         </div>
 
         <div class="case-body prose">
-          <p><span class="runin">The problem.</span> The MCP Python SDK ships with an in-memory event store. It works until the first deploy. Restart the process and every client's Last-Event-ID points at history that no longer exists, so resumable SSE streams quietly stop being resumable. Add a second worker and it gets worse: each worker holds its own private history.</p>
+          <p><span class="runin">The problem.</span> The MCP Python SDK keeps resumable SSE history in memory. Restart the server or add a second worker, and reconnecting clients lose events.</p>
         </div>
 
         <!-- Kill-switch demo (§7.6). Placed so the visitor feels the failure before the fix. -->
@@ -212,10 +183,8 @@
         </figure>
 
         <div class="case-body prose">
-          <p><span class="runin">The design.</span> mcp-persist replaces that single point of loss with swappable, durable EventStore backends. Redis covers production fleets. SQLite covers single-node deployments. PostgreSQL slots into stacks that already run it. The Redis layout is built for replay. An INCR counter issues monotonic event IDs and the events themselves live in HASHes. A per-stream ZSET supports ranged reads so a reconnecting client can resume from any point. TTLs bound storage. A key_prefix namespace makes one Redis safe for many tenants.</p>
-          <!-- NOTE FOR ARMAAN (decide later): naming a production adopter here, with their permission, would outweigh every award the old site listed. -->
-          <p id="adoption"><span class="runin">Adoption.</span> Shipped at v1.0.0 and versioned steadily forward through real usage: <span class="dl tnum" data-bake="downloads" data-downloads>22,000+</span> downloads on PyPI and confirmed production deployments. The test suite runs 300+ async tests against fakeredis and real backends, with CI across Python 3.10 through 3.13.</p>
-          <p><span class="runin">Positioning.</span> mcp-persist plugs into the official SDK's EventStore interface, so it tracks upstream releases and existing servers adopt it unchanged. Where a server can't be modified at all, the PersistenceProxy adds durability from the outside.</p>
+          <p><span class="runin">The design.</span> mcp-persist swaps in durable EventStore backends: Redis, SQLite or Postgres. Event IDs are monotonic and history supports ranged reads, so a client resumes exactly from its Last-Event-ID.</p>
+          <p id="adoption"><span class="runin">Adoption.</span> <span class="dl tnum" data-bake="downloads" data-downloads>22,000+</span> downloads on PyPI and running in production, with 300+ async tests and CI across Python 3.10 to 3.13.</p>
         </div>
 
         <div class="case-figure">
@@ -223,48 +192,8 @@
 
 mcp = FastMCP(<span class="s">"my-server"</span>)
 app = with_persistence(mcp, backend=<span class="s">"redis"</span>, url=<span class="s">"redis://localhost:6379"</span>)</code></pre>
-          <p class="code-caption meta">Full adoption is two lines. For servers you can't modify, including servers that aren't written in Python, a standalone PersistenceProxy sits in front as an ASGI layer. It tracks the full SSE state machine and replays cold or hot history to any client that reconnects.</p>
+          <p class="code-caption meta">Two lines to adopt. For servers you can't modify, a standalone ASGI proxy adds the same replay from the outside.</p>
         </div>
-
-        <figure class="arch" aria-labelledby="arch-title">
-          <svg viewBox="0 0 640 240" role="img" aria-labelledby="arch-title arch-desc">
-            <title id="arch-title">mcp-persist request and replay path</title>
-            <desc id="arch-desc">An MCP client connects to a server or PersistenceProxy, which writes events to a durable EventStore backed by Redis, SQLite, or Postgres. On reconnect, the client sends Last-Event-ID and the store replays the missed events.</desc>
-            <style>
-              .lane{fill:#fff;stroke:#4A4A46;stroke-width:1}
-              .store{fill:#F3EEFC;stroke:#4A4A46;stroke-width:1}
-              .lbl{font:600 13px "IBM Plex Sans",sans-serif;fill:#1B1B1A}
-              .sub{font:12px "IBM Plex Mono",monospace;fill:#6E6E68}
-              .flow{stroke:#4A4A46;stroke-width:1;fill:none}
-              .replay{stroke:#8250DF;stroke-width:1.5;fill:none;stroke-dasharray:5 4}
-              .rlbl{font:12px "IBM Plex Mono",monospace;fill:#8250DF}
-            </style>
-            <defs>
-              <marker id="ah" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0 0l7 3-7 3z" fill="#4A4A46"/></marker>
-              <marker id="ahp" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0 0l7 3-7 3z" fill="#8250DF"/></marker>
-            </defs>
-
-            <rect class="lane" x="2" y="70" width="150" height="70" rx="6"/>
-            <text class="lbl" x="77" y="100" text-anchor="middle">MCP client</text>
-            <text class="sub" x="77" y="120" text-anchor="middle">SSE stream</text>
-
-            <rect class="lane" x="226" y="60" width="190" height="90" rx="6"/>
-            <text class="lbl" x="321" y="92" text-anchor="middle">server</text>
-            <text class="sub" x="321" y="112" text-anchor="middle">/ PersistenceProxy</text>
-            <text class="sub" x="321" y="130" text-anchor="middle">session manager</text>
-
-            <rect class="store" x="488" y="60" width="150" height="90" rx="6"/>
-            <text class="lbl" x="563" y="92" text-anchor="middle">EventStore</text>
-            <text class="sub" x="563" y="112" text-anchor="middle">Redis · SQLite</text>
-            <text class="sub" x="563" y="130" text-anchor="middle">Postgres</text>
-
-            <line class="flow" x1="152" y1="100" x2="222" y2="100" marker-end="url(#ah)"/>
-            <line class="flow" x1="416" y1="105" x2="484" y2="105" marker-end="url(#ah)"/>
-
-            <path class="replay" d="M540 150 C540 205, 90 205, 82 145" marker-end="url(#ahp)"/>
-            <text class="rlbl" x="311" y="200" text-anchor="middle">Last-Event-ID replay</text>
-          </svg>
-        </figure>
 
         <div class="case-links">
           <a class="receipt" href="https://pypi.org/project/mcp-persist/" target="_blank" rel="noopener">PyPI <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></a>
@@ -273,114 +202,42 @@ app = with_persistence(mcp, backend=<span class="s">"redis"</span>, url=<span cl
       </div>
     </section>
 
-    <!-- ===================== FLAGSHIP: AGENTFENCE ===================== -->
-    <section id="agentfence" aria-labelledby="agentfence-h2">
+    <!-- ===================== PROJECTS ===================== -->
+    <section id="projects" aria-labelledby="projects-h2">
       <div class="shell">
         <div class="section-head">
-          <h2 id="agentfence-h2">agentfence</h2>
-          <p class="case-sub">Learned least-privilege sandboxing for AI coding agents · Rust · Landlock · v0.1.0</p>
+          <h2 id="projects-h2">Projects</h2>
         </div>
-
-        <div class="prose" style="margin-top: var(--s-5);">
-          <p>Coding agents run with your full user account. A prompt injection in a README, an issue or a web page can make one read <code>~/.ssh</code>, append to <code>~/.bashrc</code> or drop a git hook. Least privilege is the answer, but nobody wants to hand-write a profile for every project and every agent.</p>
-          <p>agentfence derives the profile from what the agent actually did. Run Claude Code, aider or any command under <code>agentfence learn</code> a few times, and <code>synth</code> turns the traces into the smallest Landlock policy that covers them. It never grants credentials or persistence paths, even if the agent touched them while learning. <code>run</code> then enforces it with no root. Across 21 real agent workflows it blocked 252 of 252 attack attempts and cut the writable surface 68 to 457 times.</p>
-        </div>
-
-        <dl class="spec">
-          <div class="spec-row">
-            <dt>Learn</dt>
-            <dd>Records every file open, exec, directory change and network connect through <code>strace</code>, normalized to JSONL.</dd>
-          </div>
-          <div class="spec-row">
-            <dt>Synthesize</dt>
-            <dd>A weighted set-cover solver picks the fewest, narrowest grants that cover the traces, with ceilings per path role and machine-generated temp names collapsed.</dd>
-          </div>
-          <div class="spec-row">
-            <dt>Never grant secrets</dt>
-            <dd>SSH and cloud keys, credential stores and keyrings are dropped before the solver ever sees them, and git hooks and config stay read-only.</dd>
-          </div>
-          <div class="spec-row">
-            <dt>Enforce unprivileged</dt>
-            <dd>Landlock applies the profile to the agent with no root and nothing loaded system-wide, and every denial is logged.</dd>
-          </div>
-          <div class="spec-row">
-            <dt>Report</dt>
-            <dd>Shows what the profile blocked, grouped by kind of path, and diffs a new run against the profile.</dd>
-          </div>
-        </dl>
-
-        <div class="case-links">
-          <a class="receipt" href="https://github.com/Ar-maan05/agentfence" target="_blank" rel="noopener">GitHub <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></a>
-        </div>
-      </div>
-    </section>
-
-    <!-- ===================== ALSO SHIPPED ===================== -->
-    <section id="shipped" aria-labelledby="shipped-h2">
-      <div class="shell">
-        <div class="section-head">
-          <h2 id="shipped-h2">Also shipped.</h2>
-        </div>
-        <div class="ship-grid">
-
-          <article class="ship-card">
-            <div class="ship-top">
-              <h3>mlrouter</h3>
-            </div>
-            <p class="ship-desc">A multi-model LLM gateway: one OpenAI-compatible endpoint that routes across providers by cost or latency and fails over when one degrades. Runs mcp-persist for durable sessions.</p>
-            <div class="case-links ship-links">
-              <a class="receipt" href="https://mlrouter.com" target="_blank" rel="noopener">mlrouter.com <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></a>
-            </div>
-          </article>
-
-          <article class="ship-card">
-            <div class="ship-top">
-              <h3>patchproof</h3>
-              <span class="chip chip-draft">v0.1.0</span>
-            </div>
-            <p class="ship-desc">Is this review suggestion actually necessary? A blind LLM writes a reproducer for the reviewer's claim through public entry points only, then patchproof runs it against the PR with and without the suggestion and returns a verdict: NECESSARY, NOT_SHOWN, HARMFUL. Born from a systemd fix that CI proved was a no-op; tested on real review threads from my own upstream PRs.</p>
-            <div class="case-links ship-links">
-              <a class="receipt" href="https://github.com/Ar-maan05/patchproof" target="_blank" rel="noopener">GitHub <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></a>
-            </div>
-          </article>
-
-          <article class="ship-card">
-            <div class="ship-top">
-              <h3>codebase-rag</h3>
-              <span class="chip chip-draft">v1.0.1</span>
-            </div>
-            <p class="ship-desc">A symbol-aware, self-updating vector index <em>and</em> reference graph over a whole repo, served over MCP, so an agent answers "who calls this / what breaks if I change it" in one call instead of a pile of greps. Built on rag-timetravel; keeps itself fresh with a git pre-push hook.</p>
-            <div class="case-links ship-links">
-              <a class="receipt" href="https://pypi.org/project/codebase-rag/" target="_blank" rel="noopener">PyPI <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></a>
-              <a class="receipt" href="https://github.com/Ar-maan05/codebase-rag" target="_blank" rel="noopener">GitHub <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></a>
-            </div>
-          </article>
-
-          <article class="ship-card">
-            <div class="ship-top">
-              <h3>rag-timetravel</h3>
-              <span class="chip chip-draft">v1.1.0</span>
-            </div>
-            <p class="ship-desc">Time-travel debugger for RAG retrieval pipelines. Pin any past query to the exact index version it ran against, replay retrieval, and diff what changed. Now the indexing core that codebase-rag builds on.</p>
-            <div class="case-links ship-links">
-              <a class="receipt" href="https://pypi.org/project/rag-timetravel/" target="_blank" rel="noopener">PyPI <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></a>
-              <a class="receipt" href="https://github.com/Ar-maan05/rag-timetravel" target="_blank" rel="noopener">GitHub <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></a>
-            </div>
-          </article>
-
-          <article class="ship-card">
-            <div class="ship-top">
-              <h3>TokenDrift</h3>
-              <span class="chip chip-draft">v1.0.0</span>
-            </div>
-            <p class="ship-desc">Tokenizer diffing for LLM upgrades. Measures token count shifts, cost deltas, vocabulary changes, and remapped IDs before they hit production.</p>
-            <div class="case-links ship-links">
-              <a class="receipt" href="https://pypi.org/project/tokendrift/" target="_blank" rel="noopener">PyPI <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></a>
-              <a class="receipt" href="https://github.com/Ar-maan05/tokendrift" target="_blank" rel="noopener">GitHub <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></a>
-            </div>
-          </article>
-
-        </div>
+        <ul class="project-list">
+          <li class="project">
+            <h3><a href="https://github.com/Ar-maan05/agentfence" target="_blank" rel="noopener">agentfence</a></h3><span class="project-meta">Rust</span>
+            <p>Learns the smallest Landlock policy an AI coding agent needs, never grants credentials, and enforces it without root. Blocked 252 of 252 attacks across 21 real workflows.</p>
+          </li>
+          <li class="project">
+            <h3><a href="https://github.com/Ar-maan05/RunixOS" target="_blank" rel="noopener">RunixOS</a></h3><span class="project-meta">Rust</span>
+            <p>A capability-based microkernel for x86_64. My Operating Systems independent study at WPI, advised by Prof. Craig Wills.</p>
+          </li>
+          <li class="project">
+            <h3><a href="https://mlrouter.com" target="_blank" rel="noopener">mlrouter</a></h3><span class="project-meta">TypeScript, Python</span>
+            <p>An OpenAI-compatible LLM gateway that routes across providers by cost or latency.</p>
+          </li>
+          <li class="project">
+            <h3><a href="https://github.com/Ar-maan05/patchproof" target="_blank" rel="noopener">patchproof</a></h3><span class="project-meta">Python</span>
+            <p>Tests whether a review suggestion is actually needed by running a reproducer with and without it.</p>
+          </li>
+          <li class="project">
+            <h3><a href="https://github.com/Ar-maan05/codebase-rag" target="_blank" rel="noopener">codebase-rag</a></h3><span class="project-meta">Python</span>
+            <p>A self-updating index and reference graph of a repository, served over MCP.</p>
+          </li>
+          <li class="project">
+            <h3><a href="https://github.com/Ar-maan05/rag-timetravel" target="_blank" rel="noopener">rag-timetravel</a></h3><span class="project-meta">Python</span>
+            <p>Replays a RAG query against the index version it ran on and diffs what changed.</p>
+          </li>
+          <li class="project">
+            <h3><a href="https://github.com/Ar-maan05/tokendrift" target="_blank" rel="noopener">TokenDrift</a></h3><span class="project-meta">Python</span>
+            <p>Diffs tokenizers across model upgrades: token counts, cost changes and remapped IDs.</p>
+          </li>
+        </ul>
       </div>
     </section>
 
@@ -388,8 +245,8 @@ app = with_persistence(mcp, backend=<span class="s">"redis"</span>, url=<span cl
     <section id="ledger" aria-labelledby="ledger-h2">
       <div class="shell">
         <div class="section-head">
-          <h2 id="ledger-h2">The ledger.</h2>
-          <p class="lead">Every change I've had merged into projects other people depend on, as a merged pull request or a patch the maintainers applied themselves. PR states are checked against GitHub daily, and Debug replays what each fix changed.</p>
+          <h2 id="ledger-h2">Ledger</h2>
+          <p class="lead">Every change I've had merged upstream. Debug replays what each fix changed.</p>
         </div>
 
         <p class="ledger-summary" data-ledger-stats><span class="num" data-merged-count>118</span> merged across <span class="num" data-repos-count>24</span> repositories, in C, Rust, Zig and Python.</p>
@@ -464,7 +321,7 @@ app = with_persistence(mcp, backend=<span class="s">"redis"</span>, url=<span cl
             <li class="pr" data-pr="systemd/systemd#43663" data-repo="systemd/systemd" data-hl>
               <p class="pr-meta"><span class="col-repo">systemd/systemd</span><span class="col-date">2026-09-23</span></p>
               <h3 class="col-title"><a href="https://github.com/systemd/systemd/pull/43663" target="_blank" rel="noopener">journalctl: make the read path 1.7x to 2.5x faster</a></h3>
-              <p class="col-why">Three fixes on journalctl&#x27;s per-entry read path, including a UTF-8 decoder that ran twice per byte. Output is byte-for-byte identical, 1.7x to 2.5x faster.</p>
+              <p class="col-why">Three fixes to the per-entry read path, including a UTF-8 decoder that ran twice per byte.</p>
               <button class="btn-verify" type="button" aria-label="Debug systemd/systemd#43663">Debug</button>
             </li>
             <li class="pr" data-pr="systemd/systemd#43653" data-repo="systemd/systemd">
@@ -488,7 +345,7 @@ app = with_persistence(mcp, backend=<span class="s">"redis"</span>, url=<span cl
             <li class="pr" data-pr="systemd/systemd#43650" data-repo="systemd/systemd" data-hl>
               <p class="pr-meta"><span class="col-repo">systemd/systemd</span><span class="col-date">2026-09-04</span></p>
               <h3 class="col-title"><a href="https://github.com/systemd/systemd/pull/43650" target="_blank" rel="noopener">resolved: don&#x27;t disable the listening socket when a datagram is dropped</a></h3>
-              <p class="col-why">One datagram with a bad checksum, sendable by anyone on the link, disabled resolved&#x27;s mDNS, LLMNR or stub listener until restart.</p>
+              <p class="col-why">One bad-checksum datagram from anyone on the link disabled resolved's listener until restart.</p>
               <button class="btn-verify" type="button" aria-label="Debug systemd/systemd#43650">Debug</button>
             </li>
             <li class="pr" data-pr="systemd/systemd#43608" data-repo="systemd/systemd">
@@ -548,7 +405,7 @@ app = with_persistence(mcp, backend=<span class="s">"redis"</span>, url=<span cl
             <li class="pr" data-pr="systemd/systemd#43150" data-repo="systemd/systemd" data-hl>
               <p class="pr-meta"><span class="col-repo">systemd/systemd</span><span class="col-date">2026-07-25</span></p>
               <h3 class="col-title"><a href="https://github.com/systemd/systemd/pull/43150" target="_blank" rel="noopener">ask-password: refuse agent requests with unsafe characters in prompt fields</a></h3>
-              <p class="col-why">A newline in an ask-password prompt could inject a Socket= line and send the typed password to another path. Unsafe characters are now refused.</p>
+              <p class="col-why">A newline in a prompt could send the typed password to another socket.</p>
               <button class="btn-verify" type="button" aria-label="Debug systemd/systemd#43150">Debug</button>
             </li>
             <li class="pr" data-pr="systemd/systemd#43102" data-repo="systemd/systemd">
@@ -590,7 +447,7 @@ app = with_persistence(mcp, backend=<span class="s">"redis"</span>, url=<span cl
             <li class="pr" data-pr="lightpanda-io/browser#2722" data-repo="lightpanda-io/browser" data-hl>
               <p class="pr-meta"><span class="col-repo">lightpanda-io/browser</span><span class="col-date">2026-06-19</span></p>
               <h3 class="col-title"><a href="https://github.com/lightpanda-io/browser/pull/2722" target="_blank" rel="noopener">feat(cdp): implement Browser.setDownloadBehavior file downloads</a></h3>
-              <p class="col-why">Browser.setDownloadBehavior was a no-op, so attachment responses were rendered as pages and their bodies discarded. Downloads now stream to disk under downloadPath, with downloadWillBegin and downloadProgress events.</p>
+              <p class="col-why">Downloads were rendered as pages and discarded; they now stream to disk with progress events.</p>
               <button class="btn-verify" type="button" aria-label="Debug lightpanda-io/browser#2722">Debug</button>
             </li>
             <li class="pr" data-pr="lance-format/lance#7246" data-repo="lance-format/lance">
@@ -632,13 +489,12 @@ app = with_persistence(mcp, backend=<span class="s">"redis"</span>, url=<span cl
             <li class="pr" data-pr="lance-format/lance#7251" data-repo="lance-format/lance" data-hl>
               <p class="pr-meta"><span class="col-repo">lance-format/lance</span><span class="col-date">2026-06-16</span></p>
               <h3 class="col-title"><a href="https://github.com/lance-format/lance/pull/7251" target="_blank" rel="noopener">fix: merge_insert silently drops matches when a leading payload column is all-null</a></h3>
-              <p class="col-why">Critical fix: merge_insert silently dropped matched rows when the leading payload column was all-null.</p>
               <button class="btn-verify" type="button" aria-label="Debug lance-format/lance#7251">Debug</button>
             </li>
             <li class="pr" data-pr="BerriAI/litellm#30020" data-repo="BerriAI/litellm" data-hl>
               <p class="pr-meta"><span class="col-repo">BerriAI/litellm</span><span class="col-date">2026-06-11</span></p>
               <h3 class="col-title"><a href="https://github.com/BerriAI/litellm/pull/30020" target="_blank" rel="noopener">fix(proxy): release max_parallel_requests slot when a stream is cancelled mid-flight</a></h3>
-              <p class="col-why">Stopped a cancelled stream from stranding its max_parallel_requests slot, which had been pinning capped keys at their limit.</p>
+              <p class="col-why">A cancelled stream no longer strands its max_parallel_requests slot.</p>
               <button class="btn-verify" type="button" aria-label="Debug BerriAI/litellm#30020">Debug</button>
             </li>
             <li class="pr" data-pr="BerriAI/litellm#29493" data-repo="BerriAI/litellm">
@@ -674,7 +530,7 @@ app = with_persistence(mcp, backend=<span class="s">"redis"</span>, url=<span cl
             <li class="pr" data-pr="python/cpython#150328" data-repo="python/cpython" data-hl>
               <p class="pr-meta"><span class="col-repo">python/cpython</span><span class="col-date">2026-05-28</span></p>
               <h3 class="col-title"><a href="https://github.com/python/cpython/pull/150328" target="_blank" rel="noopener">gh-150311: Fix minor issues in configure.ac for the CYGWIN port</a></h3>
-              <p class="col-why">Three Cygwin fixes in configure.ac: the system name was set to Cygwin while every case matched CYGWIN*, static builds named their library as a DLL import library (.dll.a), and the shared link hardcoded gcc and g++ instead of the configured compiler.</p>
+              <p class="col-why">Three Cygwin build fixes: a mismatched system name, misnamed static libraries and a hardcoded compiler.</p>
               <button class="btn-verify" type="button" aria-label="Debug python/cpython#150328">Debug</button>
             </li>
             <li class="pr" data-pr="lance-format/lance#6934" data-repo="lance-format/lance">
@@ -703,68 +559,40 @@ app = with_persistence(mcp, backend=<span class="s">"redis"</span>, url=<span cl
     <section id="advisories" aria-labelledby="advisories-h2">
       <div class="shell">
         <div class="section-head">
-          <h2 id="advisories-h2">Advisories.</h2>
-          <p class="lead">Vulnerabilities I found and reported privately, published once the fixes shipped. Debug replays each one, from the bug to the fix.</p>
+          <h2 id="advisories-h2">Advisories</h2>
+          <p class="lead">Vulnerabilities I reported privately, published once fixed.</p>
         </div>
 
         <ol class="prs" id="advisory-body">
             <li class="pr advisory" data-advisory="CVE-2026-124757" data-repo="liske/needrestart">
               <p class="pr-meta"><span class="col-repo">liske/needrestart</span><span class="col-date">2026-11-17</span><span class="col-sev">High · local root</span></p>
               <h3 class="col-title"><a href="https://www.openwall.com/lists/oss-security/2026/11/17/27" target="_blank" rel="noopener">CVE-2026-124757: local root via a forged session cgroup and the notify-send hook</a></h3>
-              <p class="col-why">needrestart matched cgroup paths unanchored, so a user could pass their process off as part of root's session. The notify hook then put that process's self-chosen name into a shell string run as root. I wrote the three-patch fix and coordinated disclosure with Debian, Ubuntu and linux-distros.</p>
+              <p class="col-why">A forged session cgroup let a user get a shell string run as root through the notify hook. I wrote the fix and coordinated disclosure.</p>
               <button class="btn-verify" type="button" aria-label="Debug CVE-2026-124757">Debug</button>
             </li>
             <li class="pr advisory" data-advisory="GHSA-3jpq-xwf3-rwr6" data-repo="lightpanda-io/browser">
               <p class="pr-meta"><span class="col-repo">lightpanda-io/browser</span><span class="col-date">2026-11-04</span><span class="col-sev">High · CVSS 7.5</span></p>
               <h3 class="col-title"><a href="https://github.com/lightpanda-io/browser/security/advisories/GHSA-3jpq-xwf3-rwr6" target="_blank" rel="noopener">Heap buffer overflow in Frame.buf via long element and tag names</a></h3>
-              <p class="col-why">Element and SVG tag names were lowercased into a fixed 1,024-byte buffer that release builds never bounds-checked, so one page with a long tag name overwrote the pointers after it and crashed the browser, every CDP session included. Fixed in 1.0.2.</p>
+              <p class="col-why">Long tag names overflowed a fixed buffer and crashed the browser, every CDP session included. Fixed in 1.0.2.</p>
               <button class="btn-verify" type="button" aria-label="Debug GHSA-3jpq-xwf3-rwr6">Debug</button>
             </li>
         </ol>
       </div>
     </section>
 
-        <!-- ===================== RUNIXOS ===================== -->
-    <section id="runixos" aria-labelledby="runixos-h2">
-      <div class="shell">
-        <div class="section-head">
-          <h2 id="runixos-h2">RunixOS.</h2>
-          <p class="case-sub">A capability-based microkernel. CS3013 Operating Systems independent study, advised by Prof. Craig Wills</p>
-        </div>
-        <div class="prose" style="margin-top: var(--s-5);">
-          <p>RunixOS started as a from-scratch microkernel and is now my formal CS3013 Operating Systems independent study at WPI, advised by Prof. Craig Wills. It re-derives classic process, thread, and synchronization coursework on a kernel with no shared memory and no ambient authority, where every right is an explicit capability.</p>
-          <p>It's a capability-based, IPC-first microkernel written in Rust for x86_64, booting via UEFI on QEMU. The kernel implements capabilities with attenuation and revocation, a preemptible scheduler, synchronous and asynchronous IPC, and a capability-gated filesystem, all backing an interactive console with tracing and profiling tools. A companion research paper examines what preemption does to capability atomicity, tracing a real TOCTOU vulnerability from discovery through a working fix.</p>
-        </div>
-        <div class="case-links">
-          <a class="receipt" href="https://github.com/Ar-maan05/RunixOS" target="_blank" rel="noopener">GitHub <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></a>
-        </div>
-        <div class="groundwork" id="foundations">
-          <h3>The groundwork before it</h3>
-          <div class="foundation">
-            <h4>Binary exploitation</h4>
-            <p>Completed the CS:APP attack and bomb labs end to end, including the hidden phase and a full ROP chain. Then went past the assignment and reverse engineered the lab harnesses themselves with objdump and GDB.</p>
-          </div>
-          <div class="foundation">
-            <h4>Memory systems</h4>
-            <p>Wrote an N-way set-associative cache simulator in C with LRU eviction, then used it to drive a cache-conscious matrix transpose. Valgrind traces guided the access patterns.</p>
-          </div>
-        </div>
-      </div>
-    </section>
 
     <!-- ===================== 5. NOW / ABOUT ===================== -->
     <section id="about" aria-labelledby="now-h2">
       <div class="shell">
         <div class="section-head">
-          <h2 id="now-h2">Off the clock, sort of.</h2>
+          <h2 id="now-h2">About</h2>
         </div>
         <div class="now-body">
-          <p>Back at WPI for the fall, teaching intro systems as a Peer Learning Assistant, serving as a Community Advisor in residence life, and building RunixOS as an independent study.</p>
-          <p>Upstream, most of my time now goes into systemd and the Linux userspace around it: a use-after-free in resolved's mDNS path, a password-redirect hole in ask-password, and a journalctl read path that runs 1.7x to 2.5x faster.</p>
-          <p>The lab next to my desk is still a Fedora laptop running a 35B mixture-of-experts model through llama.cpp, wired to a filesystem MCP server, because the fastest way to find what breaks in MCP infrastructure is to live on it. Before any of this I spent a decade teaching Shotokan karate as a second-degree black belt, which is where I learned to explain hard things patiently.</p>
+          <p>At WPI I’m a Peer Learning Assistant for intro systems and a Community Advisor, and I’m building RunixOS as an independent study.</p>
+          <p>Upstream, most of my time goes into systemd and the Linux userspace around it.</p>
+          <p>Before this, I taught Shotokan karate for a decade as a second-degree black belt.</p>
         </div>
-        <!-- NOTE FOR ARMAAN (decide later): one optional human line that is genuinely memorable: "I once built a five-game puzzle suite for an audience of one." Include only if you are comfortable and your partner is too. -->
-        <p class="now-meta meta">BS/MS Computer Science, WPI · 4.0 GPA · Worcester, MA · EST · asandhu@wpi.edu</p>
+        <p class="now-meta meta">Worcester, MA · EST</p>
       </div>
     </section>
 
@@ -772,8 +600,8 @@ app = with_persistence(mcp, backend=<span class="s">"redis"</span>, url=<span cl
     <section id="console" aria-labelledby="console-h2">
       <div class="shell">
         <div class="section-head">
-          <h2 id="console-h2">The site, as a shell.</h2>
-          <p class="lead">Everything on this page is a command away. Replay any fix from the ledger with debug, or start with help.</p>
+          <h2 id="console-h2">Terminal</h2>
+          <p class="lead">Replay any fix with <code>debug</code>, or start with <code>help</code>.</p>
         </div>
         <!-- terminal.js drives this: the input is real, the rendering is ours. -->
         <div class="term" data-term data-mode="shell">
@@ -800,9 +628,9 @@ app = with_persistence(mcp, backend=<span class="s">"redis"</span>, url=<span cl
     <section id="contact" aria-labelledby="contact-h2">
       <div class="shell">
         <div class="section-head">
-          <h2 id="contact-h2">Get in touch.</h2>
+          <h2 id="contact-h2">Contact</h2>
         </div>
-        <p class="contact-lead">Email is fastest. I read everything.</p>
+        <p class="contact-lead">Email is fastest.</p>
         <a class="contact-mail" href="mailto:asandhu@wpi.edu">asandhu@wpi.edu</a>
         <div class="channels">
           <a class="receipt" href="https://github.com/Ar-maan05" target="_blank" rel="noopener">GitHub @Ar-maan05 <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></a>
@@ -812,22 +640,12 @@ app = with_persistence(mcp, backend=<span class="s">"redis"</span>, url=<span cl
       </div>
     </section>
 
-    <!-- ===================== COLOPHON ===================== -->
-    <section class="colophon" id="colophon" aria-label="Colophon">
-      <div class="shell">
-        <h2 class="colophon-h">Colophon</h2>
-        <p>Built by hand: HTML, CSS and zero-dependency JavaScript, with no framework and no build step. The backdrop is a 3D graph of merges drawn on a canvas: main runs into the screen, branches fork off and merge back, and scrolling flies you down it. The terminal reads every answer off this page, and PR states refresh daily through a GitHub Action that commits static JSON, so nothing here calls a third-party API while you read. Type is IBM Plex. Hosted on GitHub Pages. <a href="https://github.com/Ar-maan05/ar-maan05.github.io" target="_blank" rel="noopener">Source <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></a></p>
-        <p class="meta"><a class="receipt" href="https://pagespeed.web.dev/analysis?url=https://ar-maan05.github.io/" target="_blank" rel="noopener">Lighthouse: run it yourself <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></a></p>
-      </div>
-    </section>
   </main>
 
   <!-- ===================== FOOTER ===================== -->
   <footer class="site-footer">
     <div class="shell meta">
       <span>© 2026 Armaan Sandhu</span>
-      <span class="dot-sep"><a href="#colophon">Colophon</a></span>
-      <span class="dot-sep"><a href="https://github.com/Ar-maan05/ar-maan05.github.io" target="_blank" rel="noopener">Source <svg class="icon" aria-hidden="true"><use href="#i-arrow-up-right"/></svg></a></span>
     </div>
   </footer>
 

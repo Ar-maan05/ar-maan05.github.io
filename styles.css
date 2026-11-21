@@ -16,15 +16,6 @@
     U+2212, U+2215, U+FEFF, U+FFFD;
 }
 @font-face {
-  font-family: "IBM Plex Serif";
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("fonts/plex-serif-400-latin.woff2") format("woff2");
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
-    U+02DC, U+2000-206F, U+2122, U+2212, U+FEFF, U+FFFD;
-}
-@font-face {
   font-family: "IBM Plex Mono";
   font-style: normal;
   font-weight: 400;
@@ -89,7 +80,7 @@
   --t-fast: 160ms; --t-med: 240ms; --t-slow: 440ms;
 
   --sans: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
-  --serif: "IBM Plex Serif", Georgia, serif;
+  --serif: var(--sans);
   --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, monospace;
 
   --nav-h: 66px;
@@ -1851,3 +1842,84 @@ h1, .hero h1 {
 .nav-links a::after { display: none; }
 [data-theme="dark"] { color-scheme: dark; }
 [data-theme="light"] { color-scheme: light; }
+
+/* ===========================================================================
+   Monochrome — the violet accent becomes plain ink. Specific enough to beat
+   the hero's scoped token block.
+   =========================================================================== */
+html[data-theme="light"], html[data-theme="light"] .hero {
+  --merge: #14161C;
+  --merge-deep: #45484F;
+  --merge-tint: rgba(20, 22, 28, 0.05);
+  --merge-glow: transparent;
+  --merge-glow-lg: transparent;
+  --signal: #45484F;
+  --signal-tint: rgba(20, 22, 28, 0.05);
+  --on-merge: #FFFFFF;
+}
+html[data-theme="dark"], html[data-theme="dark"] .hero {
+  --merge: #EEF2FB;
+  --merge-deep: #FFFFFF;
+  --merge-tint: rgba(255, 255, 255, 0.06);
+  --merge-glow: transparent;
+  --merge-glow-lg: transparent;
+  --signal: #A6B0C6;
+  --signal-tint: rgba(255, 255, 255, 0.06);
+  --on-merge: #0A0C12;
+}
+html[data-theme="light"] .term { --t-bg: #FFFFFF; --t-bar: #F4F4F0; --t-sel: rgba(20, 22, 28, 0.12); }
+html[data-theme="dark"] .term { --t-sel: rgba(255, 255, 255, 0.16); }
+.btn-primary, .btn-primary:hover,
+.store-toggle button[aria-pressed="true"] { color: var(--on-merge); }
+.btn-primary:hover { box-shadow: none; }
+.btn-verify, .feature-by, .status-chip { border-color: var(--rule-strong); }
+.mf-dot { background: var(--ink-muted); }
+
+/* ===========================================================================
+   Projects — a plain list
+   =========================================================================== */
+.project-list { list-style: none; padding: 0; margin: 0; }
+.project { padding: var(--s-4) 0; border-top: 1px solid var(--rule); }
+.project:first-child { border-top: 0; padding-top: 0; }
+.project h3 { display: inline; font-size: 18px; margin-right: 10px; }
+.project h3 a { color: var(--ink); }
+.project-meta { font-family: var(--mono); font-size: 12px; color: var(--ink-muted); }
+.project p { margin-top: 6px; color: var(--ink-soft); max-width: var(--max-prose); }
+
+/* Latest merges box: a solid black border in light mode */
+html[data-theme="light"] .mergefeed { border: 1px solid var(--ink); box-shadow: none; }
+html[data-theme="light"] .mergefeed-head { border-bottom-color: var(--ink); }
+
+/* Latest merges: the message is the content, so it gets the strong ink */
+.mf-row { font-size: 13px; }
+.mf-msg { color: var(--ink-soft); }
+.mf-num { color: var(--ink-muted); }
+
+/* ===========================================================================
+   Quieter page: tighter sections with no divider rules, no terminal shadow,
+   and a black-and-white demo.
+   =========================================================================== */
+main > section { padding-block: var(--s-7); border-top: 0; }
+.section-head { margin-bottom: var(--s-5); }
+@media (max-width: 600px) {
+  main > section { padding-block: var(--s-6); }
+}
+.term { box-shadow: none; }
+
+.demo {
+  --open: var(--ink);
+  --open-tint: var(--paper-sunken);
+  --del: var(--ink);
+  --del-tint: var(--paper-sunken);
+}
+.demo-action[data-variant="kill"], .demo-action[data-variant="restart"] {
+  background: var(--ink);
+  color: var(--on-merge);
+}
+
+/* Last color spots: code strings and advisory severity go monochrome */
+.code .s { color: var(--ink-soft); }
+.pr .col-sev { color: var(--ink); font-weight: 500; }
+.advisory::before { background: var(--ink); }
+.advisory:hover { background: var(--merge-tint); }
+.advisory .col-title a:hover { color: var(--ink); }

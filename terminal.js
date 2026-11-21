@@ -1,6 +1,6 @@
 /* terminal.js — the site as a shell.
    A small zsh-flavoured terminal that reads the page it lives on: every figure
-   it prints comes from the DOM (the ledger, the receipts, the shipped cards),
+   it prints comes from the DOM (the ledger, the receipts, the project list),
    so it can never disagree with the page. Debug replays (sims.js) open in their
    own tab with a status line, so running one never wipes the shell.
    Exposes window.deckTerminal.debug(key) for the ledger's Debug buttons. */
@@ -95,10 +95,9 @@
   }
 
   var SECTIONS = [
-    ["work", "mcp-persist case study"], ["agentfence", "learned agent sandboxing"], ["shipped", "other packages"],
-    ["ledger", "every merged PR"], ["advisories", "security advisories"], ["runixos", "the microkernel"], ["foundations", "the groundwork before it"],
-    ["about", "what I'm doing now"], ["console", "this terminal"], ["contact", "how to reach me"],
-    ["colophon", "how the site is built"]
+    ["work", "mcp-persist case study"], ["projects", "everything else I've built"],
+    ["ledger", "every merged PR"], ["advisories", "security advisories"],
+    ["about", "what I'm doing now"], ["console", "this terminal"], ["contact", "how to reach me"]
   ];
 
   /* ======================================================================
@@ -315,7 +314,7 @@
       blank();
       say([{ t: "upstream  ", c: "t-dim" }, { t: String(mergedTotal()), c: "t-acc" }, " merged PRs across " + names.length + " repositories (" + top + ")"]);
       say([{ t: "shipping  ", c: "t-dim" }, { t: "mcp-persist", cmd: "cd work" }, " · " + text("[data-downloads]", "18,000+") + " downloads" + (ver ? " · v" + ver : "")]);
-      say([{ t: "building  ", c: "t-dim" }, { t: "agentfence", cmd: "cd agentfence" }, " · learned least-privilege sandboxing for AI agents"]);
+      say([{ t: "building  ", c: "t-dim" }, { t: "agentfence", cmd: "cd projects" }, " · learned least-privilege sandboxing for AI agents"]);
       say([{ t: "reach me  ", c: "t-dim" }, { t: "asandhu@wpi.edu", href: "mailto:asandhu@wpi.edu" }]);
     } },
 
@@ -389,13 +388,13 @@
     projects: { desc: "packages I maintain", run: function () {
       var ver = text("[data-bake='version']", "");
       say([{ t: "mcp-persist", cmd: "cd work" }, pad("", 5), pad(text("[data-downloads]", "18,000+") + " downloads", 20), { t: (ver ? "v" + ver + " · " : "") + "durable event stores for MCP", c: "t-dim" }], "t-row");
-      doc.querySelectorAll(".ship-card").forEach(function (c) {
-        var name = c.querySelector("h3"), v = c.querySelector(".ship-top .chip"), d = c.querySelector(".ship-desc");
+      doc.querySelectorAll(".project").forEach(function (c) {
+        var name = c.querySelector("h3"), v = c.querySelector(".project-meta"), d = c.querySelector("p");
         if (!name) return;
         var desc = d ? d.textContent.trim().split(/\.\s/)[0] : "";
         if (desc.length > 58) desc = desc.slice(0, 57) + "…";
         var nm = name.textContent.trim();
-        say([{ t: nm, cmd: "cd shipped" }, pad("", 16 - nm.length), pad(v ? v.textContent.trim() : "", 20), { t: desc, c: "t-dim" }], "t-row");
+        say([{ t: nm, cmd: "cd projects" }, pad("", 16 - nm.length), pad(v ? v.textContent.trim() : "", 20), { t: desc, c: "t-dim" }], "t-row");
       });
     } },
 
@@ -703,10 +702,15 @@
   /* ======================================================================
      Boot
      ====================================================================== */
+  // The banner counts are refreshed once activity.json has added the merges
+  // the baked ledger doesn't list yet, so they match the status bar.
+  var motdCount = null;
+  function motdText() {
+    return mergedTotal() + " merged PRs across " + Object.keys(byRepo()).length + " repositories.";
+  }
   function motd() {
     var ex = exampleDebug();
-    var repos = Object.keys(byRepo()).length;
-    say([{ t: "This shell reads the page it lives on: ", c: "t-dim" }, mergedTotal() + " merged PRs across " + repos + " repositories."]);
+    motdCount = say([{ t: "This shell reads the page it lives on: ", c: "t-dim" }, motdText()]).lastChild;
     say(["Try ", { t: "help", cmd: "help" }, ", ", { t: "merged", cmd: "merged" }, ", or ",
          { t: ex, cmd: ex }, "."]);
     blank();
@@ -716,7 +720,10 @@
   showTab("shell");
   draw();
   // The ledger may grow after activity.json lands; keep the counts honest.
-  doc.addEventListener("deck:activity", drawStatus);
+  doc.addEventListener("deck:activity", function () {
+    drawStatus();
+    if (motdCount) motdCount.textContent = motdText();
+  });
 
   window.deckTerminal = {
     debug: function (key) {

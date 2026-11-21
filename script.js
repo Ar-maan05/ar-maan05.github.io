@@ -39,7 +39,6 @@
   var ledgerRender = function () {};
   if (ledgerList && ledgerCtl) {
     var LEDGER_PAGE = 8;
-    var REPO_LABEL = { "lightpanda-io/browser": "lightpanda", "lance-format/lance": "lance" };
     var chipWrap = ledgerCtl.querySelector("[data-ledger-filters]");
     var ledgerQ = doc.getElementById("ledger-q");
     var ledgerStatus = doc.getElementById("ledger-status");
@@ -55,16 +54,10 @@
     };
 
     var buildChips = function () {
-      var counts = {}, all = prItems(), hl = 0;
-      all.forEach(function (li) {
-        var r = li.getAttribute("data-repo");
-        counts[r] = (counts[r] || 0) + 1;
-        if (li.hasAttribute("data-hl")) hl++;
-      });
+      var all = prItems(), hl = 0;
+      all.forEach(function (li) { if (li.hasAttribute("data-hl")) hl++; });
+      // Two views only; search covers repos, functions and words.
       var defs = [{ id: "highlights", label: "Highlights", n: hl }, { id: "all", label: "All", n: all.length }];
-      Object.keys(counts)
-        .sort(function (x, y) { return counts[y] - counts[x] || x.localeCompare(y); })
-        .forEach(function (r) { defs.push({ id: r, label: REPO_LABEL[r] || r.split("/")[1], n: counts[r] }); });
       chipWrap.innerHTML = "";
       defs.forEach(function (d) {
         var b = doc.createElement("button");
