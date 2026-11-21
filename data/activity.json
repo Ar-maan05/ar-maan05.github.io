@@ -1,5 +1,5 @@
 {
-  "generated": "2026-11-20T14:34:41.381Z",
+  "generated": "2026-11-21T13:52:55.881Z",
   "curated": [
     {
       "repo": "systemd/systemd",
@@ -515,6 +515,14 @@
     }
   ],
   "extra": [
+    {
+      "repo": "esnet/iperf",
+      "number": 2099,
+      "title": "fix --nstreams falling through into -b, and the LOST debug count",
+      "state": "merged",
+      "url": "https://github.com/esnet/iperf/pull/2099",
+      "merged_at": "2026-11-20T19:27:02Z"
+    },
     {
       "repo": "coreos/afterburn",
       "number": 1310,
