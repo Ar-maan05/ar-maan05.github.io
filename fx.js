@@ -13,12 +13,7 @@
     if (!wrap) return;
     function raise(el, live) {
       if (!el || !live) return;
-      // data-countup-target when present: textContent may be a mid-tween value
-      // rather than the authoritative baked figure.
-      var floor = parseInt(el.getAttribute("data-countup-target") || el.textContent, 10) || 0;
-      var shown = Math.max(floor, live);
-      if (el.hasAttribute("data-countup")) el.setAttribute("data-countup-target", String(shown));
-      el.textContent = String(shown);
+      el.textContent = String(Math.max(parseInt(el.textContent, 10) || 0, live));
     }
     function run() {
       // The ledger lists merged PRs only, including the ones script.js
@@ -86,14 +81,7 @@
       }).join("");
       // Keep the authoritative baked GitHub count if it exceeds the sample.
       var count = doc.querySelector("[data-mf-count]");
-      if (count) {
-        // Read the count-up target when present: textContent may be a mid-tween
-        // value rather than the authoritative baked figure.
-        var floor = parseInt(count.getAttribute("data-countup-target") || count.textContent, 10) || 0;
-        var shown = Math.max(floor, items.length);
-        count.textContent = String(shown);
-        if (count.hasAttribute("data-countup")) count.setAttribute("data-countup-target", String(shown));
-      }
+      if (count) count.textContent = String(Math.max(parseInt(count.textContent, 10) || 0, items.length));
     }
 
     render();

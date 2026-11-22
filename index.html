@@ -100,13 +100,13 @@
   <main id="main">
     <span id="top"></span>
 
-    <!-- ===================== 1. HERO  ===================== -->
+    <!-- ===================== HERO ===================== -->
     <section class="hero" aria-labelledby="hero-h1">
       <div class="shell hero-shell">
       <div class="hero-grid">
         <div class="hero-text">
           <p class="hero-kicker">WPI Computer Science, BS/MS ’29, 4.0 GPA</p>
-          <h1 id="hero-h1">Armaan Sandhu</h1>
+          <h1 id="hero-h1">Armaan Sandhu.</h1>
           <p class="hero-lede">I find and fix bugs, security bugs included, in systemd and the Linux userspace around it.</p>
         </div>
 
@@ -137,7 +137,7 @@
 
     </section>
 
-    <!-- ===================== 2. CASE STUDY ===================== -->
+    <!-- ===================== CASE STUDY ===================== -->
     <section id="work" aria-labelledby="cs-h2">
       <div class="shell">
         <div class="section-head">
@@ -149,7 +149,7 @@
           <p><span class="runin">The problem.</span> The MCP Python SDK keeps resumable SSE history in memory. Restart the server or add a second worker, and reconnecting clients lose events.</p>
         </div>
 
-        <!-- Kill-switch demo (§7.6). Placed so the visitor feels the failure before the fix. -->
+        <!-- Kill-switch demo. Placed so the visitor feels the failure before the fix. -->
         <figure class="case-figure" aria-labelledby="demo-cap">
           <div data-demo></div>
           <noscript>
@@ -158,22 +158,22 @@
               <g>
                 <rect x="2" y="20" width="200" height="110" rx="6" fill="#fff" stroke="#E5E5E0"/>
                 <text class="t" x="14" y="40">1 · emit</text>
-                <text class="f" x="14" y="64" fill="#1A7F37">#11 → #12 → #13</text>
+                <text class="f" x="14" y="64" fill="#14161C">#11 → #12 → #13</text>
                 <text class="f" x="14" y="86">client receives live</text>
                 <text class="f" x="14" y="108">Last-Event-ID: 13</text>
               </g>
               <g>
                 <rect x="220" y="20" width="200" height="110" rx="6" fill="#fff" stroke="#E5E5E0"/>
                 <text class="t" x="232" y="40">2 · in-memory kill</text>
-                <text class="f" x="232" y="64" fill="#CF222E">process exited</text>
-                <text class="f" x="232" y="86" fill="#CF222E">events 13-18 lost</text>
+                <text class="f" x="232" y="64" fill="#14161C">process exited</text>
+                <text class="f" x="232" y="86" fill="#14161C">events 13-18 lost</text>
                 <text class="f" x="232" y="108">the stream is broken</text>
               </g>
               <g>
-                <rect x="438" y="20" width="200" height="110" rx="6" fill="#F3EEFC" stroke="#E5E5E0"/>
+                <rect x="438" y="20" width="200" height="110" rx="6" fill="#F4F4F0" stroke="#E5E5E0"/>
                 <text class="t" x="450" y="40">3 · mcp-persist replay</text>
-                <text class="f" x="450" y="64" fill="#8250DF">EventStore → 13-18</text>
-                <text class="f" x="450" y="86" fill="#8250DF">stream resumed</text>
+                <text class="f" x="450" y="64" fill="#14161C">EventStore → 13-18</text>
+                <text class="f" x="450" y="86" fill="#14161C">stream resumed</text>
                 <text class="f" x="450" y="108">no events lost</text>
               </g>
             </svg>
@@ -241,7 +241,7 @@ app = with_persistence(mcp, backend=<span class="s">"redis"</span>, url=<span cl
       </div>
     </section>
 
-    <!-- ===================== 3. LEDGER ===================== -->
+    <!-- ===================== LEDGER ===================== -->
     <section id="ledger" aria-labelledby="ledger-h2">
       <div class="shell">
         <div class="section-head">
@@ -581,7 +581,7 @@ app = with_persistence(mcp, backend=<span class="s">"redis"</span>, url=<span cl
     </section>
 
 
-    <!-- ===================== 5. NOW / ABOUT ===================== -->
+    <!-- ===================== ABOUT ===================== -->
     <section id="about" aria-labelledby="now-h2">
       <div class="shell">
         <div class="section-head">
@@ -596,7 +596,7 @@ app = with_persistence(mcp, backend=<span class="s">"redis"</span>, url=<span cl
       </div>
     </section>
 
-    <!-- ===================== INTERACTIVE CONSOLE ===================== -->
+    <!-- ===================== TERMINAL ===================== -->
     <section id="console" aria-labelledby="console-h2">
       <div class="shell">
         <div class="section-head">
@@ -624,7 +624,7 @@ app = with_persistence(mcp, backend=<span class="s">"redis"</span>, url=<span cl
       </div>
     </section>
 
-    <!-- ===================== 6. CONTACT ===================== -->
+    <!-- ===================== CONTACT ===================== -->
     <section id="contact" aria-labelledby="contact-h2">
       <div class="shell">
         <div class="section-head">

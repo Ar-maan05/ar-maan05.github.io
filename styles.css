@@ -1,7 +1,7 @@
 /* ===========================================================================
-   Proof of Work — Armaan Sandhu
-   Engineering-ledger aesthetic. Light, typographic, GitHub semantic color.
-   Tokens per DESIGN_SPEC §3. Type per §4. Components §7. Motion §10.
+   Armaan Sandhu — personal site
+   Black and white, typographic. The base system comes first; later blocks
+   override it, and the last blocks ("Calm pass", "Monochrome") win.
    =========================================================================== */
 
 /* ---- Fonts (self-hosted, latin subset) ---------------------------------- */
@@ -34,10 +34,9 @@
     U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
-/* ---- Tokens (§3) — Mission Control: dark is the default deck ------------- */
-/* v2 overhaul: the site now boots dark ("systems online"). :root carries the
-   dark deck palette; [data-theme="light"] is the explicit daylight override.
-   All legacy token names are preserved so every component rule keeps working. */
+/* ---- Tokens (dark values; light values follow) ------------------------- */
+/* The inline script in <head> sets data-theme from the system setting.
+   :root holds the dark palette; [data-theme="light"] overrides it. */
 :root {
   /* Surfaces — deep space with a cold blue undertone */
   --void: #06070B;                 /* the stage / deepest black */
@@ -85,12 +84,12 @@
 
   --nav-h: 66px;
 
-  /* Deck materials */
+  /* Surfaces and lines */
   --glass: rgba(16, 19, 28, 0.62);
   --glass-line: rgba(255, 255, 255, 0.08);
   --grid: rgba(255, 255, 255, 0.028);   /* faint HUD grid */
 
-  /* v1.3 visual-impact tokens (§17.1) — dark deck values */
+  /* Legacy accent tokens; the Monochrome block below neutralizes them */
   --merge-glow:    rgba(163, 113, 247, 0.22);
   --merge-glow-lg: rgba(163, 113, 247, 0.08);
   --h1-grad-start: #EEF2FB;
@@ -99,8 +98,7 @@
 }
 
 /* ---- Daylight override -------------------------------------------------- */
-/* [data-theme="light"] on <html> — set by the toggle, persisted in
-   localStorage. A refined paper deck; the hero stage stays dark regardless. */
+/* Light palette: [data-theme="light"] on <html>, set from the system setting */
 [data-theme="light"] {
   --void: #06070B;
   --paper: #FBFBF9;
@@ -130,72 +128,6 @@
   --h1-grad-end:   #6E3ED6;
   --shimmer:       rgba(255, 255, 255, 0.6);
 }
-
-/* Theme toggle button: moon in light mode, sun in dark mode */
-.theme-toggle {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 42px;
-  height: 42px;
-  padding: 0 !important;
-  border-radius: 50%;
-  background: var(--paper-raised);
-  border: 1px solid var(--rule-strong);
-  color: var(--ink-soft);
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-}
-.theme-toggle:hover {
-  color: var(--ink);
-  border-color: var(--merge);
-  box-shadow: 0 0 12px rgba(130, 80, 223, 0.2);
-  transform: scale(1.05);
-}
-.theme-toggle:active {
-  transform: scale(0.95);
-}
-.theme-toggle .icon {
-  width: 20px;
-  height: 20px;
-  position: absolute;
-  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
-}
-
-/* Light mode (default): Sun is hidden/rotated away, Moon is active */
-.theme-toggle .icon-sun {
-  opacity: 0;
-  transform: rotate(-90deg) scale(0.6);
-}
-.theme-toggle .icon-moon {
-  opacity: 1;
-  transform: rotate(0deg) scale(1);
-}
-
-/* Dark mode (via prefers-color-scheme or data-theme="dark") */
-/* System color scheme toggle overrides removed */
-[data-theme="dark"] .theme-toggle .icon-sun {
-  opacity: 1;
-  transform: rotate(0deg) scale(1);
-}
-[data-theme="dark"] .theme-toggle .icon-moon {
-  opacity: 0;
-  transform: rotate(90deg) scale(0.6);
-}
-
-/* Override if theme is explicitly light */
-[data-theme="light"] .theme-toggle .icon-sun {
-  opacity: 0;
-  transform: rotate(-90deg) scale(0.6);
-}
-[data-theme="light"] .theme-toggle .icon-moon {
-  opacity: 1;
-  transform: rotate(0deg) scale(1);
-}
-
 
 /* ---- Reset / base ------------------------------------------------------- */
 *, *::before, *::after { box-sizing: border-box; }
@@ -257,9 +189,9 @@ main > section:first-child { border-top: 0; }
   margin-top: var(--s-3);
 }
 
-/* ---- Typography (§4) ---------------------------------------------------- */
+/* ---- Typography ---------------------------------------------------- */
 h1, h2, h3, h4 { color: var(--ink); font-family: var(--sans); font-weight: 600; }
-/* H1 gradient fill — the headline moment (§17.4) */
+/* H1 (the Calm pass below makes it solid ink) */
 h1 {
   font-size: clamp(52px, 9vw, 96px);
   line-height: 1.05;
@@ -279,7 +211,7 @@ h1 {
 @supports not (-webkit-background-clip: text) {
   h1 { background: none; -webkit-text-fill-color: unset; color: var(--ink); }
 }
-/* H2 heading treatment (§17.11) */
+/* H2 */
 h2 {
   font-size: clamp(28px, 3.6vw, 40px);
   line-height: 1.12;
@@ -348,7 +280,7 @@ h4 { font-size: 17px; line-height: 1.4; }
 
 .btn .icon { width: 16px; height: 16px; }
 
-/* ---- Receipt link (§7.3) ----------------------------------------------- */
+/* ---- Receipt link ----------------------------------------------- */
 .receipt {
   position: relative;
   display: inline-flex;
@@ -376,33 +308,8 @@ h4 { font-size: 17px; line-height: 1.4; }
 .receipt:hover .icon { opacity: 1; }
 @keyframes underdraw { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 
-/* ---- Status chips (§7.2) ------------------------------------------------ */
-.chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-family: var(--mono);
-  font-size: 12px;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.02em;
-  padding: 3px 10px;
-  border-radius: var(--r-chip);
-  white-space: nowrap;
-}
-.chip::before {
-  content: "";
-  width: 8px; height: 8px;
-  border-radius: 50%;
-  background: currentColor;
-  flex: none;
-}
-.chip-merged { color: var(--merge); background: var(--merge-tint); }
-.chip-open { color: var(--open); background: var(--open-tint); }
-.chip-closed, .chip-draft { color: var(--draft); background: var(--paper-sunken); }
-
 /* ===========================================================================
-   Nav (§5)
+   Nav
    =========================================================================== */
 .skip-link {
   position: absolute;
@@ -472,7 +379,7 @@ h4 { font-size: 17px; line-height: 1.4; }
   .nav-links[data-open="true"] { opacity: 1; transform: translateY(0); pointer-events: auto; }
   .nav-links a { padding: var(--s-3) 0; border-top: 1px solid var(--rule); }
   .nav-links a:first-child { border-top: 0; }
-  .nav-actions .resume-link { display: none; }    /* keep Email visible per §5 */
+  .nav-actions .resume-link { display: none; }    /* keep Email visible */
   .nav-toggle {
     display: inline-flex;
     align-items: center;
@@ -489,7 +396,7 @@ h4 { font-size: 17px; line-height: 1.4; }
 }
 
 /* ===========================================================================
-   Hero (§5, §7.1)
+   Hero
    =========================================================================== */
 .hero { padding-top: var(--s-8); position: relative; overflow: hidden; }
 .hero-grid {
@@ -507,164 +414,15 @@ h4 { font-size: 17px; line-height: 1.4; }
   margin-top: var(--s-4);
 }
 .hero h1 { margin-top: var(--s-2); }
-.hero-cta { display: flex; flex-wrap: wrap; gap: var(--s-3); margin-top: var(--s-5); }
 
-/* Keep the hero diff window inside its grid column at every width. Without this,
-   the grid items default to min-width:auto (min-content), so the diff's long
-   code/tab content expands the column past the page and the panel gets cut off
-   on the right. min-width:0 lets the column constrain it; the diff body and tab
-   strip then scroll their own overflow per §7.1 instead of blowing out layout. */
+/* Keep the hero figure inside its grid column at every width: grid items
+   default to min-width:auto, so long content would push past the page. */
 .hero-grid > * { min-width: 0; }
-.diff-tabs, .diff, .diff-body, .diff-tablist { min-width: 0; max-width: 100%; }
-
-/* Diff block */
-.diff {
-  display: block;
-  background: var(--paper-raised);
-  border: 1px solid var(--rule);
-  border-radius: var(--r-md);
-  overflow: hidden;
-  box-shadow: 0 1px 2px rgb(27 27 26 / 4%), 0 8px 24px rgb(27 27 26 / 6%);
-  transition: transform var(--t-med) var(--ease-out), box-shadow var(--t-med) var(--ease-out);
-  color: var(--ink);
-}
-a.diff:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 2px 4px rgb(27 27 26 / 6%), 0 12px 32px rgb(27 27 26 / 10%);
-  color: var(--ink);
-}
-.diff-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--s-3);
-  padding: 10px 14px;
-  border-bottom: 1px solid var(--rule);
-  background: var(--paper-sunken);
-}
-.diff-repo { font-family: var(--mono); font-size: 13px; color: var(--ink-soft); }
-.diff-repo b { color: var(--ink); font-weight: 500; }
-.diff-body {
-  font-family: var(--mono);
-  font-size: 13.5px;
-  line-height: 1.6;
-  padding: var(--s-3) 0;
-  overflow-x: auto;
-  /* Real diffs use tab indentation; at the default 8-col tab size the cpython
-     lines balloon past the panel and trigger an ugly horizontal scrollbar.
-     Two columns keeps them readable and lets them fill the panel width. */
-  tab-size: 2;
-  -moz-tab-size: 2;
-}
-.diff-line {
-  display: grid;
-  grid-template-columns: 28px 1fr;
-  padding-inline: var(--s-2) var(--s-3);
-  white-space: pre;
-  color: var(--ink-soft);
-}
-.diff-line .g { color: var(--ink-muted); user-select: none; text-align: center; }
-.diff-line.add {
-  background: var(--open-tint);
-  box-shadow: inset 2px 0 0 var(--open);
-}
-.diff-line.add .g { color: var(--open); }
-.diff-line.add .c { color: var(--ink); }
-.diff-line.del {
-  background: var(--del-tint);
-  box-shadow: inset 2px 0 0 var(--del);
-}
-.diff-line.del .g { color: var(--del); }
-
-/* Diff tab switcher (§7.1 v1.1) */
-.diff-tabs { display: flex; flex-direction: column; gap: var(--s-3); }
-.diff-tab-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-bottom: 2px solid var(--rule);
-  margin-bottom: var(--s-1);
-}
-.diff-tablist {
-  display: flex;
-  gap: 0;
-  overflow-x: auto;
-  scrollbar-width: none;     /* Firefox */
-  -ms-overflow-style: none;  /* IE/Edge */
-  margin-bottom: -2px;
-}
-.diff-tablist::-webkit-scrollbar { display: none; }
-.diff-tab {
-  font-family: var(--mono);
-  font-size: 12px;
-  font-weight: 400;
-  color: var(--ink-muted);
-  background: transparent;
-  border: 0;
-  padding: 6px 8px 8px;
-  border-bottom: 2px solid transparent;
-  white-space: nowrap;
-  cursor: pointer;
-  transition: color var(--t-fast) var(--ease-out);
-}
-.diff-tab:first-child { padding-left: 0; }
-.diff-tab[aria-selected="true"] {
-  color: var(--ink);
-  border-bottom-color: var(--merge);
-}
-.diff-tab:hover { color: var(--ink); }
-/* Hide tablist for no-JS (noscript targets can't hide via CSS; we hide via JS class) */
-.no-js .diff-tablist { display: none; }
-
-/* Panel cross-fade: 120ms opacity only */
-[role="tabpanel"].diff {
-  opacity: 1;
-  transition: opacity 120ms var(--ease-out);
-}
-[role="tabpanel"].diff[hidden] { display: none; }
-
-/* Proof bar (§5, §7.3) — upgraded per §17.5 */
-.proofbar {
-  margin-top: var(--s-7);
-  padding-top: var(--s-5);
-  border-top: 1px solid var(--rule);
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--s-2) var(--s-5);
-}
-.proofbar .receipt {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 15px;
-  padding: 6px 0;
-}
-.proofbar b {
-  color: var(--merge);
-  font-size: 22px;
-  font-weight: 700;
-  line-height: 1;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: -0.02em;
-}
-/* "×2" multiplier on a per-repo receipt: the × sits outside the <b> so the
-   count alone stays machine-writable (data-repo-merged), but both read as one
-   figure. Hidden entirely when the repo has a single merged PR. */
-.proofbar .mult {
-  display: inline-flex;
-  align-items: baseline;
-  color: var(--merge);
-  font-size: 22px;
-  font-weight: 700;
-  line-height: 1;
-  letter-spacing: -0.02em;
-}
-.proofbar .mult[hidden] { display: none; }
 
 .tnum { font-variant-numeric: tabular-nums; }
 
 /* ===========================================================================
-   Case study (§6.2, §7.5)
+   Case study
    =========================================================================== */
 .case-sub {
   font-family: var(--mono);
@@ -692,12 +450,10 @@ a.diff:hover {
 .code .c { color: var(--ink-muted); }
 .code-caption { margin-top: var(--s-3); max-width: var(--max-prose); }
 
-.arch { max-width: 780px; margin-top: var(--s-6); }
-.arch svg { width: 100%; height: auto; }
 .case-links { margin-top: var(--s-5); display: flex; gap: var(--s-4); flex-wrap: wrap; }
 
 /* ===========================================================================
-   Kill-switch demo (§7.6)
+   Kill-switch demo
    =========================================================================== */
 .demo {
   margin-top: var(--s-4);
@@ -797,7 +553,6 @@ a.diff:hover {
 .demo-pane.dead h4 { color: var(--del); }
 .log { font-family: var(--mono); font-size: 13px; line-height: 1.55; }
 .log-line { color: var(--ink-soft); transition: opacity var(--t-med) var(--ease-out); }
-.log-line.muted { color: var(--ink-muted); }
 .log-line.bad { color: var(--del); }
 .log-line.good { color: var(--merge); }
 .log-line.cursor { color: var(--ink); font-weight: 500; }
@@ -819,7 +574,7 @@ a.diff:hover {
 }
 
 @media (max-width: 720px) {
-  /* Controls move below the panes so the kill button is thumb-reachable (§7.6) */
+  /* Controls move below the panes so the kill button is thumb-reachable */
   .demo { display: flex; flex-direction: column; }
   .demo-flow { order: 1; }
   .demo-panes { order: 2; grid-template-columns: 1fr; }
@@ -830,7 +585,7 @@ a.diff:hover {
 }
 
 /* ===========================================================================
-   Ledger (§7.4)
+   Ledger
    =========================================================================== */
 /* Every merged PR as one list, newest first. script.js adds the repo chips,
    search and paging; without JS the whole list simply reads top to bottom. */
@@ -961,20 +716,10 @@ a.diff:hover {
 }
 
 /* ===========================================================================
-   Foundations (§6.4)
-   =========================================================================== */
-.foundation { padding: var(--s-4) 0; border-top: 1px solid var(--rule); }
-.foundation:first-of-type { border-top: 0; padding-top: 0; }
-.foundation h4 { margin-bottom: var(--s-2); }
-.foundation p { color: var(--ink-soft); max-width: var(--max-prose); }
-
-/* ===========================================================================
-   Now / Contact / Footer (§6.5-6.7)
+   Now / Contact / Footer
    =========================================================================== */
 .now-body { font-family: var(--serif); font-size: 18px; line-height: 1.65; color: var(--ink-soft); max-width: var(--max-prose); }
 .now-body p + p { margin-top: var(--s-4); }
-.groundwork { margin-top: var(--s-7); padding-top: var(--s-5); border-top: 1px solid var(--rule); }
-.groundwork h3 { font-size: 18px; margin-bottom: var(--s-4); }
 .now-meta { margin-top: var(--s-4); }
 
 .contact-lead { font-size: 17px; color: var(--ink-soft); margin-bottom: var(--s-5); max-width: 52ch; }
@@ -996,10 +741,6 @@ a.diff:hover {
 }
 .contact-mail:hover { color: var(--merge-deep); text-decoration-color: currentColor; }
 
-.colophon { padding-block: var(--s-7); border-top: 1px solid var(--rule); }
-.colophon p { max-width: var(--max-prose); color: var(--ink-soft); }
-.colophon .meta { margin-top: var(--s-3); }
-
 .site-footer {
   padding-block: var(--s-5);
   border-top: 1px solid var(--rule);
@@ -1007,7 +748,6 @@ a.diff:hover {
 .site-footer .meta { display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-3); align-items: center; }
 .site-footer a { color: var(--ink-muted); }
 .site-footer a:hover { color: var(--merge); }
-.dot-sep::before { content: "·"; margin-right: var(--s-3); color: var(--rule-strong); }
 
 /* ===========================================================================
    404 page
@@ -1017,7 +757,7 @@ a.diff:hover {
 .notfound p { font-family: var(--serif); font-size: 20px; color: var(--ink-soft); margin-block: var(--s-3) var(--s-5); }
 
 /* ===========================================================================
-   Motion (§10)
+   Motion
    =========================================================================== */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
@@ -1027,13 +767,10 @@ a.diff:hover {
     transition-duration: 0.01ms !important;
   }
   .js main > section:not(.hero) { opacity: 1; transform: none; }
-  .hero [data-anim], .hero .diff-line[data-anim], .hero .diff-head .chip {
-    animation: none; opacity: 1; transform: none;
-  }
 }
 
 /* ===========================================================================
-   Responsive: hero stacks (diff second per §5)
+   Responsive: the hero stacks on narrow screens
    =========================================================================== */
 @media (max-width: 860px) {
   .hero-grid { grid-template-columns: 1fr; gap: var(--s-6); }
@@ -1042,17 +779,10 @@ a.diff:hover {
   main > section { padding-block: var(--s-7); }
 }
 @media (max-width: 480px) {
-  .hero-cta .btn { flex: 1 1 auto; justify-content: center; }
-  /* §17.12 — let "Merged upstream." fill the small-screen viewport */
+  /* Scale the headline down on small screens */
   h1 { font-size: clamp(44px, 13vw, 68px); letter-spacing: -0.02em; }
   .hero { padding-top: var(--s-7); }
-  .proofbar { grid-template-columns: 1fr 1fr; display: grid; gap: var(--s-3); }
-  .proofbar b { font-size: 18px; }
-  /* Shrink the diff so its lines fit a phone without a horizontal scrollbar */
-  .diff-body { font-size: 12px; }
-  .diff-line { grid-template-columns: 22px 1fr; }
 }
-
 
 /* ===========================================================================
    Terminal (terminal.js) — tabs, a screen per session, and a status line.
@@ -1275,21 +1005,10 @@ a.diff:hover {
 }
 
 /* ===========================================================================
-   v1.3 — Visual impact pass (§17). Additive rules and overrides layered after
-   the base system so they win on cascade. Replacements that the spec marks
-   "replace entirely" are edited in place above (tokens, h1, h2, .proofbar,
-   section reveal). Everything else lives here, in §17 order.
+   Component additions layered after the base system
    =========================================================================== */
 
-/* ---- Diff panel theming ------------------------------------------------- */
-/* The diff follows the site theme: light surface in light mode, dark in dark
-   mode. It rides entirely on the token-based base rules above (--paper-raised,
-   --open-tint, --open, --ink, ...), which the dark blocks already redefine to
-   GitHub-dark values. §17.10's always-dark override was reverted on request so
-   the panel toggles with light/dark like the rest of the page. */
-
-
-/* Run Test button in ledger table (§17.15) */
+/* Debug button in ledger and advisory rows */
 .btn-verify {
   font-family: var(--mono);
   font-size: 11px;
@@ -1309,38 +1028,8 @@ a.diff:hover {
 }
 
 /* ===========================================================================
-   §18 v1.4 — Texture and motion pass (body sections)
-   =========================================================================== */
-
-/* §18.5 "Now" section: status-light eyebrow */
-.now-status {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-family: var(--mono);
-  font-size: 12px;
-  color: var(--ink-muted);
-  margin-bottom: var(--s-2);
-}
-.now-status .dot {
-  width: 8px; height: 8px;
-  border-radius: 50%;
-  background: var(--open);
-  box-shadow: 0 0 0 0 var(--open-tint);
-  animation: statusring 2.5s ease-out infinite;
-}
-@keyframes statusring {
-  0%   { box-shadow: 0 0 0 0 var(--open-tint); }
-  70%  { box-shadow: 0 0 0 6px transparent; }
-  100% { box-shadow: 0 0 0 0 transparent; }
-}
-@media (prefers-reduced-motion: reduce) { .now-status .dot { animation: none; } }
-
-/* ===========================================================================
-   ███  v2 OVERHAUL — "Mission Control / Observability Deck"  ███
-   Dark-first cinematic deck: full-bleed hero stage with a live data-stream
-   canvas + HUD, a channel-rail scrollspy, deck panels, and richer motion.
-   Layered last so it wins the cascade; every rule rides the existing tokens.
+   Older layout overrides (nav, hero, sections, buttons). Several are
+   neutralized by the Calm pass and Monochrome blocks at the end.
    =========================================================================== */
 
 /* Elevation tokens (theme-aware; declared here so they merge into :root) */
@@ -1356,7 +1045,8 @@ a.diff:hover {
 }
 
 /* Raised panels get a consistent top-sheen + elevation in both themes */
-.diff, .ship-card, .code, .demo {
+.code,
+.demo {
   box-shadow: var(--elev-2);
 }
 
@@ -1392,7 +1082,7 @@ a.diff:hover {
 .nav-links a:hover::after { right: 0; }
 
 /* ===========================================================================
-   HERO STAGE — always dark; the console is always on
+   Hero
    =========================================================================== */
 .hero {
   position: relative;
@@ -1401,7 +1091,7 @@ a.diff:hover {
   border-top: 0;
   --stage-hair: rgba(20,22,40,0.08);
 }
-/* Dark stage — the console at night */
+/* Hero tokens in dark mode */
 [data-theme="dark"] .hero {
   --paper-raised: #0E121B;
   --paper-sunken: #0A0D14;
@@ -1417,14 +1107,12 @@ a.diff:hover {
   --stage-hair: rgba(255,255,255,0.09);
   background: var(--void);
 }
-/* Light stage — the console by day: an airy lavender deck, not a black slab.
-   Uses the normal light tokens so text, diff and ticker all adapt. */
+/* Hero in light mode (background cleared by the Calm pass) */
 [data-theme="light"] .hero {
   background:
     radial-gradient(120% 92% at 80% -12%, rgba(130,80,223,0.16), transparent 58%),
     linear-gradient(180deg, #F1EEFB 0%, #F6F5FA 46%, var(--paper) 82%);
 }
-
 
 .hero-grid { grid-template-columns: 1.05fr 1.25fr; align-items: center; }
 
@@ -1440,116 +1128,31 @@ a.diff:hover {
 [data-theme="dark"] .hero h1 { text-shadow: 0 0 60px rgba(124,77,255,0.25); }
 .hero-lede { color: var(--ink-soft); max-width: 42ch; }
 
-/* Availability — the recruiter's line, made unmissable */
-.hero-availability {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: var(--s-4);
-  padding: 9px 15px;
-  border: 1px solid rgba(53,224,203,0.28);
-  border-radius: var(--r-chip);
-  background: rgba(53,224,203,0.06);
-  font-family: var(--mono);
-  font-size: 13px;
-  color: var(--ink-soft);
-}
-[data-theme="light"] .hero-availability { border-color: rgba(12,156,139,0.35); background: rgba(12,156,139,0.07); }
-.hero-availability b { color: var(--signal); font-weight: 600; }
-.hero-availability .avail-dot {
-  width: 8px; height: 8px; border-radius: 50%;
-  background: var(--signal); box-shadow: 0 0 0 0 rgba(53,224,203,0.5);
-  animation: statusring 2.4s ease-out infinite;
-}
-
 .hero-figure { position: relative; }
-.hero-figure .diff {
-  box-shadow: var(--elev-2), 0 0 60px -20px rgba(124,77,255,0.5);
-  background: rgba(14,18,27,0.86);
-  -webkit-backdrop-filter: blur(6px);
-  backdrop-filter: blur(6px);
-}
-[data-theme="light"] .hero-figure .diff { background: rgba(255,255,255,0.94); }
-.diff-tab[aria-selected="true"] { border-bottom-color: var(--merge); text-shadow: 0 0 12px var(--merge-glow); }
-
-/* Proof bar → telemetry readout */
-.proofbar { border-top-color: var(--stage-hair); gap: var(--s-2) var(--s-6); }
-.proofbar .receipt { color: var(--ink-soft); }
-.proofbar b { color: var(--merge-deep); text-shadow: 0 0 20px var(--merge-glow); }
-[data-theme="light"] .proofbar b { color: var(--merge); }
-
 
 /* ===========================================================================
-   Section framing — deck headers + panels
+   Sections
    =========================================================================== */
 main > section { border-top-color: var(--rule); position: relative; }
-/* Faint channel coordinate at the top-left of each section head */
 .section-head { position: relative; }
-
 
 h2 { letter-spacing: -0.02em; }
 
-/* Case study code / arch / demo — deck surfaces */
+/* Case study code and demo surfaces */
 .code { background: var(--paper-sunken); }
 .case-figure .code { position: relative; }
-
-/* Architecture SVG re-themed for the dark deck (overrides the SVG's inline
-   <style> via higher specificity — .arch .lane beats the internal .lane). */
-.arch .lane { fill: var(--paper-raised); stroke: var(--rule-strong); }
-.arch .store { fill: rgba(163,113,247,0.14); stroke: var(--merge); }
-.arch .lbl { fill: var(--ink); }
-.arch .sub { fill: var(--ink-muted); }
-.arch .flow { stroke: var(--rule-strong); }
-.arch .replay { stroke: var(--merge); }
-.arch .rlbl { fill: var(--merge-deep); }
-.arch marker path { fill: var(--rule-strong); }
-.arch text.f { fill: var(--ink-soft); }
-.arch text.t { fill: var(--ink-muted); }
-/* keep archpulse readable on dark */
-@keyframes archpulse {
-  0%   { fill: rgba(163,113,247,0.14); }
-  35%  { fill: rgba(163,113,247,0.42); filter: drop-shadow(0 0 8px var(--merge-glow)); }
-  100% { fill: rgba(163,113,247,0.14); }
-}
-/* Center the arch diagram inside its section so it stops leaving dead space */
-figure.arch { margin-inline: 0; }
 
 .demo { background: var(--paper-raised); }
 .demo-controls, .demo-flow, .demo-caption { background: var(--paper-sunken); }
 .demo-flow, .demo-caption { background: transparent; }
 
 /* ===========================================================================
-   Shipped cards — deck tiles
-   =========================================================================== */
-.ship-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: var(--s-4);
-  margin-top: var(--s-6);
-}
-.ship-card {
-  display: flex;
-  flex-direction: column;
-  padding: var(--s-4);
-  border-radius: var(--r-lg);
-  background: var(--paper-raised);
-  border: 1px solid var(--rule);
-  overflow: hidden;
-}
-.ship-top { display: flex; align-items: center; justify-content: space-between; gap: var(--s-3); margin-bottom: var(--s-3); }
-.ship-top h3 { font-size: 20px; }
-.ship-card .chip-draft { text-transform: none; letter-spacing: 0; }
-.ship-desc { font-family: var(--serif); font-size: 16px; line-height: 1.6; color: var(--ink-soft); margin: 0 0 var(--s-4); }
-.ship-links { margin-top: auto; gap: var(--s-3); }
-
-/* ===========================================================================
-   Ledger — deck table refinements
+   Ledger
    =========================================================================== */
 .btn-verify { border-color: rgba(163,113,247,0.25); }
 
-
 /* ===========================================================================
-   Buttons — deck controls
+   Buttons
    =========================================================================== */
 .btn { border-radius: var(--r-md); }
 .btn-primary { box-shadow: var(--glow-violet); }
@@ -1557,34 +1160,15 @@ figure.arch { margin-inline: 0; }
 .btn-ghost { background: color-mix(in srgb, var(--paper-raised) 70%, transparent); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
 
 /* ===========================================================================
-   Contact + footer glow
-   =========================================================================== */
-
-/* ===========================================================================
    Motion — boot sequence + scroll choreography + tilt
    =========================================================================== */
 
-
 /* ===========================================================================
-   Responsive — deck adapts
+   Responsive
    =========================================================================== */
 @media (max-width: 860px) {
   .hero-grid { grid-template-columns: 1fr; }
-  .hero-availability { font-size: 12px; }
 }
-@media (max-width: 480px) {
-}
-
-/* ===========================================================================
-   ███  MAXIMAL LOOK PASS — section drama  ███
-   Ghost channel numerals, reveal divider sweeps, gradient-border cards,
-   window-chrome code, ledger telemetry. Every section gets a signature.
-   =========================================================================== */
-
-
-.ship-card { position: relative; }
-.ship-top h3 { transition: color var(--t-fast); }
-.ship-card:hover .ship-top h3 { color: var(--merge-deep); }
 
 /* --- Case-study code as a window ----------------------------------------- */
 .code {
@@ -1612,64 +1196,6 @@ figure.arch { margin-inline: 0; }
   font-weight: 600;
   color: var(--ink);
   font-variant-numeric: tabular-nums;
-}
-
-
-/* --- Flagship: mlrouter as a spec list + connective note ---------------- */
-/* A gateway's features read like a spec sheet: what it is, what it does. */
-.spec { margin-top: var(--s-6); border-top: 1px solid var(--rule); }
-.spec-row {
-  display: grid;
-  grid-template-columns: 15rem minmax(0, 1fr);
-  gap: var(--s-4);
-  padding: 16px 0;
-  border-bottom: 1px solid var(--rule);
-}
-.spec dt {
-  display: flex; align-items: baseline; flex-wrap: wrap; gap: 8px;
-  font-weight: 600; font-size: 16px; color: var(--ink);
-}
-.spec dd { margin: 0; font-size: 15px; line-height: 1.6; color: var(--ink-soft); max-width: 62ch; }
-@media (max-width: 720px) {
-  .spec-row { grid-template-columns: 1fr; gap: 4px; }
-}
-.feature-by {
-  font-family: var(--mono); font-size: 10px; font-weight: 500;
-  text-transform: none; letter-spacing: 0.02em;
-  color: var(--signal);
-  border: 1px solid rgba(53,224,203,0.35);
-  border-radius: var(--r-chip); padding: 1px 8px;
-}
-[data-theme="light"] .feature-by { color: var(--signal); border-color: rgba(12,156,139,0.4); }
-.spec code, .flagship-note code {
-  font-family: var(--mono); font-size: 0.86em;
-  background: var(--paper-sunken); border: 1px solid var(--rule);
-  border-radius: var(--r-sm); padding: 1px 5px; color: var(--ink);
-}
-.flagship-note {
-  margin-top: var(--s-5);
-  padding: var(--s-4) var(--s-5);
-  border: 1px solid var(--rule);
-  border-left: 3px solid var(--merge);
-  border-radius: 0 var(--r-md) var(--r-md) 0;
-  background: linear-gradient(90deg, var(--merge-tint), transparent 70%);
-}
-.flagship-note p { color: var(--ink-soft); max-width: var(--max-prose); }
-.stack-line { margin-top: var(--s-4); color: var(--ink-muted); }
-
-.status-chip {
-  display: inline-flex; align-items: center; gap: 7px;
-  margin-left: 8px; vertical-align: middle;
-  font-family: var(--mono); font-size: 11px; letter-spacing: 0.04em;
-  color: var(--signal);
-  border: 1px solid rgba(53,224,203,0.4); border-radius: var(--r-chip);
-  padding: 2px 10px;
-}
-[data-theme="light"] .status-chip { color: var(--signal); border-color: rgba(12,156,139,0.45); }
-.status-chip::before {
-  content: ""; width: 7px; height: 7px; border-radius: 50%;
-  background: var(--signal); box-shadow: 0 0 8px var(--signal);
-  animation: livepulse 2.2s ease-in-out infinite;
 }
 
 /* --- Hero centerpiece: streaming merge log ------------------------------- */
@@ -1725,13 +1251,11 @@ figure.arch { margin-inline: 0; }
   .mergefeed-viewport { height: 300px; }
 }
 
-
 /* ===========================================================================
-   Phone pass — layered last so it wins over the deck overrides above.
+   Phone pass — layered late so it wins over the overrides above
    =========================================================================== */
 .nav-mobile-only { display: none; }
 .wordmark { white-space: nowrap; }
-.hero-availability > span { min-width: 0; }
 
 /* Touch devices: no blur over the always-moving canvas, and bigger targets. */
 @media (pointer: coarse) {
@@ -1753,12 +1277,6 @@ figure.arch { margin-inline: 0; }
   main > section { padding-block: var(--s-6); }
   .section-head { margin-bottom: var(--s-5); }
   .hero { padding-top: var(--s-6); }
-  .proofbar { margin-top: var(--s-6); }
-
-  .status-chip { display: flex; width: fit-content; margin: 8px 0 0; }
-
-  .ship-grid { gap: var(--s-3); margin-top: var(--s-5); }
-  .ship-card { padding: 20px; }
 
   /* Merge log rows: repo and number on one line, the message under them,
      instead of three columns truncated to a few characters each. */
@@ -1775,28 +1293,11 @@ figure.arch { margin-inline: 0; }
   .mergefeed-viewport { height: 320px; }
 }
 
-/* Grids never force a column wider than the screen (320px phones). */
-.ship-grid { grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); }
-
-@media (max-width: 480px) {
-  /* Proof receipts wrap naturally instead of a ragged two-column grid. */
-  .proofbar { display: flex; flex-wrap: wrap; gap: 4px var(--s-4); }
-  .proofbar .receipt { white-space: nowrap; }
-  .proofbar b, .proofbar .mult { font-size: 19px; }
-
-  .hero-availability { align-items: flex-start; line-height: 1.5; }
-  .hero-availability .avail-dot { flex: none; margin-top: 6px; }
-
-}
-
 @media (max-width: 420px) {
   /* Nav fits one line: the Email button drops its label, keeps its icon. */
   .nav-email .btn-label { display: none; }
   .nav-actions .nav-email { padding: 8px 11px; }
 }
-
-/* Colophon: a small heading, not a pill */
-.colophon-h { font-size: 15px; letter-spacing: 0; margin-bottom: var(--s-2); }
 
 /* ===========================================================================
    Calm pass — no ambient motion, glows or glass. Layered last so it wins.
@@ -1815,21 +1316,21 @@ h1, .hero h1 {
   color: var(--ink);
   text-shadow: none !important;
 }
-.diff-tab[aria-selected="true"], .proofbar b { text-shadow: none; }
 
 /* Hero sits on the page background */
 [data-theme="dark"] .hero, [data-theme="light"] .hero { background: transparent; }
 
 /* No glass blur or glow on panels and buttons */
 .nav { background: var(--paper); -webkit-backdrop-filter: none; backdrop-filter: none; }
-.btn-ghost, .mergefeed, .hero-figure .diff { -webkit-backdrop-filter: none; backdrop-filter: none; }
-.mergefeed, .hero-figure .diff { background: var(--paper-raised); box-shadow: var(--elev-2); }
+.btn-ghost,
+.mergefeed { -webkit-backdrop-filter: none; backdrop-filter: none; }
+.mergefeed { background: var(--paper-raised); box-shadow: var(--elev-2); }
 .btn-primary, .btn-primary:hover { box-shadow: none; }
-.mf-dot, .status-chip::before { box-shadow: none; }
+.mf-dot { box-shadow: none; }
 
 /* No pulsing dots */
-.wordmark::before, .hero-availability .avail-dot, .status-chip::before,
-.now-status .dot, .log-line.retry { animation: none; }
+.wordmark::before,
+.log-line.retry { animation: none; }
 .wordmark::before { display: none; }
 
 /* Merge log: a static list you can scroll, not a ticker */
@@ -1837,8 +1338,8 @@ h1, .hero h1 {
 .mergefeed-viewport { overflow-y: auto; -webkit-mask: none; mask: none; }
 
 /* Content is just there: no entrance or reveal animations */
-.hero [data-anim], .hero .diff-line[data-anim], .js .pr:not([hidden]) { animation: none; }
-.js main > section:not(.hero), .js .foundation { opacity: 1; transform: none; transition: none; }
+.js .pr:not([hidden]) { animation: none; }
+.js main > section:not(.hero) { opacity: 1; transform: none; transition: none; }
 .nav-links a::after { display: none; }
 [data-theme="dark"] { color-scheme: dark; }
 [data-theme="light"] { color-scheme: light; }
@@ -1872,7 +1373,7 @@ html[data-theme="dark"] .term { --t-sel: rgba(255, 255, 255, 0.16); }
 .btn-primary, .btn-primary:hover,
 .store-toggle button[aria-pressed="true"] { color: var(--on-merge); }
 .btn-primary:hover { box-shadow: none; }
-.btn-verify, .feature-by, .status-chip { border-color: var(--rule-strong); }
+.btn-verify { border-color: var(--rule-strong); }
 .mf-dot { background: var(--ink-muted); }
 
 /* ===========================================================================

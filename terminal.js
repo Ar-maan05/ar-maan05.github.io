@@ -69,7 +69,7 @@
   }
   function mergedTotal() {
     var el = doc.querySelector("[data-merged-count]");
-    var baked = el ? parseInt(el.getAttribute("data-countup-target") || el.textContent, 10) || 0 : 0;
+    var baked = el ? parseInt(el.textContent, 10) || 0 : 0;
     return Math.max(baked, prs().length);
   }
   function short(repo) { return repo.split("/")[1]; }
