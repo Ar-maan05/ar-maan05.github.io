@@ -3,8 +3,8 @@
   "downloads_display": "22,000+",
   "downloads_short": "22k+",
   "version": "2.2.0",
-  "merged_prs": 118,
-  "repos_merged": 24,
+  "merged_prs": 120,
+  "repos_merged": 25,
   "repo_merged": {
     "lsof-org/lsof": 5,
     "AcademySoftwareFoundation/openexr": 2,
@@ -20,6 +20,7 @@
     "OpenPrinting/cups": 3,
     "avahi/avahi": 2,
     "NLnetLabs/unbound": 2,
+    "cronie-crond/cronie": 2,
     "linux-pam/linux-pam": 2,
     "python/cpython": 2,
     "coreos/afterburn": 3,
@@ -31,5 +32,5 @@
     "lancedb/lancedb": 5,
     "lightpanda-io/browser": 3
   },
-  "generated": "2026-11-24T16:41:26.584Z"
+  "generated": "2026-11-25T16:25:43.266Z"
 }

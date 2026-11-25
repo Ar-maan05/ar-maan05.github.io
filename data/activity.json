@@ -1,5 +1,5 @@
 {
-  "generated": "2026-11-24T16:41:44.951Z",
+  "generated": "2026-11-25T16:26:25.604Z",
   "curated": [
     {
       "repo": "systemd/systemd",
@@ -514,6 +514,22 @@
     }
   ],
   "extra": [
+    {
+      "repo": "cronie-crond/cronie",
+      "number": 251,
+      "title": "crontab: compare uid with euid when choosing the crontab owner",
+      "state": "merged",
+      "url": "https://github.com/cronie-crond/cronie/pull/251",
+      "merged_at": "2026-11-24T18:31:25Z"
+    },
+    {
+      "repo": "cronie-crond/cronie",
+      "number": 249,
+      "title": "crond: create the reboot lock file with mode 0600",
+      "state": "merged",
+      "url": "https://github.com/cronie-crond/cronie/pull/249",
+      "merged_at": "2026-11-24T18:24:57Z"
+    },
     {
       "repo": "esnet/iperf",
       "number": 2099,
