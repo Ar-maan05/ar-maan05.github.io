@@ -1692,3 +1692,41 @@ Object.assign(window.DECK_SIMS, {
       "# tested over TCP with the option registered by hand: no SCTP headers here" ] }
   ]
 });
+
+/* Replays for the two Incus advisories published 27 Nov. Each follows the
+   advisory's own description; nothing beyond it is claimed. */
+Object.assign(window.DECK_SIMS, {
+
+  "GHSA-92jx-73cc-wf5v": [
+    { c: "incus project create p1 -c features.storage.buckets=false   # p1 uses default's buckets", o: [] },
+    { c: "# a restricted TLS certificate trusted only for p1", o: [
+      "# GHSA-pf5w-m8m6-5265: keys only for clients allowed to edit the bucket" ] },
+    { c: "curl -s --cert p1.crt \"$URL/1.0/storage-pools/pool/buckets/b1?project=p1&recursion=1\"", o: [
+      "!keys returned: access-key and secret-key of default's bucket",
+      "# the edit check ran against p1, the requested project, not default, which holds b1" ] },
+    { c: "curl -s --cert p1.crt \"$URL/1.0/storage-pools/pool/buckets?project=p1&recursion=2\"", o: [
+      "!the keys of every bucket in the default project",
+      "!read, write and delete over S3, outside Incus' own authorization" ] },
+    { c: "# Incus 7.7.0: the check is evaluated against the bucket's own project", o: [] },
+    { c: "curl -s --cert p1.crt \"$URL/1.0/storage-pools/pool/buckets/b1?project=p1&recursion=1\"", o: [
+      "+bucket visible, no keys: p1 can't edit a bucket default holds" ] }
+  ],
+
+  "GHSA-4375-qwr5-8vjj": [
+    { c: "# a project with restricted=true, as incus-user creates for a local user", o: [] },
+    { c: "incus config device add c1 d disk source=<allowed path> path=../../<host dir>", o: [
+      "!path resolved against the host before entering the container's rootfs",
+      "!the device is mounted outside the container: host files written as root" ] },
+    { c: "# a VM image whose QCOW2 root disk names a backing file on the host", o: [
+      "!qemu-img, running as root, opens the host path named by the disk content",
+      "# the same when the format is guessed on publish or NBD export" ] },
+    { c: "# a shared directory from a restricted source path; unset raw.idmap", o: [
+      "!the guest's root user creates setuid root files in the host directory" ] },
+    { c: "incus config set c1 raw.idmap \"both <my host uid> 0\"   # restricted.idmap.uid project", o: [
+      "!my host ID mapped onto the container's root: I own the instance's files on the host" ] },
+    { c: "# Incus 7.7.0, the same steps", o: [
+      "+each of these paths to the host is closed" ] },
+    { c: "# credit shared with mmulqueen; fixed by stgraber", o: [
+      "*https://github.com/lxc/incus/security/advisories/GHSA-4375-qwr5-8vjj" ] }
+  ]
+});

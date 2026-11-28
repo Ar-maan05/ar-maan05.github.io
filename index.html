@@ -564,8 +564,20 @@ app = with_persistence(mcp, backend=<span class="s">"redis"</span>, url=<span cl
         </div>
 
         <ol class="prs" id="advisory-body">
+            <li class="pr advisory" data-advisory="GHSA-4375-qwr5-8vjj" data-repo="lxc/incus">
+              <p class="pr-meta"><span class="col-repo">lxc/incus</span><span class="col-date">2026-11-27</span><span class="col-sev">Critical · CVSS 9.9</span></p>
+              <h3 class="col-title"><a href="https://github.com/lxc/incus/security/advisories/GHSA-4375-qwr5-8vjj" target="_blank" rel="noopener">Restricted projects can reach host files and host root through disk devices and VM disks</a></h3>
+              <p class="col-why">Device paths with <code>..</code>, guessed VM disk formats, QCOW2 backing files and a self-mapping <code>raw.idmap</code> let a user confined to a restricted project, <code>incus-user</code> included, reach host files and root. Credit shared with mmulqueen. Fixed in 7.7.0.</p>
+              <button class="btn-verify" type="button" aria-label="Debug GHSA-4375-qwr5-8vjj">Debug</button>
+            </li>
+            <li class="pr advisory" data-advisory="GHSA-92jx-73cc-wf5v" data-repo="lxc/incus">
+              <p class="pr-meta"><span class="col-repo">lxc/incus</span><span class="col-date">2026-11-27</span><span class="col-sev">Medium · CVSS 6.5</span></p>
+              <h3 class="col-title"><a href="https://github.com/lxc/incus/security/advisories/GHSA-92jx-73cc-wf5v" target="_blank" rel="noopener">Bucket GET and list disclose default-project S3 keys to projects inheriting them</a></h3>
+              <p class="col-why">The key check ran against the requested project, not the one holding the bucket, so clients of a project inheriting <code>default</code>’s buckets got their S3 credentials. An incomplete fix of GHSA-pf5w-m8m6-5265. Fixed in 7.7.0.</p>
+              <button class="btn-verify" type="button" aria-label="Debug GHSA-92jx-73cc-wf5v">Debug</button>
+            </li>
             <li class="pr advisory" data-advisory="CVE-2026-124757" data-repo="liske/needrestart">
-              <p class="pr-meta"><span class="col-repo">liske/needrestart</span><span class="col-date">2026-11-17</span><span class="col-sev">High · local root</span></p>
+              <p class="pr-meta"><span class="col-repo">liske/needrestart</span><span class="col-date">2026-11-17</span><span class="col-sev">High · CVSS 7.8</span></p>
               <h3 class="col-title"><a href="https://www.openwall.com/lists/oss-security/2026/11/17/27" target="_blank" rel="noopener">CVE-2026-124757: local root via a forged session cgroup and the notify-send hook</a></h3>
               <p class="col-why">A forged session cgroup let a user get a shell string run as root through the notify hook. I wrote the three patches (<a href="https://github.com/liske/needrestart/commit/7874c082c86f041512b01a02860a89b463524684" target="_blank" rel="noopener">cgroup matching</a>, <a href="https://github.com/liske/needrestart/commit/e8ae1f22f16b0b6023f86af0bcfdd88277f8ecec" target="_blank" rel="noopener">process names</a>, <a href="https://github.com/liske/needrestart/commit/b1996a1a6e2b22fbfdf3062d06712b0a49a99d73" target="_blank" rel="noopener">notify hook</a>) and coordinated disclosure.</p>
               <button class="btn-verify" type="button" aria-label="Debug CVE-2026-124757">Debug</button>
